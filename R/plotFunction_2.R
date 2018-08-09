@@ -13,7 +13,7 @@
 
 #' @import tidyverse
 #' @export
-plotFunction <- function(x,y,xLabel='x',yLabel='y') {
+plotFunction_2 <- function(x,y,xLabel='x',yLabel='y') {
 
 
 
