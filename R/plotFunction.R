@@ -11,7 +11,7 @@
 ### Output: a plot to the console of the relationship, joined as a smooth line.
 ### Assumes that the equation has random noise in the transmissing
 
-#' @import tidyverse
+#' @import ggplot2
 plotFunction <- function(x,y,xLabel='x',yLabel='y') {
 
 
@@ -22,14 +22,14 @@ plotFunction <- function(x,y,xLabel='x',yLabel='y') {
 
   ### Do a line plot
   print (
-    ggplot(inputData,aes(x=x,y=y)) +
-      geom_line(size=1.0) +
-      theme(plot.title = element_text(size=20),
+    ggplot2::ggplot(inputData,ggplot2::aes(x=x,y=y)) +
+      ggplot2::geom_line(size=1.0) +
+      ggplot2::theme(plot.title = element_text(size=20),
             axis.title.x=element_text(size=20),
             axis.text.x=element_text(size=15),
             axis.text.y=element_text(size=15),
             axis.title.y=element_text(size=20)) +
-      labs(x = xLabel,y = yLabel)
+      ggplot2::labs(x = xLabel,y = yLabel)
   )
 
 
