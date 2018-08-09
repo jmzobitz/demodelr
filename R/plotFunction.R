@@ -12,6 +12,7 @@
 ### Assumes that the equation has random noise in the transmissing
 
 #' @import ggplot2
+#' @export
 plotFunction <- function(x,y,xLabel='x',yLabel='y') {
 
 
