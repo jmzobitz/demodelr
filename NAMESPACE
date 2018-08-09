@@ -2,3 +2,4 @@
 
 export(plotFunction)
 import(ggplot2)
+import(tidyverse)
