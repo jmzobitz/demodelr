@@ -65,12 +65,12 @@ outSolutions = data.frame(time=as.numeric(outSolutions[,1]), value=as.numeric(ou
 
 #pdf(file = outPlotName)
 # First plot
-outPlot= ggplot(data.frame(outSolutions), aes(x=time, y=value,color=variableName)) +
-  geom_point(size=3)+facet_wrap(~variableName) +
+outPlot= ggplot(data.frame(outSolutions), aes(x=time, y=value,color=run,shape=variableName)) +
+  geom_point(size=3)+facet_grid(run~variableName) +
   labs(title="Euler's Method Solution",x="Time",y="")+
   ### Expand the graph to make sure axes cross at (0,0)
   expand_limits(y=0) +
-  scale_color_discrete(guide=FALSE)
+  theme(legend.position="none")
 
 print(outPlot)
 
