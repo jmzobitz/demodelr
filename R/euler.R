@@ -3,19 +3,21 @@
 #' @param deltaT Size of timesteps
 #' @param timeSteps Number of timesteps we solve.  deltaT*timeSteps = total time
 #' @param variableNames Name of variables (i.e. P,V) that we have in our differential equation.
+#' @param initialCondition Listing of initial conditions
 #' @param dynamics a Function that we have for our dynamics
 #' @param parameters The values of the parameters we are using
 #' @return A plot of your Euler's method solution
 #' @examples
-#' euler(deltaT,timeSteps,variableNames,FUN=dynamics,parameters=parameters)
+#' euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
 
 
 #' @import tidyverse
 #' @export
 
-euler <- function(deltaT,timeSteps,variableNames,FUN=dynamics,parameters=parameters) {
+euler <- function(deltaT=1,timeSteps=1,initialCondition,variableNames,FUN=dynamics,parameters=parameters) {
 
-
+# Double check initial condition and put as a matrix
+  if (is.null(dim(initialCondition))) {initialCondition <- t(matrix(initialCondition))}
 nSolns <- dim(initialCondition)[1]  # Determine how many initial conditions we have
 nVars <- dim(initialCondition)[2]  # Determine how many variables we have
 time <- seq(from=0,by=deltaT,length.out=timeSteps)  # the output time vector
@@ -59,14 +61,14 @@ for (j in 1:nSolns) {
 outSolutions=outSolutions[-1,];
 outSolutions=unname(outSolutions)
 
-outSolutions = data.frame(time=as.numeric(outSolutions[,1]), value=as.numeric(outSolutions[,2]),variableName=outSolutions[,3],run=as.numeric(outSolutions[,4]))
+outSolutions = data.frame(time=as.numeric(outSolutions[,1]), value=as.numeric(outSolutions[,2]),variables=outSolutions[,3],run=as.numeric(outSolutions[,4]))
 # ggplot2
 
 
 #pdf(file = outPlotName)
 # First plot
-outPlot= ggplot(data.frame(outSolutions), aes(x=time, y=value,color=run,shape=variableName)) +
-  geom_point(size=3)+facet_grid(run~variableName) +
+outPlot= ggplot(data.frame(outSolutions), aes(x=time, y=value,color=run,shape=variables)) +
+  geom_point(size=3)+facet_grid(run~variables) +
   labs(title="Euler's Method Solution",x="Time",y="")+
   ### Expand the graph to make sure axes cross at (0,0)
   expand_limits(y=0) +

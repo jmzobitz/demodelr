@@ -4,13 +4,15 @@
 \alias{euler}
 \title{Solve a multi-dimensional dimensional differential equation with Euler's method. See the vignette for detailed examples of usage.}
 \usage{
-euler(deltaT, timeSteps, variableNames, FUN = dynamics,
-  parameters = parameters)
+euler(deltaT = 1, timeSteps = 1, initialCondition, variableNames,
+  FUN = dynamics, parameters = parameters)
 }
 \arguments{
 \item{deltaT}{Size of timesteps}
 
 \item{timeSteps}{Number of timesteps we solve.  deltaT*timeSteps = total time}
+
+\item{initialCondition}{Listing of initial conditions}
 
 \item{variableNames}{Name of variables (i.e. P,V) that we have in our differential equation.}
 
@@ -25,5 +27,5 @@ A plot of your Euler's method solution
 Solve a multi-dimensional dimensional differential equation with Euler's method. See the vignette for detailed examples of usage.
 }
 \examples{
-euler(deltaT,timeSteps,variableNames,FUN=dynamics,parameters=parameters)
+euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
 }
