@@ -1,5 +1,7 @@
-#' Visualize a two or one dimensional phase plane for a differential equation. See the vignette for detailed examples of usage.
-
+#' Phase plane of differential equation.
+#'
+#' \code{phaseplane} visualizes the vector field for a one or two dimensional differential equation.
+#'
 #' @param n_points number of points we evaluate on the grid in both directions
 #' @param x_window x axis limits.  Must be of the form c(minVal,maxVal)
 #' @param y_window y axis limits.  Must be of the form c(minVal,maxVal)
@@ -18,15 +20,25 @@
 #'  sin(y)
 #' }
 #'
-#' phasearrows(20,c(-3,3),c(-3,3),'X','Y',dx,dy)
+#' phaseplane(20,c(-3,3),c(-3,3),'X','Y',dx,dy)
 #'
-#' # For a one dimensional system:
+#' # For a one dimensional system: dx/dt = f(x).  In this case the xWindow represents time.
+#' # We still need to write dx as a function of x and y
 #'
-#' dx <- function(x,y) {
-#' -x
+#' dy <- function(x,y) {
+#' -y
 #' }
 #'
-#' phasearrows(20,c(-3,3),c(-3,3),'T','X',1,dy)
+#' phasplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
+#'
+#' # For a one dimensional non-autonomous system: dx/dt = f(t,x).  In this case the xWindow represents time.
+#' # The in this case, the x coordinate represents time
+#'
+#' dy <- function(x,y) {
+#' -cos(x)*y
+#' }
+#'
+#' phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
 #'
 #' @import tidyverse
 #' @import ggquiver

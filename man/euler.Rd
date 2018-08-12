@@ -2,7 +2,7 @@
 % Please edit documentation in R/euler.R
 \name{euler}
 \alias{euler}
-\title{Solve a multi-dimensional dimensional differential equation with Euler's method. See the vignette for detailed examples of usage.}
+\title{Euler's method solution for a differential equation.}
 \usage{
 euler(deltaT = 1, timeSteps = 1, initialCondition, variableNames,
   FUN = dynamics, parameters = parameters)
@@ -24,8 +24,11 @@ euler(deltaT = 1, timeSteps = 1, initialCondition, variableNames,
 A plot of your Euler's method solution
 }
 \description{
-Solve a multi-dimensional dimensional differential equation with Euler's method. See the vignette for detailed examples of usage.
+\code{euler} solves a multi-dimensional dimensional differential equation with Euler's method.
+See the vignette for detailed examples of usage.
 }
 \examples{
 euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
+# Run the vignette that works through an example
+vignette("eulers-method")
 }

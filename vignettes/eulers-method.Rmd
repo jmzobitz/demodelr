@@ -119,7 +119,6 @@ Now we have everything we need!  Basically the next step is to run the command `
 If you have multiple initial conditions, you will get a stacked plot for each run.
 
 ```{r, fig.show='hold'}
-
 euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
 ```
 

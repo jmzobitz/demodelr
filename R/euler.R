@@ -1,4 +1,7 @@
-#' Solve a multi-dimensional dimensional differential equation with Euler's method. See the vignette for detailed examples of usage.
+#' Euler's method solution for a differential equation.
+#'
+#' \code{euler} solves a multi-dimensional dimensional differential equation with Euler's method.
+#' See the vignette for detailed examples of usage.
 
 #' @param deltaT Size of timesteps
 #' @param timeSteps Number of timesteps we solve.  deltaT*timeSteps = total time
@@ -9,7 +12,8 @@
 #' @return A plot of your Euler's method solution
 #' @examples
 #' euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
-
+#' # Run the vignette that works through an example
+#' vignette("eulers-method")
 
 #' @import tidyverse
 #' @export
@@ -65,7 +69,7 @@ outSolutions = data.frame(time=as.numeric(outSolutions[,1]), value=as.numeric(ou
 # ggplot2
 
 
-#pdf(file = outPlotName)
+
 # First plot
 outPlot= ggplot(data.frame(outSolutions), aes(x=time, y=value,color=run,shape=variables)) +
   geom_point(size=3)+facet_grid(run~variables) +

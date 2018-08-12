@@ -9,7 +9,9 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Imports: tidyverse
+Imports: tidyverse,
+    ggplot2,
+    ggquiver
 RoxygenNote: 6.1.0
 Suggests: knitr,
     rmarkdown
