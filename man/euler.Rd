@@ -24,7 +24,7 @@ euler(deltaT = 1, timeSteps = 1, initialCondition, variableNames,
 A plot of your Euler's method solution
 }
 \description{
-\code{euler} solves a multi-dimensional dimensional differential equation with Euler's method.
+\code{euler} solves a multi-dimensional differential equation with Euler's method.
 See the vignette for detailed examples of usage.
 }
 \examples{

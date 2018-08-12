@@ -1,6 +1,6 @@
 #' Euler's method solution for a differential equation.
 #'
-#' \code{euler} solves a multi-dimensional dimensional differential equation with Euler's method.
+#' \code{euler} solves a multi-dimensional differential equation with Euler's method.
 #' See the vignette for detailed examples of usage.
 
 #' @param deltaT Size of timesteps
