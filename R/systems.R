@@ -14,22 +14,32 @@
 #' # Run the vignette that works through an example
 #' vignette("systems")
 
-#' @import tidyverse
+#' @import ggplot2
+#' @import dplyr
+#' @import tidyr
 #' @import deSolve
 #' @export
 
 systems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=parameters) {
 
   #  A quick check in case we have a one dimensional system
-  if (is.null(dim(initialCondition))) {initialCondition <- t(matrix(initialCondition))}
-  nSolns <- dim(initialCondition)[1]  # Determine how many initial conditions we have
+  if (is.null(dim(initialCondition))) {nSolns <- 1}
+  else { nSolns <- dim(initialCondition)[1] }
 
+  print(nSolns)
   # Make a list of things we are bringing back
   run_results <- vector("list", nSolns)
-
+  time = seq(from=0,by=deltaT,length.out=timeSteps)  # the output time vector
   # Loop through all the initial conditions.
   for(i in 1:nSolns) {
-    out <- ode(y = initialCondition[i,], times = time, func = dynamics, parms = parameters) ## Integration with 'ode'
+
+    if (nSolns ==1) {
+      currInit <- initialCondition
+    } else {
+      currInit <- initialCondition[i,]
+    }
+
+    out <- ode(y = currInit, times = time, func = dynamics, parms = parameters) ## Integration with 'ode'
 
     ## Organize the solutions by run to make them plot easily.
     outSolutions = out %>%
@@ -53,7 +63,7 @@ systems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameter
 
 
 
-  print(outPlot)
+  return(outPlot)
 
 }
 

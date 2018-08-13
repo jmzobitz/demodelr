@@ -15,7 +15,7 @@
 #' # Run the vignette that works through an example
 #' vignette("eulers-method")
 
-#' @import tidyverse
+#' @import ggplot2
 #' @export
 
 euler <- function(deltaT=1,timeSteps=1,initialCondition,variableNames,FUN=dynamics,parameters=parameters) {
@@ -78,7 +78,7 @@ outPlot= ggplot(data.frame(outSolutions), aes(x=time, y=value,color=run,shape=va
   expand_limits(y=0) +
   theme(legend.position="none")
 
-print(outPlot)
+return(outPlot)
 
 }
 
