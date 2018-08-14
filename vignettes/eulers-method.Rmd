@@ -34,8 +34,7 @@ In order to make Euler's method work, you will need three things:
 
 - The size ($\Delta t$) of your timesteps.
 - The number of timesteps you wish to run Euler's method.  More timesteps means more computational time.  If $N$ is the number of timesteps, $\Delta t \cdot N$ is the total time.
-- A shorthand name for the variables $\vec{y}$ in your differential equation (i.e. $y_{1}=P$ , $y_{2}=V$) that we have in our differential equation.
-- A function that we have for our dynamics (this is $ \displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t), $)
+- A function that we have for our dynamics (this is $\displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t)$),
 - The values of the vector of parameters $\vec{\alpha}$.
 
 We will work you through this step by step, with example code.
@@ -59,13 +58,6 @@ timeSteps <- 200   # must be a number greater than 1
 ```
 
 
-### Set up your variable names
-Next you need shorthand names of your parameters.  We use the R command `c` (as in "collection") to refer to your variable names.  These must be the same variables you use in your differential equations.
-
-```{r, fig.show='hold'}
-variableNames <- c('V','P')  # Be sure to use single quotes for the names of the variables.
-```
-
 ### Set up your parameters
 Next you should specify the values of your parameters $\vec{alpha}$.  The good news is that you can name the parameters and their values, and just refer to the shorthand name (not the numerical value) in subsequent code.
 
@@ -78,12 +70,12 @@ Now we need to specify the starting values (initial conditions) for our differen
 
 ```{r, fig.show='hold'}
 
-initialCondition <- c(1, 3)  # Be sure you have enough conditions as you do variables.
+initialCondition <- c(V=1, P=3)  # Be sure you have enough conditions as you do variables.
 
 # To do multiple initial conditions, here is some sample code:
-# initialCondition <- rbind(c(1, 3),  # Separate out initial conditions with a separate row.
-#                        c(5,6),
-#                        c(10,9) )
+# initialCondition <- rbind(c(V=1, P=3),  # Separate out initial conditions with a separate row.
+#                        c(V=5,P=6),
+#                        c(V=10,P=9) )
 ```
 
 
@@ -103,7 +95,7 @@ dynamics <- function(t, state, parameters){
   with(as.list(c(state, parameters)), {  # Do not edit this line
     dV = r*V - k*V*P  # <-- You may edit this line
     dP = e*k*V*P - d*P # <-- You may edit this line.
-    return(c(dV, dP))  # <-- If you have more equations you will need to list the dVariables
+    return(list(c(dV, dP)))  # <-- If you have more equations you will need to list the dVariables
   })
 }
 
@@ -119,7 +111,7 @@ Now we have everything we need!  Basically the next step is to run the command `
 If you have multiple initial conditions, you will get a stacked plot for each run.
 
 ```{r, fig.show='hold'}
-euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
+euler(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters)
 ```
 
 

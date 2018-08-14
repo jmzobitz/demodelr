@@ -18,25 +18,23 @@ knitr::opts_chunk$set(
 )
 ```
 
-Here we are going to show how we can utilize Euler's method to easily solve a system of differential equation.  To recap, the most general form of a differential equation is: 
+Here we are going to use built in numerical solvers to easily solve a system of differential equation.  To recap, the most general form of a differential equation is: 
 
 $$ \displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t), $$
 where $\vec{y}$ is the vector of state variables you want to solve for, and $\vec{\alpha}$ is your vector of parameters.
 
-At a given initial condition, Euler's method applies locally linear approximations to forecast the solution forward $\Delta t$ time units:
-
-$$ \vec{y}_{n+1} = y_{n} + f(\vec{y}_{n},\vec{\alpha},t_{n}) \cdot \Delta t $$
+These numerical solvers are beyond the scope of this course, but if you want more info, you can read about them here [here](https://cran.r-project.org/web/packages/deSolve/vignettes/deSolve.pdf).  This links you to a vignette from the package deSolve, from which I adapted this code. 
 
 
 ## Set up
 
-In order to make Euler's method work, you will need three things:
+In order to make this solver work method work, you will need three things:
 
 - The size ($\Delta t$) of your timesteps.
 - The number of timesteps you wish to run Euler's method.  More timesteps means more computational time.  If $N$ is the number of timesteps, $\Delta t \cdot N$ is the total time.
-- A shorthand name for the variables $\vec{y}$ in your differential equation (i.e. $y_{1}=P$ , $y_{2}=V$) that we have in our differential equation.
-- A function that we have for our dynamics (this is $ \displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t), $)
+- A function that we have for our dynamics (this is $\displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t)$),
 - The values of the vector of parameters $\vec{\alpha}$.
+- A set of initial conditions and names for the variables.
 
 We will work you through this step by step, with example code.
 

@@ -14,8 +14,6 @@ euler(deltaT = 1, timeSteps = 1, initialCondition, variableNames,
 
 \item{initialCondition}{Listing of initial conditions}
 
-\item{variableNames}{Name of variables (i.e. P,V) that we have in our differential equation.}
-
 \item{parameters}{The values of the parameters we are using}
 
 \item{dynamics}{a Function that we have for our dynamics}

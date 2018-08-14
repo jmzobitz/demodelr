@@ -26,7 +26,7 @@ systems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameter
   if (is.null(dim(initialCondition))) {nSolns <- 1}
   else { nSolns <- dim(initialCondition)[1] }
 
-  print(nSolns)
+
   # Make a list of things we are bringing back
   run_results <- vector("list", nSolns)
   time = seq(from=0,by=deltaT,length.out=timeSteps)  # the output time vector
