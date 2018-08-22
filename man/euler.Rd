@@ -4,8 +4,8 @@
 \alias{euler}
 \title{Euler's method solution for a differential equation.}
 \usage{
-euler(deltaT = 1, timeSteps = 1, initialCondition, variableNames,
-  FUN = dynamics, parameters = parameters)
+euler(deltaT = 1, timeSteps = 1, initialCondition, FUN = dynamics,
+  parameters = parameters)
 }
 \arguments{
 \item{deltaT}{Size of timesteps}

@@ -19,7 +19,7 @@
 #' @import tidyr
 #' @export
 
-euler <- function(deltaT=1,timeSteps=1,initialCondition,variableNames,FUN=dynamics,parameters=parameters) {
+euler <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=parameters) {
 
   #  A quick check in case we have a one dimensional system
   if (is.null(dim(initialCondition))) {nSolns <- 1}

@@ -40,7 +40,7 @@ plotFunction_Data <- function(x,y,data,x_label='x',y_label='y') {
           axis.text.y=element_text(size=15),
           axis.title.y=element_text(size=20)) +
     labs(x = x_label,y = y_label) +
-    geom_point(data=data,aes(x=data[,1],y=data[,2]),color='red',size=2)
+    geom_point(data=data,aes(x=data[[1]],y=data[[2]]),color='red',size=2)
 
   return(p)
 
