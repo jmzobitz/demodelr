@@ -43,7 +43,7 @@ euler <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=
 
     for (i in 2:timeSteps) {
       oldP = newP
-      newP <-  unlist(dynamics(timeSteps[i],oldP,parameters))*deltaT+oldP   # Your differential equation goes here.
+      newP <-  unlist(dynamics(time[i],oldP,parameters))*deltaT+oldP   # Your differential equation goes here.
       soln=rbind(soln,newP)
 
     }

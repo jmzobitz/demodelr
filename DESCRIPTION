@@ -2,6 +2,7 @@ Package: MAT369Code
 Type: Package
 Title: Simulating differential equations with data.
 Version: 0.1.0
+Depends: R (>= 3.4.1)
 Author: John Zobitz
 Maintainer: <zobitz@augsburg.edu>
 Description: A collection of files for use in modeling with data and differential equations.
