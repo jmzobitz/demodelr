@@ -44,7 +44,7 @@ First you should open up a blank RStudio document.  Be sure to have the library 
 ```{r, fig.show='hold'}
 # Uncomment the next two lines if you need to either update or install the MAT 369 Code
 # library(devtools)
-# install_github("jmzobitz/MAT369Code")
+# install_github("jmzobitz/MAT369Code",build_vignettes = TRUE)
 library(MAT369Code)
 
 ```
