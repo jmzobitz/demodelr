@@ -57,7 +57,7 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
 p<- in_grid %>%
   mutate(u=pmap_dbl(in_grid,dx),v=pmap_dbl(in_grid,dy)) %>%
   ggplot(aes(x=x,y=y,u=u,v=v)) +
-  ggquiver::geom_quiver() +
+  geom_quiver() +
   xlab(x_label) +
   ylab(y_label)
 
