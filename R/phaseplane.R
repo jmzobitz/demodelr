@@ -43,6 +43,7 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import ggquiver
+#' @import purrr
 #' @export
 
 
