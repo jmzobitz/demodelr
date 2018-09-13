@@ -4,6 +4,7 @@
 \name{geom_quiver}
 \alias{geom_quiver}
 \alias{GeomQuiver}
+\alias{phaseplane}
 \title{Quiver plots for ggplot2}
 \format{An object of class \code{GeomQuiver} (inherits from \code{GeomSegment}, \code{Geom}, \code{ggproto}, \code{gg}) of length 2.}
 \usage{
@@ -14,12 +15,7 @@ geom_quiver(mapping = NULL, data = NULL, stat = "quiver",
 
 GeomQuiver
 
-geom_quiver(mapping = NULL, data = NULL, stat = "quiver",
-  position = "identity", center = FALSE, rescale = FALSE,
-  vecsize = NULL, na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, ...)
-
-GeomQuiver
+phaseplane(n_points, x_window, y_window, x_label, y_label, dx, dy)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
@@ -74,11 +70,11 @@ the default plot specification, e.g. \code{\link[=borders]{borders()}}.}
 
 \item{y_label}{y axis label for plot}
 
-\item{initialCondition}{Listing of initial conditions}
-
 \item{dx}{a function for the dx/dt = f(x,y)}
 
 \item{dy}{a function for the dy/dt = f(x,y)}
+
+\item{initialCondition}{Listing of initial conditions}
 }
 \value{
 A phase plane diagram of system of differential equations
