@@ -40,6 +40,7 @@
 #'
 #' phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
 #'
+#' @import ggquiver
 #' @import ggplot2
 #' @import dplyr
 #' @import purrr
@@ -49,57 +50,6 @@
 
 
 phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
-
-  geom_quiver <- function(mapping = NULL, data = NULL,
-                          stat = "quiver", position = "identity",
-                          center = FALSE,
-                          rescale = FALSE,
-                          vecsize = NULL,
-                          na.rm = FALSE,
-                          show.legend = NA,
-                          inherit.aes = TRUE,
-                          ...) {
-    ggplot2::layer(
-      data = data,
-      mapping = mapping,
-      stat = stat,
-      geom = GeomQuiver,
-      position = position,
-      show.legend = show.legend,
-      inherit.aes = inherit.aes,
-      params = list(
-        na.rm = na.rm,
-        center = center,
-        rescale = rescale,
-        vecsize = vecsize,
-        ...
-      )
-    )
-  }
-
-  #' @rdname geom_quiver
-  #'
-  #' @export
-  GeomQuiver <- ggproto(
-    "GeomQuiver", ggplot2::GeomSegment,
-    draw_panel = function(data, panel_params, coord, arrow = NULL, lineend = "butt", na.rm = FALSE) {
-      trans <- CoordCartesian$transform(data, panel_params) %>%
-        mutate(arrowsize = sqrt((x - xend) ^ 2 + (y - yend) ^ 2) * 0.5)
-      grid::segmentsGrob(
-        trans$x, trans$y, trans$xend, trans$yend,
-        default.units = "native",
-        gp = grid::gpar(
-          col = alpha(trans$colour, trans$alpha),
-          lwd = trans$size * .pt,
-          lty = trans$linetype,
-          lineend = lineend
-        ),
-        arrow = grid::arrow(length = unit(trans$arrowsize, "npc"))
-      )
-    }
-  )
-
-
 
   # Define the grid for our solution
   in_grid <- expand.grid(x=seq(x_window[1],x_window[2],length.out=n_points),
