@@ -41,6 +41,7 @@
 #' phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
 #'
 #' @import ggplot2
+#' @import ggquiver
 #' @import dplyr
 #' @import purrr
 #' @export
