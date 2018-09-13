@@ -42,7 +42,7 @@
 #'
 #' @import ggplot2
 #' @import dplyr
-#' @import ggquiver
+#' @importFrom ggquiver geom_quiver
 #' @import purrr
 #' @export
 
