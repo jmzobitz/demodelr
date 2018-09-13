@@ -24,7 +24,7 @@ phaseplane(n_points, x_window, y_window, x_label, y_label, dx, dy)
 \item{initialCondition}{Listing of initial conditions}
 }
 \value{
-A phase plane diagram of linear system
+A phase plane diagram of system of differential equations
 }
 \description{
 \code{phaseplane} visualizes the vector field for a one or two dimensional differential equation.
@@ -40,16 +40,16 @@ dy <- function(x,y) {
 
 phaseplane(20,c(-3,3),c(-3,3),'X','Y',dx,dy)
 
-# For a one dimensional system: dx/dt = f(x).  In this case the xWindow represents time.
+# For a one dimensional system: dy/dt = f(y).  In this case the xWindow represents time.
 # We still need to write dx as a function of x and y
 
 dy <- function(x,y) {
 -y
 }
 
-phasplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
+phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
 
-# For a one dimensional non-autonomous system: dx/dt = f(t,x).  In this case the xWindow represents time.
+# For a one dimensional non-autonomous system: dy/dt = f(t,y).  In this case the xWindow represents time.
 # The in this case, the x coordinate represents time
 
 dy <- function(x,y) {
