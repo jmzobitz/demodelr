@@ -10,7 +10,7 @@
 #' @param initialCondition Listing of initial conditions
 #' @param dx a function for the dx/dt = f(x,y)
 #' @param dy a function for the dy/dt = f(x,y)
-#' @return A phase plane diagram of linear system
+#' @return A phase plane diagram of system of differential equations
 #' @examples
 #' dx <- function(x,y) {
 #' cos(x)
@@ -22,16 +22,16 @@
 #'
 #' phaseplane(20,c(-3,3),c(-3,3),'X','Y',dx,dy)
 #'
-#' # For a one dimensional system: dx/dt = f(x).  In this case the xWindow represents time.
+#' # For a one dimensional system: dy/dt = f(y).  In this case the xWindow represents time.
 #' # We still need to write dx as a function of x and y
 #'
 #' dy <- function(x,y) {
 #' -y
 #' }
 #'
-#' phasplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
+#' phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
 #'
-#' # For a one dimensional non-autonomous system: dx/dt = f(t,x).  In this case the xWindow represents time.
+#' # For a one dimensional non-autonomous system: dy/dt = f(t,y).  In this case the xWindow represents time.
 #' # The in this case, the x coordinate represents time
 #'
 #' dy <- function(x,y) {
@@ -57,7 +57,7 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
 p<- in_grid %>%
   mutate(u=pmap_dbl(in_grid,dx),v=pmap_dbl(in_grid,dy)) %>%
   ggplot(aes(x=x,y=y,u=u,v=v)) +
-  geom_quiver() +
+  ggquiver::geom_quiver() +
   xlab(x_label) +
   ylab(y_label)
 
