@@ -12,6 +12,7 @@
 #' @param dy a function for the dy/dt = f(x,y)
 #' @return A phase plane diagram of system of differential equations
 #' @examples
+#' # For a two variable system of differential equations we define the dx/dt and the dy/dt separately:
 #' dx <- function(x,y) {
 #' cos(x)
 #' }
@@ -22,8 +23,8 @@
 #'
 #' phaseplane(20,c(-3,3),c(-3,3),'X','Y',dx,dy)
 #'
-#' # For a one dimensional system: dy/dt = f(y).  In this case the xWindow represents time.
-#' # We still need to write dx as a function of x and y
+#' # For a one dimensional system: dy/dt = f(t,y).  In this case the xWindow represents time.
+#' # However, we still need to write dx as a function of x and y, but the plot can be labeled T
 #'
 #' dy <- function(x,y) {
 #' -y
@@ -31,8 +32,8 @@
 #'
 #' phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
 #'
-#' # For a one dimensional non-autonomous system: dy/dt = f(t,y).  In this case the xWindow represents time.
-#' # The in this case, the x coordinate represents time
+#' # Here is a second example for the differential equation dy/dt = -cos(t) y
+#' # In this case, the x coordinate represents time.
 #'
 #' dy <- function(x,y) {
 #' -cos(x)*y
