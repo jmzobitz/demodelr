@@ -56,15 +56,10 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
 
 p<- in_grid %>%
   mutate(u=pmap_dbl(in_grid,dx),v=pmap_dbl(in_grid,dy)) %>%
-  ggplot(aes(x = x, y = y))+
-  geom_segment(aes(xend = u, yend = v), arrow = arrow(length = unit(0.1,"cm")))+
-xlab(x_label) +
+  ggplot(aes(x=x,y=y,u=u,v=v)) +
+  geom_quiver() +
+  xlab(x_label) +
   ylab(y_label)
-
-
-#  ggplot(aes(x=x,y=y,u=u,v=v)) +
-#  geom_quiver() +
-
 
 
 print(p)
