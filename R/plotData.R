@@ -20,11 +20,11 @@
 
 plotData <- function(data,x_label='x',y_label='y') {
 
-
+  names(data) <-c("x","y")  # Rename for ease of use
 
   ### Do a line plot
 
-  p <- ggplot() +  geom_point(data=data,aes(x=select(data,1),y=select(data,2)),color='red',size=2) +
+  p <- ggplot() +  geom_point(data=data,aes(x=x,y=y),color='red',size=2) +
     theme(plot.title = element_text(size=20),
           axis.title.x=element_text(size=20),
           axis.text.x=element_text(size=15),
