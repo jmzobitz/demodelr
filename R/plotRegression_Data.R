@@ -29,7 +29,7 @@ plotRegression_Data <- function(data,regression_formula,x_label='x',y_label='y')
   fit=lm(regression_formula, data = data)
   print(summary(fit))
 
-  p <-ggplot(data=data,aes(x=names(data)[1],y=names(data)[2])) +
+  p <-ggplot(data=data,aes(x=data[,1],y=data[,2])) +
     geom_point(color='red',size=2) +
     theme(plot.title = element_text(size=20),
           axis.title.x=element_text(size=20),
