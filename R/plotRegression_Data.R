@@ -29,14 +29,17 @@ plotRegression_Data <- function(data,regression_formula,x_label='x',y_label='y')
   fit=lm(regression_formula, data = data)
   print(summary(fit))
 
+  smooth_data <- data.frame(x=data[[1]],y=predict(fit))
+
   p <-ggplot(data=data,aes(x=data[[1]],y=data[[2]])) +
     geom_point(color='red',size=2) +
+    geom_line(data=smooth_data,aes(x=x,y=y),size=1.0)+
     theme(plot.title = element_text(size=20),
           axis.title.x=element_text(size=20),
           axis.text.x=element_text(size=15),
           axis.text.y=element_text(size=15),
           axis.title.y=element_text(size=20)) +
-    stat_smooth(method = "lm", col = "black", formula = regression_formula) +
+   # stat_smooth(method = "lm", col = "black", formula = regression_formula) +
     labs(x = x_label,y = y_label)
 
   return(p)
