@@ -13,6 +13,7 @@
 #' plotData(data,'age','height')
 
 #' @import ggplot2
+#' @import dplyr
 #' @export
 
 
@@ -23,7 +24,7 @@ plotData <- function(data,x_label='x',y_label='y') {
 
   ### Do a line plot
 
-  p <- ggplot() +  geom_point(data=data,aes(x=data[,1],y=data[,2]),color='red',size=2) +
+  p <- ggplot() +  geom_point(data=data,aes(x=select(data,1),y=select(data,2)),color='red',size=2) +
     theme(plot.title = element_text(size=20),
           axis.title.x=element_text(size=20),
           axis.text.x=element_text(size=15),
