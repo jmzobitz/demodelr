@@ -13,4 +13,4 @@
 #' @usage data(phosphorous)
 #' @format A data frame with 6 rows and 2 variables
 #' @source The data were digitized from Sterner and Elser \emph{Ecological Stoichiometry}, page 22, Figure 1.9A.  The original study was DeMott et. al (1998) \emph{Limnol. Oceanogr}. 44:1557.
-NULL
+"phosphorous"
