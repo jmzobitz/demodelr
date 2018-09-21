@@ -23,10 +23,11 @@ Must be a data.frame, labeled as x and y.}
 }
 \examples{
 # Identify the name of the data set you wish to run a regression on and labels
-for the axis.  You must label the columns as x and y.
+for the axis.
+my_data <- data.frame(age=Loblolly$age,height=Loblolly$height)
 
 #' Identify the basic formula of the regression and plotting formula. Make sure you have the same names of the columns in your data.
 regression_formula = height ~ 1 + age+ I(age^2)
 
-plotRegression_Data(Loblolly,regression_formula,'Height','Age')
+plotRegression_Data(my_data,regression_formula,'Height','Age')
 }
