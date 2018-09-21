@@ -36,7 +36,7 @@ plotLikelihood <-function(model,data,parameters,logLikely=FALSE) {
 
 
   lValues <- parameters %>%
-    apply(1,model, timeVector) %>%  # Apply the logistic function to each of the times (the rows of param)
+    apply(1,model, data[[1]]) %>%  # Apply the logistic function to each of the times (the rows of param)
     apply(2,likelihood,data[[2]],logLikely) %>%  # Apply the likelihood function to each of the columns
     data.frame(l_hood=.) %>%
     cbind(parameters)
