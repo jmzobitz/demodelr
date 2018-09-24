@@ -61,31 +61,6 @@ model <- function(parameters,t){
 
 
 
-
-# Identify the ranges of the parameters that we wish to investigate
-kParam=seq(5,20,length.out=100)
-bParam=seq(-1,0,length.out=100)
-
-# This allows for all the possible combinations of parameters
-parameters <- expand.grid(k=kParam,b=bParam)
-
-# Define if we want to return the log likelihood function or the regular likelihood
-
-logLikely=TRUE
-
-
-
- ### Return the optimum value
-
-plotLikelihood(model,yeast,parameters,logLikely)
-newParam = c(k=12.72727, b=-0.2424242)
-continousTime = seq(0,60,length.out=100)
-newVolume <- model(newParam,continousTime)
-
-# 
-plotFunction_Data(continousTime,newVolume,yeast,x_label = "Hours",y_label = "Volume")
-
-
 ```
 
 
@@ -129,12 +104,13 @@ Finally you can also make a graph of the optimized parameters against the data:
 
 ```{r, fig.show='hold'}
 
-newParam = c(theta=9.818182, c=1.616162)
-continousTime = seq(0,1,length.out=100)
+newParam = c(k=12.72727, b=-0.2424242)
+continousTime = seq(0,60,length.out=100)
 newVolume <- model(newParam,continousTime)
 
 # 
-plotFunction_Data(continousTime,newVolume,phosphorous,x_label = "Hours",y_label = "Volume")
+plotFunction_Data(continousTime,newVolume,yeast,x_label = "Hours",y_label = "Volume")
+
 
 
 ```
