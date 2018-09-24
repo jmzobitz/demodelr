@@ -26,7 +26,7 @@ plotLikelihood <-function(model,data,parameters,logLikely=FALSE) {
     singlelikelihoods = dnorm(indata, mean = y, sd = error, log = logLikely)
 
     if (logLikely) {
-      return(sum(singlelikelihoods))
+      return(-sum(singlelikelihoods))
     } else {
       return(prod(singlelikelihoods))
     }
@@ -41,8 +41,13 @@ plotLikelihood <-function(model,data,parameters,logLikely=FALSE) {
     data.frame(l_hood=.) %>%
     cbind(parameters)
 
+  if (logLikely) {
+    optValue <- lValues %>% arrange((l_hood)) %>% head(n=1)
+  }
+  else {
+    optValue <- lValues %>% arrange(desc(l_hood)) %>% head(n=1)
+  }
 
-  optValue <- lValues %>% arrange(desc(l_hood)) %>% head(n=1)
   print(optValue)
   lValues %>%
     ggplot(aes(x=parameters[[1]], y=parameters[[2]], z = l_hood))+

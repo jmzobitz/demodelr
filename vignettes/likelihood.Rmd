@@ -1,10 +1,10 @@
 ---
-title: "Vignette Title"
+title: "Exploring Likelihood Functions"
 author: "Vignette Author"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Visualizing likelihood functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,50 +16,126 @@ knitr::opts_chunk$set(
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+Here we are going to explore the likelihood function to try to determine the best set of values for a two parameter dataset using the function `plotLikelihood`.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+First you should open up a blank RStudio document.  Be sure to have the library `MAT369Code` installed.
 
 ```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+# Uncomment the next two lines if you need to either update or install the MAT 369 Code
+# library(devtools)
+# install_github("jmzobitz/MAT369Code",build_vignettes = TRUE)
+library(MAT369Code)
+
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+## Set up
+The `plotLikelihood` function requires three things:
+* Values of your parameters
+* An equation used to compare data (this can be a function or the solution to a differential equation)
+* An indication of we want to plot the likelihood (the default) or the log likelihood.
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+We are going to plot the likelihood equation surface for the Gause 1932 dataset, contained in the data frame `yeast`
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+ 
+First let's make a quick plot of the function:
+```{r, fig.show='hold'}
+### Make a quick ggplot of the data
+# Contour plot of likelihood function
+plotData(yeast,x_label = "Time",y_label = "Volume")
 
-## More Examples
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
 ```
 
-Also a quote using `>`:
+Next we will define the equation used to compare our model in the likelihood.  As with `euler` or `systems` we have certain lines we can edit:
+```{r, fig.show='hold'}
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+### This needs to be defined
+model <- function(parameters,t){
+  with(as.list(c(parameters)), {  # Do not edit this line
+    a = log(k/0.45-1) # The value of a is determined by the initial condition
+    # In the paper, it sets y(0)=0.45
+    yOut = k/(1+exp(a+b*t))
+    return(yOut)  
+  })
+}
+
+
+
+
+# Identify the ranges of the parameters that we wish to investigate
+kParam=seq(5,20,length.out=100)
+bParam=seq(-1,0,length.out=100)
+
+# This allows for all the possible combinations of parameters
+parameters <- expand.grid(k=kParam,b=bParam)
+
+# Define if we want to return the log likelihood function or the regular likelihood
+
+logLikely=TRUE
+
+
+
+ ### Return the optimum value
+
+plotLikelihood(model,yeast,parameters,logLikely)
+newParam = c(k=12.72727, b=-0.2424242)
+continousTime = seq(0,60,length.out=100)
+newVolume <- model(newParam,continousTime)
+
+# 
+plotFunction_Data(continousTime,newVolume,yeast,x_label = "Hours",y_label = "Volume")
+
+
+```
+
+
+Next we will identify the ranges of our parameters we wish to investigate the likelihood: this can be easily varied.  The command `expand.grid` quickly takes all possible combinations of your parameters.
+
+```{r, fig.show='hold'}
+
+# Identify the ranges of the parameters that we wish to investigate
+kParam=seq(5,20,length.out=100)
+bParam=seq(-1,0,length.out=100)
+
+# This allows for all the possible combinations of parameters
+parameters <- expand.grid(k=kParam,b=bParam)
+
+
+```
+
+Then we specify if we want to compute the normal likelihood, or the log-likelihood:
+
+```{r, fig.show='hold'}
+
+# Define if we want to return the log likelihood function or the regular likelihood
+
+logLikely=TRUE
+
+
+```
+
+Now we are ready to visualize the likelihood function!  The function `plotLikelihood` will show the surface and then also report back the value where the likelihood is optimized.
+
+```{r, fig.show='hold'}
+
+ ### Return the optimum value
+
+plotLikelihood(model,yeast,parameters,logLikely)
+
+
+```
+
+Finally you can also make a graph of the optimized parameters against the data:
+
+```{r, fig.show='hold'}
+
+newParam = c(theta=9.818182, c=1.616162)
+continousTime = seq(0,1,length.out=100)
+newVolume <- model(newParam,continousTime)
+
+# 
+plotFunction_Data(continousTime,newVolume,phosphorous,x_label = "Hours",y_label = "Volume")
+
+
+```
+
