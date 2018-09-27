@@ -40,11 +40,11 @@ bootstrap_samples <- function(data,n=100,x_label='x') {
   print(quantile(sd_calc[[1]],probs=(c(0.025,0.5,0.975))))
 
 
-  p1 <- mean_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + title("Bootstrap estimate of mean")
+  p1 <- mean_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + labs(title="Bootstrap estimate of mean")
 
   print(p1)
 
-  p2 <- sd_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + title("Bootstrap estimate of standard deviation")
+  p2 <- sd_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + labs(title="Bootstrap estimate of standard deviation")
 
   print(p2)
 
