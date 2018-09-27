@@ -30,7 +30,7 @@
 #' @export
 
 
-plotRegression_Data <- function(data,regression_formula,n=100,x_label='x',y_label='y') {
+bootstrap_model <- function(data,regression_formula,n=100,x_label='x',y_label='y') {
 
   # Determine the linear fit according to your regression formula and print the summary
   fit=lm(regression_formula, data = data)

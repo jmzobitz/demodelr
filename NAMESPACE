@@ -3,6 +3,7 @@
 export("%>%")
 export(GeomQuiver)
 export(StatQuiver)
+export(bootstrap_model)
 export(eigenvalues)
 export(euler)
 export(geom_quiver)
