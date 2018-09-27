@@ -15,9 +15,7 @@
 #' for the axis.
 #' my_data <- data.frame(precipitation$precip)
 
-#'
-#' #' Identify the basic formula of the regression and plotting formula. Make sure you have the same names of the columns in your data.
-#' regression_formula = height ~ 1 + age
+#' Compute the bootstrap samples
 #'
 #' bootstrap_samples(my_data,n=100,'Precipitation')
 
@@ -42,9 +40,13 @@ bootstrap_samples <- function(data,n=100,x_label='x') {
   print(quantile(sd_calc[[1]],probs=(c(0.025,0.5,0.975))))
 
 
-  mean_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + title("Bootstrap estimate of mean")
+  p1 <- mean_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + title("Bootstrap estimate of mean")
 
-  sd_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + title("Bootstrap estimate of standard deviation")
+  plot(p1)
+
+  p2 <- sd_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + title("Bootstrap estimate of standard deviation")
+
+  plot(p2)
 
 
 }

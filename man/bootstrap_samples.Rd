@@ -24,9 +24,7 @@ bootstrap_samples(data, n = 100, x_label = "x")
 # Identify the name of the data set you wish to run a regression on and labels
 for the axis.
 my_data <- data.frame(precipitation$precip)
-
-#' Identify the basic formula of the regression and plotting formula. Make sure you have the same names of the columns in your data.
-regression_formula = height ~ 1 + age
+Compute the bootstrap samples
 
 bootstrap_samples(my_data,n=100,'Precipitation')
 }
