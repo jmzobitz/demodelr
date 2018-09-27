@@ -20,9 +20,9 @@
 
 #'
 #' #' Identify the basic formula of the regression and plotting formula. Make sure you have the same names of the columns in your data.
-#' regression_formula = height ~ 1 + age+ I(age^2)
+#' regression_formula = height ~ 1 + age
 #'
-#' bootstrap_model(my_data,regression_formula,n=100,'Height','Age')
+#' bootstrap_model(my_data,regression_formula,n=100,'Age','Height')
 
 #' @import ggplot2
 #' @import modelr
@@ -77,8 +77,8 @@ bootstrap_model <- function(data,regression_formula,n=100,x_label='x',y_label='y
 
 
   # Rename for ease of use
-  names(boot_aug)[names(boot_aug) %in% names(myData)[1]] <- "x"
-  names(boot_aug)[names(boot_aug) %in% names(myData)[2]] <- "y"
+  names(boot_aug)[names(boot_aug) %in% names(data)[1]] <- "x"
+  names(boot_aug)[names(boot_aug) %in% names(data)[2]] <- "y"
 
 
   ### Plot of data with best fit line

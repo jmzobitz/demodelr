@@ -17,7 +17,7 @@
 #' #' Identify the basic formula of the regression and plotting formula. Make sure you have the same names of the columns in your data.
 #' regression_formula = height ~ 1 + age+ I(age^2)
 #'
-#' plotRegression_Data(my_data,regression_formula,'Height','Age')
+#' plotRegression_Data(my_data,regression_formula,'Age','Height')
 
 #' @import ggplot2
 #' @export

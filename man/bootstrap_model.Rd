@@ -32,7 +32,7 @@ for the axis.
 my_data <- data.frame(age=Loblolly$age,height=Loblolly$height)
 
 #' Identify the basic formula of the regression and plotting formula. Make sure you have the same names of the columns in your data.
-regression_formula = height ~ 1 + age+ I(age^2)
+regression_formula = height ~ 1 + age
 
-bootstrap_model(my_data,regression_formula,n=100,'Height','Age')
+bootstrap_model(my_data,regression_formula,n=100,'Age','Height')
 }
