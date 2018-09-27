@@ -42,11 +42,11 @@ bootstrap_samples <- function(data,n=100,x_label='x') {
 
   p1 <- mean_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + title("Bootstrap estimate of mean")
 
-  plot(p1)
+  print(p1)
 
   p2 <- sd_calc %>% ggplot(aes(x=V1)) + geom_histogram() + xlab(x_label) + title("Bootstrap estimate of standard deviation")
 
-  plot(p2)
+  print(p2)
 
 
 }
