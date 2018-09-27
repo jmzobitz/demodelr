@@ -4,7 +4,6 @@
 
 #' @param data two column of data to be plotted.
 #' First column is independent variable. Second column dependent variable.
-#' Must be a data.frame, labeled as x and y.
 #' @param regression_formula function you use to fit the data
 #' @param x_label value for the x label axis
 #' @param y_label value for the y label axis

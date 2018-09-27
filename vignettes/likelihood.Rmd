@@ -1,6 +1,6 @@
 ---
 title: "Exploring Likelihood Functions"
-author: "Vignette Author"
+author: "John M. Zobitz"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
