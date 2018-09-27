@@ -1,5 +1,5 @@
 #'
-#' \code{bootstrap_model} computes a given number of bootstrap samples, computes a linear model, and then plots .
+#' \code{bootstrap_model} computes a given number of bootstrap samples, computes a linear model, and then plots.  The resulting histogram of samples is shown, along with a sampling of the results
 
 
 #' @param data two column of data to be plotted.
@@ -80,9 +80,18 @@ bootstrap_model <- function(data,regression_formula,n=100,x_label='x',y_label='y
   names(boot_aug)[names(boot_aug) %in% names(data)[1]] <- "x"
   names(boot_aug)[names(boot_aug) %in% names(data)[2]] <- "y"
 
+  if(n>100) {
+    print("Number of bootstrap samples will lead to overplotting. Displaying only 100 bootstrap predictions only.")
+  }
+
+
+  short_list = sample(unique(boot_aug$.id),min(n,100))
+
 
   ### Plot of data with best fit line
-  p<- ggplot(boot_aug, aes(x=x, y=y)) +
+  p<- boot_aug %>%
+    filter(.id %in% short_list) %>%
+    ggplot(aes(x=x, y=y)) +
     geom_point(color='red',size=2) +
     labs(x=x_label,y=y_label) +
     theme(plot.title = element_text(size=20),

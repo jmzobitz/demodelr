@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap_model.R
 \name{bootstrap_model}
 \alias{bootstrap_model}
-\title{\code{bootstrap_model} computes a given number of bootstrap samples, computes a linear model, and then plots .}
+\title{\code{bootstrap_model} computes a given number of bootstrap samples, computes a linear model, and then plots.  The resulting histogram of samples is shown, along with a sampling of the results}
 \source{
 Code is adapted from: \url{https://cran.r-project.org/web/packages/broom/vignettes/bootstrapping.html}
 }
@@ -23,7 +23,7 @@ First column is independent variable. Second column dependent variable.}
 \item{y_label}{value for the y label axis}
 }
 \description{
-\code{bootstrap_model} computes a given number of bootstrap samples, computes a linear model, and then plots .
+\code{bootstrap_model} computes a given number of bootstrap samples, computes a linear model, and then plots.  The resulting histogram of samples is shown, along with a sampling of the results
 }
 \examples{
 
