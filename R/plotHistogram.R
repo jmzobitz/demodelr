@@ -29,7 +29,7 @@ plotHistogram <- function(data,bins=10,x_label='x') {
           axis.text.x=element_text(size=15),
           axis.text.y=element_text(size=15),
           axis.title.y=element_text(size=20)) +
-    labs(x = x_label,title="Bootstrap Estimate")
+    labs(x = x_label)
 
 return(p)
 
