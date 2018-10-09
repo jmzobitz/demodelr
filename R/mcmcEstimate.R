@@ -65,7 +65,7 @@ mcmcEstimate <- function(obs_data,indep_var,parameters,lower_bound,upper_bound,i
   ggplot(plotData)+
     geom_line(aes(x=time,y=q50)) +
     geom_ribbon(aes(x=time,ymin=q05,ymax=q95),alpha=0.3) +
-    geom_point(data=measuredData,aes(x=time,y=measurement),color="red",size=2) +
+    geom_point(data=measuredData,aes(x=measuredData[[1]],y=measurement),color="red",size=2) +
     facet_grid(vars~.,scales="free") + labs(y="") %>% print()
 
 
