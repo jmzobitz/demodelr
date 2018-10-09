@@ -4,13 +4,11 @@
 \alias{mcmcEstimate}
 \title{Markov Chain parameter estimates}
 \usage{
-mcmcEstimate(input_data, independent_var, parameters, lower_bound,
-  upper_bound, iterations = 1500, burn_percent)
+mcmcEstimate(obs_data, parameters, lower_bound, upper_bound,
+  iterations = 1500, burn_percent = 0.2)
 }
 \arguments{
-\item{input_data}{the data we need in order to solve our model the columns should names that correspond to the output values.}
-
-\item{independent_var}{The name of the independent variable in our simulation}
+\item{obs_data}{the data we need in order to solve optimize our cost function.}
 
 \item{parameters}{an initial guess for our parameters}
 

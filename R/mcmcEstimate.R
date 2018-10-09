@@ -3,8 +3,7 @@
 #' \code{mcmcEstimate} Computes and Markov Chain Monte Carlo parameter estimate for a given model
 #'
 
-#' @param input_data the data we need in order to solve our model the columns should names that correspond to the output values.
-#' @param independent_var The name of the independent variable in our simulation
+#' @param obs_data the data we need in order to solve optimize our cost function.
 #' @param parameters an initial guess for our parameters
 #' @param iterations the number of iterations we wish to run the MCMC for.
 #' @param lower_bound the lower bound values for our parameters
@@ -26,12 +25,12 @@
 
 
 
-mcmcEstimate <- function(input_data,independent_var,parameters,lower_bound,upper_bound,iterations = 1500,burn_percent) {
+mcmcEstimate <- function(obs_data,parameters,lower_bound,upper_bound,iterations = 1500,burn_percent=0.2) {
 
   # cost function
   cost <- function(p){
     out = solveModel(p)
-    modCost(out, input_data,x=independent_var)
+    modCost(out, input_data)
   }
 
   burninlength = floor(burn_percent*iterations)
@@ -66,7 +65,7 @@ mcmcEstimate <- function(input_data,independent_var,parameters,lower_bound,upper
     geom_line(aes(x=time,y=q50)) +
     geom_ribbon(aes(x=time,ymin=q05,ymax=q95),alpha=0.3) +
     geom_point(data=measuredData,aes(x=time,y=measurement),color="red",size=2) +
-    facet_grid(vars~.) + labs(y="") %>% print()
+    facet_grid(vars~.,scales="free") + labs(y="") %>% print()
 
 
 
