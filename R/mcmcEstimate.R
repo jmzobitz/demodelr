@@ -4,6 +4,7 @@
 #'
 
 #' @param obs_data the data we need in order to solve optimize our cost function.
+#' @param indep_var the independent variable we are using to organize the code
 #' @param parameters an initial guess for our parameters
 #' @param iterations the number of iterations we wish to run the MCMC for.
 #' @param lower_bound the lower bound values for our parameters
@@ -25,7 +26,7 @@
 
 
 
-mcmcEstimate <- function(obs_data,parameters,lower_bound,upper_bound,iterations = 1500,burn_percent=0.2) {
+mcmcEstimate <- function(obs_data,indep_var,parameters,lower_bound,upper_bound,iterations = 1500,burn_percent=0.2) {
 
   # cost function
   cost <- function(p){
@@ -55,7 +56,7 @@ mcmcEstimate <- function(obs_data,parameters,lower_bound,upper_bound,iterations 
   sR <- sensRange(func = solveModel,parms=parameters,parInput=fit$pars) %>%
     summary() %>% rename(time=x)
 
-  vars<-str_extract_all(row.names(sR),paste(names(sR), collapse="|")) %>% unlist()
+  vars<- row.names(sR) %>% str_extract_all(paste(names(obs_data), collapse="|")) %>% unlist()
 
   plotData <- sR %>% mutate(vars)
 
