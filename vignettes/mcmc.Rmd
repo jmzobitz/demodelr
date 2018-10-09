@@ -27,14 +27,7 @@ In order to make this solver work method work, you will need three things:
 
 We will work you through this step by step, with example code.
 
-We are going to work through and example that relates the 
-The differential equation we are going to solve is:
-$$ \displaystyle \frac{dR}{dt}=R\cdot (1-R)-aV $$
-$$ \displaystyle \frac{dV}{dt}=b\cdot V \cdot (R-V) $$
-
-This model has two parameters $a$ and $b$, which denote XXXX and YYYY.
-
-## Setup and package install
+# Setup and package install
 We need to update the package `MAT369Code` as well as install some new packages:
 ```{r, fig.show='hold'}
 # Uncomment the next few lines if you need to either update or install the MAT 369 Code
@@ -45,6 +38,18 @@ library(deSolve)
 library(MAT369Code)
 
 ```
+
+
+# Example 1: A differential equation model
+We are going to work through an example that relates the 
+The differential equation we are going to solve is:
+$$ \displaystyle \frac{dR}{dt}=R\cdot (1-R)-aV $$
+$$ \displaystyle \frac{dV}{dt}=b\cdot V \cdot (R-V) $$
+
+This model has two parameters $a$ and $b$, which relate to how the resource is used up as visitors come ($a$) and how as the visitors increase, word of mouth leads to a negative effect of it being too crowded ($b$).
+
+
+
 
 ## Data
 For any data assimilation routine you need to have data that defines the code.  This can be from a pre-exisiting dataset already in place, or it can be data that we have defined through importing a file in.  For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park:
@@ -118,3 +123,84 @@ That is it!  All we need to do is to run our code:
 ```{r, fig.show='hold'}
 mcmcEstimate(input_data,"time",parameters,lower_bound,upper_bound,iterations,burn_percentage) 
 ```
+
+# Example 2: An empirical model
+We are going to work through and example that relates the phosphorous content in algae (denoted by $x$) to the phosphorous content in daphnia (denoted by $y$)
+The equation we are going to fit is:
+$$ \displaystyle y = c \cdot x^{1/\theta} $$
+
+
+This model has two parameters $c$ and $theta$.
+
+## Data
+For any data assimilation routine you need to have data that defines the code.  This can be from a pre-exisiting dataset already in place, or it can be data that we have defined through importing a file in.  For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park:
+```{r, echo=FALSE, results='asis'}
+knitr::kable(phosphorous)
+input_data <- parks
+```
+
+Additionally because we have a differential equation, we need to specify the times that these measurements occur and the initial condition
+
+```{r, echo=FALSE, results='asis'}
+time = input_data$time  # the output time vector -must match your data for ODE model
+initialCondition = c(resources = 0.995, visitors = 0.00167)
+```
+
+## Parameters (including upper and lower bounds)
+
+For all of the parameters in our system we need to define the initial guess and the upper and lower bounds of each parameter.  This is down through defining three vectors:
+
+```{r, fig.show='hold'}
+parameters = c(c = 1, theta = 5)
+
+# Lower and upper values of parameters
+lower_bound <- c(c=0,theta=0)
+upper_bound <- c(c=10,theta=30)
+
+```
+
+
+## Run Diagnostics (iterations and burn in percentages)
+Two additional things need to be defined: how many iterations we wish to run `iterations` and the percentage of the first few iterations we will not compute due to the "burn-in" period.  This number must be between 0 and 1.  
+
+
+```{r, fig.show='hold'}
+iterations = 10000
+burn_percentage = 0.3
+```
+
+If you do not specify these values, they will default to 1500 iterations and a burn-in percentage of 0.2.
+
+
+
+## Define the model utilized and how you will solve this.  
+To define the model it is a slight variation in what we did for a differential equation model.  In this case, it is just one equation, and what gets returned (in the command `list(algae=algae,daphnia=daphnia)` are the columns of a data frame.  While it looks a little weird, we do need to name the columns.  
+
+
+```{r, fig.show='hold'}
+# define model equation
+model <- function(y, params){
+  with(as.list(c(params,y)),{
+    daphnia <- c*algae^(1/theta)
+    list(algae=algae,daphnia=daphnia)   # For a fitting function we just need this
+  })
+}
+
+
+# define a function that will solve the model
+### This will get the names of the variables
+
+
+solveModel <- function(pars) {
+  out <-model(input_data,pars)  ## <-- You may edit here (and add additional lines as necessary)
+  return(data.frame(out))  ## Do not edit this line
+  
+}
+```
+
+That is it!  All we need to do is to run our code:
+
+```{r, fig.show='hold'}
+mcmcEstimate(input_data,"time",parameters,lower_bound,upper_bound,iterations,burn_percentage) 
+```
+
