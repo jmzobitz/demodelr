@@ -20,6 +20,8 @@
 #' @import FME
 #' @import GGally
 #' @import tidyr
+#' @import stringr
+#' @import deSolve
 #' @import ggplot2
 #' @export
 
