@@ -58,11 +58,18 @@ knitr::kable(parks)
 input_data <- parks
 ```
 
-Additionally because we have a differential equation, we need to specify the times that these measurements occur and the initial condition
+Additionally because we have a differential equation, we need to specify:
+- the times that these measurements occur
+- the initial condition
+- the independent variable (the cost function needs this to work)
 
 ```{r, echo=FALSE, results='asis'}
 time = input_data$time  # the output time vector -must match your data for ODE model
+
 initialCondition = c(resources = 0.995, visitors = 0.00167)
+
+independent_var = "time"
+
 ```
 
 ## Parameters (including upper and lower bounds)
@@ -121,7 +128,7 @@ solveModel <- function(pars) {
 That is it!  All we need to do is to run our code:
 
 ```{r, fig.show='hold'}
-mcmcEstimate(input_data,"time",parameters,lower_bound,upper_bound,iterations,burn_percentage) 
+mcmcEstimate(input_data,independent_var,parameters,lower_bound,upper_bound,iterations,burn_percentage) 
 ```
 
 # Example 2: An empirical model
@@ -136,14 +143,17 @@ This model has two parameters $c$ and $theta$.
 For any data assimilation routine you need to have data that defines the code.  This can be from a pre-exisiting dataset already in place, or it can be data that we have defined through importing a file in.  For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park:
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(phosphorous)
-input_data <- parks
+input_data <- phosphorous
 ```
 
-Additionally because we have a differential equation, we need to specify the times that these measurements occur and the initial condition
+
+Additionally because we just have a function, we need to specify:
+- the independent variable (the cost function needs this to work)
 
 ```{r, echo=FALSE, results='asis'}
-time = input_data$time  # the output time vector -must match your data for ODE model
-initialCondition = c(resources = 0.995, visitors = 0.00167)
+
+independent_var = "algae"
+
 ```
 
 ## Parameters (including upper and lower bounds)
@@ -201,6 +211,6 @@ solveModel <- function(pars) {
 That is it!  All we need to do is to run our code:
 
 ```{r, fig.show='hold'}
-mcmcEstimate(input_data,"time",parameters,lower_bound,upper_bound,iterations,burn_percentage) 
+mcmcEstimate(input_data,independent_var,parameters,lower_bound,upper_bound,iterations,burn_percentage) 
 ```
 
