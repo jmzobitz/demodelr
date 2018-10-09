@@ -62,13 +62,13 @@ mcmcEstimate <- function(parameters,iterations = 1500,lower_bound,upper_bound,bu
 
   ### Now let's do the ribbon w/ the data - yay!
   measuredData <- input_data %>% gather(key=vars,value=measurement,-1)
-  p1 <- ggplot(plotData)+
+  ggplot(plotData)+
     geom_line(aes(x=time,y=q50)) +
     geom_ribbon(aes(x=time,ymin=q05,ymax=q95),alpha=0.3) +
     geom_point(data=measuredData,aes(x=time,y=measurement),color="red",size=2) +
-    facet_grid(.~vars) + labs(y="")
+    facet_grid(.~vars) + labs(y="") %>% print()
 
-  print(p1)
+
 
 
 
