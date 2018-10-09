@@ -1,20 +1,17 @@
-#' Phase plane of differential equation.
+#' Markov Chain parameter estimates
 #'
 #' \code{mcmcEstimate} Computes and Markov Chain Monte Carlo parameter estimate for a given model
 #'
-#' @param n_points number of points we evaluate on the grid in both directions
-#' @param x_window x axis limits.  Must be of the form c(minVal,maxVal)
-#' @param y_window y axis limits.  Must be of the form c(minVal,maxVal)
-#' @param x_label x axis label for plot
-#' @param y_label y axis label for plot
-#' @param initialCondition Listing of initial conditions
+
+#' @param input_data the data we need in order to solve our model the columns should names that correspond to the output values.
 #' @param parameters an initial guess for our parameters
 #' @param iterations the number of iterations we wish to run the MCMC for.
+#' @param lower_bound the lower bound values for our parameters
+#' @param upper_bound the upper bound values for our parameters
 #' @param burn_percent the percentage of the iterations we discard due to "burn-in". This should be a number between 0 and 1
-#' @param solveModel a function that solves the model we are interested in.
-#' @return A phase plane diagram of system of differential equations
+#' @return A output of the accepted parameter histograms, model output (with uncertainty) + data utilized, and a listing of the accepted parameters.
 #' @examples
-#' # Run the vignette that works through an example
+#' # Run the vignette that works through an example.
 #' vignette("mcmc")
 #'
 #' @import FME
@@ -28,7 +25,7 @@
 
 
 
-mcmcEstimate <- function(parameters,iterations = 1500,lower_bound,upper_bound,burn_percent) {
+mcmcEstimate <- function(input_data,parameters,lower_bound,upper_bound,iterations = 1500,burn_percent) {
 
   # cost function
   cost <- function(p){
@@ -68,7 +65,7 @@ mcmcEstimate <- function(parameters,iterations = 1500,lower_bound,upper_bound,bu
     geom_line(aes(x=time,y=q50)) +
     geom_ribbon(aes(x=time,ymin=q05,ymax=q95),alpha=0.3) +
     geom_point(data=measuredData,aes(x=time,y=measurement),color="red",size=2) +
-    facet_grid(.~vars) + labs(y="") %>% print()
+    facet_grid(vars~.) + labs(y="") %>% print()
 
 
 

@@ -2,40 +2,32 @@
 % Please edit documentation in R/mcmcEstimate.R
 \name{mcmcEstimate}
 \alias{mcmcEstimate}
-\title{Phase plane of differential equation.}
+\title{Markov Chain parameter estimates}
 \usage{
-mcmcEstimate(parameters, iterations = 1500, lower_bound, upper_bound,
-  burn_percent)
+mcmcEstimate(input_data, parameters, lower_bound, upper_bound,
+  iterations = 1500, burn_percent)
 }
 \arguments{
+\item{input_data}{the data we need in order to solve our model the columns should names that correspond to the output values.}
+
 \item{parameters}{an initial guess for our parameters}
+
+\item{lower_bound}{the lower bound values for our parameters}
+
+\item{upper_bound}{the upper bound values for our parameters}
 
 \item{iterations}{the number of iterations we wish to run the MCMC for.}
 
 \item{burn_percent}{the percentage of the iterations we discard due to "burn-in". This should be a number between 0 and 1}
-
-\item{n_points}{number of points we evaluate on the grid in both directions}
-
-\item{x_window}{x axis limits.  Must be of the form c(minVal,maxVal)}
-
-\item{y_window}{y axis limits.  Must be of the form c(minVal,maxVal)}
-
-\item{x_label}{x axis label for plot}
-
-\item{y_label}{y axis label for plot}
-
-\item{initialCondition}{Listing of initial conditions}
-
-\item{solveModel}{a function that solves the model we are interested in.}
 }
 \value{
-A phase plane diagram of system of differential equations
+A output of the accepted parameter histograms, model output (with uncertainty) + data utilized, and a listing of the accepted parameters.
 }
 \description{
 \code{mcmcEstimate} Computes and Markov Chain Monte Carlo parameter estimate for a given model
 }
 \examples{
-# Run the vignette that works through an example
+# Run the vignette that works through an example.
 vignette("mcmc")
 
 }
