@@ -52,6 +52,25 @@ mcmcEstimate <- function(parameters,iterations = 1500,lower_bound,upper_bound,bu
   ggpairs(data.frame(fit$pars), diag = list(continuous ="barDiag", discrete = "barDiag", na = "naDiag"))
 
 
+  # Generate a summary of the model and the data - with confidence intervals
+  sR <- sensRange(func = solveModel,parms=parameters,parInput=fit$pars) %>%
+    summary() %>% rename(time=x)
+
+  vars<-str_extract_all(row.names(sR),paste(names(initialCondition), collapse="|")) %>% unlist()
+
+  plotData <- sR %>% mutate(vars)
+
+  ### Now let's do the ribbon w/ the data - yay!
+  measuredData <- input_data %>% gather(key=vars,value=measurement,-1)
+  ggplot(plotData)+
+    geom_line(aes(x=time,y=q50)) +
+    geom_ribbon(aes(x=time,ymin=q05,ymax=q95),alpha=0.3) +
+    geom_point(data=measuredData,aes(x=time,y=measurement),color="red",size=2) +
+    facet_grid(.~vars) + labs(y="")
+
+
+
+
 
 }
 
