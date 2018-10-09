@@ -4,6 +4,7 @@
 #'
 
 #' @param input_data the data we need in order to solve our model the columns should names that correspond to the output values.
+#' @param independent_var The name of the independent variable in our simulation
 #' @param parameters an initial guess for our parameters
 #' @param iterations the number of iterations we wish to run the MCMC for.
 #' @param lower_bound the lower bound values for our parameters
@@ -25,12 +26,12 @@
 
 
 
-mcmcEstimate <- function(input_data,parameters,lower_bound,upper_bound,iterations = 1500,burn_percent) {
+mcmcEstimate <- function(input_data,independent_var,parameters,lower_bound,upper_bound,iterations = 1500,burn_percent) {
 
   # cost function
   cost <- function(p){
     out = solveModel(p)
-    modCost(out, input_data,x=names(out)[1])
+    modCost(out, input_data,x=independent_var)
   }
 
   burninlength = floor(burn_percent*iterations)
