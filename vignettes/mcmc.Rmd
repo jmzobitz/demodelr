@@ -18,19 +18,12 @@ knitr::opts_chunk$set(
 
 In order to make this solver work method work, you will need three things:
 
-### input_data
-### model
-### solveModel
-### initial condition
-### parameters
-### lower bound
-### upper bound
 
-- _Data_: A spreadsheet file of the data you wish to use.
-- _Model_: A function that we have for our dynamics (this is $\displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t)$), or an equation.
+- _Data_: A spreadsheet file of the data you wish to use (or built in data).
+- _Model_: A function that we have for our dynamics (this is $\displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t)$), or an empirical equation $\vec{y}=f(\vec{x},\vec{\alpha})$.
 - _Bounds_: upper and lower bounds on your parameter values.
 - _(Initial Conditions)_: If you have a dynamic model.
-A set of initial conditions and names for the variables.
+
 
 We will work you through this step by step, with example code.
 
@@ -47,24 +40,25 @@ We need to update the package `MAT369Code` as well as install some new packages:
 # Uncomment the next few lines if you need to either update or install the MAT 369 Code
 # library(devtools)
 # install_github("jmzobitz/MAT369Code",build_vignettes = TRUE)
-#install.packages("FME")
-#install.packages("GGally")  # Correlation plots
 
 
 library(MAT369Code)
 
 ```
 
-## Data
-For any data assimilation routine you need to have data that defines the code
-```{r, fig.show='hold'}
-### You need to load in data load data use this name
-#input_data = read.csv('data.csv')
-
-# set up time interval  - this is going to be set below the code
-#time = input_data$time  # the output time vector -must match your data for ODE model
+## Data  (NEED TO FIX)
+For any data assimilation routine you need to have data that defines the code.  This can be from a pre-exisiting dataset already in place, or it can be data that we have defined through importing a file in.  For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park:
+```{r, echo=FALSE, results='asis'}
+knitr::kable(parks)
+input_data <- parks
 ```
 
+Additionally because we have a differential equation, we need to specify the times that these measurements occur and the initial condition
+
+```{r, echo=FALSE, results='asis'}
+time = input_data$time  # the output time vector -must match your data for ODE model
+initialCondition = c(resources = 0.995, visitors = 0.00167)
+```
 
 ## Parameters (including upper and lower bounds)
 
@@ -79,24 +73,48 @@ lower_bound <- c(a=10,b=0)
 upper_bound <- c(a=30,b=5)
 ```
 
-## Define the number of iterations and the burn in period.
-You can enable figure captions by `fig_caption: yes` in YAML:
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+## Run Diagnostics (iterations and burn in percentages)
+Two additional things need to be defined: how many iterations we wish to run `iterations` and the percentage of the first few iterations we will not compute due to the "burn-in" period.  This number must be between 0 and 1.  
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
 
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r, fig.show='hold'}
+iterations = 10000
+burn_percentage = 0.3
 ```
 
-Also a quote using `>`:
+If you do not specify these values, they will default to 1500 iterations and a burn-in percentage of 0.2.
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+
+
+## Define the model utilized and how you will solve this.  
+What is missing to make the run is a sense of the model we are using and how we will solve it (via numerical methods to solve ordinary differential equations).  This can be quite tricky, but I think we are up to the task here.  The method will vary if you have a model that is not an ODE, but it still can be done.
+
+
+```{r, fig.show='hold'}
+# define model dynamics (used in the ODE function) 
+model <- function(time, y, params){
+  with(as.list(c(params,y)),{
+    dRdt = resources*(1-resources)-a*visitors  ## <-- You may edit here (and add additional lines as necessary) 
+    dVdt = b*visitors*(resources-visitors)
+    list(c(dRdt,dVdt))
+  })
+}
+
+# define a function that will solve the model
+### This will get the names of the variables
+
+
+solveModel <- function(pars) {
+  return(as.data.frame(  ## Do not edit this line
+    ode(initialCondition, time, func = model,parms = pars)  ## <-- You may edit here (and add additional lines as necessary)
+  )  ## Do not edit this line
+  )
+}
+```
+
+That is it!  All we need to do is to run our code:
+
+```{r, fig.show='hold'}
+mcmcEstimate(input_data,"time",parameters,lower_bound,upper_bound,iterations,burn_percent) 
+```
