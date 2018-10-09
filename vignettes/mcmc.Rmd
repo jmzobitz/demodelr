@@ -1,0 +1,102 @@
+---
+title: "Using Markov Chain Monte Carlo simulation"
+author: "John M. Zobitz"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In order to make this solver work method work, you will need three things:
+
+### input_data
+### model
+### solveModel
+### initial condition
+### parameters
+### lower bound
+### upper bound
+
+- _Data_: A spreadsheet file of the data you wish to use.
+- _Model_: A function that we have for our dynamics (this is $\displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t)$), or an equation.
+- _Bounds_: upper and lower bounds on your parameter values.
+- _(Initial Conditions)_: If you have a dynamic model.
+A set of initial conditions and names for the variables.
+
+We will work you through this step by step, with example code.
+
+We are going to work through and example that relates the 
+The differential equation we are going to solve is:
+$$ \displaystyle \frac{dR}{dt}=R\cdot (1-R)-aV $$
+$$ \displaystyle \frac{dV}{dt}=b\cdot V \cdot (R-V) $$
+
+This model has two parameters $a$ and $b$, which denote XXXX and YYYY.
+
+## Setup and package install
+We need to update the package `MAT369Code` as well as install some new packages:
+```{r, fig.show='hold'}
+# Uncomment the next few lines if you need to either update or install the MAT 369 Code
+# library(devtools)
+# install_github("jmzobitz/MAT369Code",build_vignettes = TRUE)
+#install.packages("FME")
+#install.packages("GGally")  # Correlation plots
+
+
+library(MAT369Code)
+
+```
+
+## Data
+For any data assimilation routine you need to have data that defines the code
+```{r, fig.show='hold'}
+### You need to load in data load data use this name
+#input_data = read.csv('data.csv')
+
+# set up time interval  - this is going to be set below the code
+#time = input_data$time  # the output time vector -must match your data for ODE model
+```
+
+
+## Parameters (including upper and lower bounds)
+
+For all of the parameters in our system we need to define the initial guess and the upper and lower bounds of each parameter.  This is down through defining three vectors:
+
+```{r, fig.show='hold'}
+# initial guess of parameters
+parameters = c(a = 15, b = 4)
+
+# Lower and upper values of parameters
+lower_bound <- c(a=10,b=0)
+upper_bound <- c(a=30,b=5)
+```
+
+## Define the number of iterations and the burn in period.
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))
