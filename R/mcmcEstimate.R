@@ -31,7 +31,7 @@ mcmcEstimate <- function(obs_data,indep_var,parameters,lower_bound,upper_bound,i
   # cost function
   cost <- function(p){
     out = solveModel(p)
-    modCost(out, obs_data)
+    modCost(out, obs_data,x=indep_var)
   }
 
   burninlength = floor(burn_percent*iterations)
