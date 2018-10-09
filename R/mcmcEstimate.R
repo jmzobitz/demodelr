@@ -38,7 +38,7 @@ mcmcEstimate <- function(obs_data,indep_var,parameters,lower_bound,upper_bound,i
 
 
   # do MCMC
-  fit = modMCMC(f = cost, p = parameters, niter=1500, burninlength = 700, lower = lower_bound, upper = upper_bound, verbose = TRUE)
+  fit = modMCMC(f = cost, p = parameters, niter=iterations, burninlength=burninlength, lower = lower_bound, upper = upper_bound, verbose = TRUE)
 
   # view results
   ### Can we save this to a file?  make a directory in the folder?

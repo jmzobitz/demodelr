@@ -41,12 +41,12 @@ We need to update the package `MAT369Code` as well as install some new packages:
 # library(devtools)
 # install_github("jmzobitz/MAT369Code",build_vignettes = TRUE)
 
-
+library(deSolve)
 library(MAT369Code)
 
 ```
 
-## Data  (NEED TO FIX)
+## Data
 For any data assimilation routine you need to have data that defines the code.  This can be from a pre-exisiting dataset already in place, or it can be data that we have defined through importing a file in.  For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park:
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(parks)
@@ -116,5 +116,5 @@ solveModel <- function(pars) {
 That is it!  All we need to do is to run our code:
 
 ```{r, fig.show='hold'}
-mcmcEstimate(input_data,"time",parameters,lower_bound,upper_bound,iterations,burn_percent) 
+mcmcEstimate(input_data,"time",parameters,lower_bound,upper_bound,iterations,burn_percentage) 
 ```
