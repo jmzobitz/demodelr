@@ -41,7 +41,7 @@ mcmcEstimate <- function(obs_data,parameters,lower_bound,upper_bound,iterations 
 
   # view results
   ### Can we save this to a file?  make a directory in the folder?
-  summary(fit)
+  print(summary(fit))
 
   print("The best parameter value:")
   print(fit$bestpar)
@@ -55,12 +55,12 @@ mcmcEstimate <- function(obs_data,parameters,lower_bound,upper_bound,iterations 
   sR <- sensRange(func = solveModel,parms=parameters,parInput=fit$pars) %>%
     summary() %>% rename(time=x)
 
-  vars<-str_extract_all(row.names(sR),paste(names(initialCondition), collapse="|")) %>% unlist()
+  vars<-str_extract_all(row.names(sR),paste(names(sR), collapse="|")) %>% unlist()
 
   plotData <- sR %>% mutate(vars)
 
   ### Now let's do the ribbon w/ the data - yay!
-  measuredData <- input_data %>% gather(key=vars,value=measurement,-1)
+  measuredData <- obs_data %>% gather(key=vars,value=measurement,-1)
   ggplot(plotData)+
     geom_line(aes(x=time,y=q50)) +
     geom_ribbon(aes(x=time,ymin=q05,ymax=q95),alpha=0.3) +
