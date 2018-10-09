@@ -49,7 +49,7 @@ mcmcEstimate <- function(obs_data,indep_var,parameters,lower_bound,upper_bound,i
 
   # Make a correlation plot uses ggpairs
 
-  ggpairs(data.frame(fit$pars), diag = list(continuous ="barDiag", discrete = "barDiag", na = "naDiag"))
+  ggpairs(data.frame(fit$pars), diag = list(continuous ="barDiag", discrete = "barDiag", na = "naDiag")) %>% print()
 
 
   # Generate a summary of the model and the data - with confidence intervals
