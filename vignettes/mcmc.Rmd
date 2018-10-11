@@ -56,6 +56,7 @@ For any data assimilation routine you need to have data that defines the code.  
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(parks)
 input_data <- parks
+
 ```
 
 Additionally because we have a differential equation, we need to specify:
