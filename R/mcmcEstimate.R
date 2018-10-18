@@ -47,6 +47,12 @@ mcmcEstimate <- function(obs_data,indep_var,parameters,lower_bound,upper_bound,i
   print("The best parameter value:")
   print(fit$bestpar)
 
+
+  print("The 95% confidence intervals:")
+  print(apply(fit$pars,FUN=quantile,MARGIN = 2,c(0.025,0.50,0.975)))
+
+  print("The log likelihood:")
+  print(cost(fit$bestpar))
   # Make a correlation plot uses ggpairs
 
   ggpairs(data.frame(fit$pars), diag = list(continuous ="barDiag", discrete = "barDiag", na = "naDiag")) %>% print()
