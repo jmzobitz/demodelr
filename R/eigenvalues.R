@@ -32,7 +32,7 @@ eigenvalues <- function(matrix_entries,matrix_rows) {
 
   ### Now calculate the eigenvectors and eigenvalues
   result = eigen(aMatrix)
-
+  result$vectors <- data.frame(result$vectors)
 
   return(result)
 

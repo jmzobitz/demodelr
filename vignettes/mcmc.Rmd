@@ -53,9 +53,9 @@ This model has two parameters $a$ and $b$, which relate to how the resource is u
 
 ## Data
 For any data assimilation routine you need to have data that defines the code.  This can be from a pre-exisiting dataset already in place, or it can be data that we have defined through importing a file in.  For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park:
-```{r, echo=FALSE, results='asis'}
+```{r, echo=FALSE,results='asis'}
 knitr::kable(parks)
-input_data <- parks
+
 
 ```
 
@@ -64,7 +64,8 @@ Additionally because we have a differential equation, we need to specify:
 - the initial condition
 - the independent variable (the cost function needs this to work)
 
-```{r, echo=FALSE, results='asis'}
+```{r, results='asis'}
+input_data <- parks
 time = input_data$time  # the output time vector -must match your data for ODE model
 
 initialCondition = c(resources = 0.995, visitors = 0.00167)
@@ -92,7 +93,7 @@ Two additional things need to be defined: how many iterations we wish to run `it
 
 
 ```{r, fig.show='hold'}
-iterations = 10000
+iterations = 1000
 burn_percentage = 0.3
 ```
 
@@ -144,15 +145,15 @@ This model has two parameters $c$ and $theta$.
 For any data assimilation routine you need to have data that defines the code.  This can be from a pre-exisiting dataset already in place, or it can be data that we have defined through importing a file in.  For this case we are going to use a pre-defined dataset of the number of resources and visitors to a national park:
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(phosphorous)
-input_data <- phosphorous
+
 ```
 
 
 Additionally because we just have a function, we need to specify:
 - the independent variable (the cost function needs this to work)
 
-```{r, echo=FALSE, results='asis'}
-
+```{r,results='asis'}
+input_data <- phosphorous
 independent_var = "algae"
 
 ```
@@ -176,7 +177,7 @@ Two additional things need to be defined: how many iterations we wish to run `it
 
 
 ```{r, fig.show='hold'}
-iterations = 10000
+iterations = 1000
 burn_percentage = 0.3
 ```
 
