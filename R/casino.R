@@ -15,7 +15,7 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
-
+#' @export
 
 casino <- function(houseWinProbability,initialCash,nTimes,nSimulations) {
 

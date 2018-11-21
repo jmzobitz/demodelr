@@ -14,7 +14,7 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
-#'
+#' @export
 
 sandhillsDemographic <- function(initialPopulation,nYears,nSimulations) {
 

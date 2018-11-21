@@ -15,7 +15,7 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
-#'
+#' @export
 #'
 #'
 wildebeast <- function(harvestRate,nYears,nSimulations) {
