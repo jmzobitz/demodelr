@@ -2,8 +2,8 @@
 #'
 #' \code{summarizeDynamics} takes the result from a stochastic simulation and produces a spaghetti plot and ensemble average plot.
 #'
-#' @param simulations data frame from a stochastic simulation
-#' @param labels the labes on the plot axes
+#' @param simulations data frame from a stochastic simulation. The first column should be labeled time
+#' @param labels the labels on the plot axes
 #'
 #' @return A spaghetti plot and ensemble average plot of simulation
 #' @examples
@@ -25,8 +25,8 @@ summarizeDynamics <- function(simulations,labels) {
 
 
   ####
-  total_data=data.frame(steps=1:steps,x =out)
-  spaghettiPlot <- total_data %>% gather(key=simulation,value=out,-time) %>%
+
+  spaghettiPlot <- simulations %>% gather(key=simulation,value=out,-time) %>%
     ggplot() +
     geom_line(aes(x=steps,y=out,group=simulation)) +
     theme(plot.title = element_text(size=20),

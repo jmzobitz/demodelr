@@ -7,9 +7,9 @@
 summarizeDynamics(simulations, labels)
 }
 \arguments{
-\item{simulations}{data frame from a stochastic simulation}
+\item{simulations}{data frame from a stochastic simulation. The first column should be labeled time}
 
-\item{labels}{the labes on the plot axes}
+\item{labels}{the labels on the plot axes}
 }
 \value{
 A spaghetti plot and ensemble average plot of simulation
