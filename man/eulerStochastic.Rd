@@ -33,7 +33,6 @@ A spaghetti plot and ensemble average plot of your solution
 See the vignette for detailed examples of usage.
 }
 \examples{
-euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
 # Run the vignette that works through an example:
 vignette("euler-stochastic")
 }

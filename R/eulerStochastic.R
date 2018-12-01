@@ -13,7 +13,7 @@
 #' @param sigma scaling factor for of the stochastic part of the SDE
 #' @return A spaghetti plot and ensemble average plot of your solution
 #' @examples
-#' eulerStochastic(deltaT,timeSteps,initialCondition,variableNames,deterministicDynamics,stochasticDynamics,parameters=parameters)
+
 #' # Run the vignette that works through an example:
 #' vignette("euler-stochastic")
 
