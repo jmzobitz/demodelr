@@ -13,7 +13,7 @@
 #' @param sigma scaling factor for of the stochastic part of the SDE
 #' @return A spaghetti plot and ensemble average plot of your solution
 #' @examples
-#' euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
+#' eulerStochastic(deltaT,timeSteps,initialCondition,variableNames,deterministicDynamics,stochasticDynamics,parameters=parameters)
 #' # Run the vignette that works through an example:
 #' vignette("euler-stochastic")
 
@@ -79,7 +79,7 @@ eulerStochastic <- function(deltaT=1,timeSteps=1,initialCondition,FUN=determinis
   ensemblePlot=run_results %>% bind_rows() %>%
     group_by(variables,time) %>%
     do(data.frame(t(quantile(.$value, probs = quantVals)))) %>%
-    ggplot(yee,aes(x=time,y=X50.)) +
+    ggplot(aes(x=time,y=X50.)) +
     geom_ribbon(aes(ymin=X2.5.,ymax=X97.5.),alpha=0.2,colour='grey') +
     geom_line(size=1.5) +
     facet_grid(.~variables) +
