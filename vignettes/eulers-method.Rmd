@@ -30,7 +30,7 @@ $$ \vec{y}_{n+1} = y_{n} + f(\vec{y}_{n},\vec{\alpha},t_{n}) \cdot \Delta t $$
 
 ## Set up
 
-In order to make Euler's method work, you will need three things:
+In order to make Euler's method work, you will need four things:
 
 - The size ($\Delta t$) of your timesteps.
 - The number of timesteps you wish to run Euler's method.  More timesteps means more computational time.  If $N$ is the number of timesteps, $\Delta t \cdot N$ is the total time.

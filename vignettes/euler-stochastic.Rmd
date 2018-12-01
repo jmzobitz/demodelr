@@ -1,0 +1,140 @@
+---
+  title: "Solving Stochastic Differential Equations Numerically"
+author: "John M. Zobitz"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Numerical SDEs}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+    ---
+    
+    <!-- Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette. -->
+    
+    ```{r setup, include = FALSE}
+    knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+    )
+    ```
+    
+    Here we are going to show how we can utilize Euler's method to easily solve a system of stochastic differential equations.  To recap, the most general form of a differential equation is: 
+      
+      $$ \displaystyle d\vec{y} = f(\vec{y},\vec{\alpha},t) \; dt + f(\vec{y},\vec{\alpha},t) \; dW(t), $$
+        where $\vec{y}$ is the vector of state variables you want to solve for, and $\vec{\alpha}$ is your vector of parameters, and $dW(t)$ is the stochastic noise from the random walk.
+      
+      At a given initial condition, the Euler-Maruyana method applies locally linear approximations to forecast the solution forward $\Delta t$ time units:
+      
+      $$ \vec{y}_{n+1} = y_{n} + f(\vec{y}_{n},\vec{\alpha},t_{n}) \cdot \Delta t + g(\vec{y}_{n},\vec{\alpha},t_{n}) \cdot \sigma \cdot \mbox{rnorm(N)} \cdot \sqrt{\Delta t}, $$
+      
+  where rnorm(N) is $N$ dimensional random variable from a normal distribution with mean 0.
+  
+      ## Set up
+      
+      In order to make Euler's method work, you will need six things:
+        
+        - The size ($\Delta t$) of your timesteps.
+      - The number of timesteps you wish to run Euler's method.  More timesteps means more computational time.  If $N$ is the number of timesteps, $\Delta t \cdot N$ is the total time.
+      - A function that we have for our deterministic dynamics (this is $\displaystyle f(\vec{y},\vec{\alpha},t)$).
+      - A function that we have for our stochastic dynamics (this is $\displaystyle g(\vec{y},\vec{\alpha},t)$).
+      
+      - The values of the vector of parameters $\vec{\alpha}$.
+      - The standard deviation ($\sigma$) of our normal distribution and random walk.  Typically this is set to 1, but can be varied if needed.
+      - The number of simulations for our stochastic differential equation.
+      
+      We will work you through this step by step, with example code.  What is produced are two plots: a spaghetti plot showing the trajectory of each simulation, and an ensemble average across all the realizations.
+      
+      First you should open up a blank RStudio document.  Be sure to have the library `MAT369Code` installed.
+      
+      ```{r, fig.show='hold'}
+      # Uncomment the next two lines if you need to either update or install the MAT 369 Code
+      # library(devtools)
+      # install_github("jmzobitz/MAT369Code",build_vignettes = TRUE)
+      library(MAT369Code)
+      
+      ```
+      
+      
+      ### Set up your time values
+      First you need to set up the length of each timestep ($\delta T$) and the number of timesteps we compute the solution.  You do this by specifiying the variables `deltaT` and `timeSteps`:
+      ```{r, fig.show='hold'}
+      deltaT <- 0.05    # timestep length
+      timeSteps <- 200   # must be a number greater than 1
+      ```
+      
+      
+      ### Set up your parameters
+      Next you should specify the values of your parameters $\vec{alpha}$.  The good news is that you can name the parameters and their values, and just refer to the shorthand name (not the numerical value) in subsequent code.
+      
+      ```{r, fig.show='hold'}
+      parameters <- c(r = 2, k = 0.5, e = 0.1, d = 1)   # parameters: a named vector
+      ```
+      
+      ### Set up your initial conditions.
+      Now we need to specify the starting values (initial conditions) for our differential equation.  *Note:* This code can only do one set of initial conditions at time.
+      
+      ```{r, fig.show='hold'}
+      
+      initialCondition <- c(V=1, P=3)  # Be sure you have enough conditions as you do variables.
+      
+      ```
+      
+       ### Set up your stochastic parameters.
+      Now we need to specify the stochastic parameters - the number of simulations and the standard deviation of the random walk:
+      
+      ```{r, fig.show='hold'}
+      
+     nSimulations <- 10
+     sigma <- 1
+      
+      ```
+   If these variables are not specified, the default is 1 for both.        
+      
+      ### Set up your dynamics
+      You need to have a function for the dynamics of the differential equation.  The function `euler` looks for two functions function called `deterministicDynamics` and `stochasticDynamics`.
+      
+      The format of this function is structured, but easily modifiable.  Here is a sample code that shows the dynamics for the Lotka-Volterra equations, where a noise term $n$ is added into the parameter $k$:
+      $$ \begin{align} \frac{dV}{dt} &= r V - (k+n)VP = rV-kVP - nVP \\ \frac{dP}{dt} &= e (k+n) V P - dP = ekVP-dP + nVP\end{align} $$
+     
+     So in this example, the function $f$ (the deterministic dynamics) is the following:
+      $$ f(\vec{y},\vec{\alpha})=\begin{pcases} rV-kVP \\ ekVP-dP \end{pcases} $$
+      So in this example, the function $g$  (the stochastic dynamics) represents all the terms that involve n, which is the following:
+      $$ g(\vec{y},\vec{\alpha})=\begin{pcases} -VP \\ VP \end{pcases} $$  
+      Next we need to code the deterministic and stochastic dynamics:
+      ```{r, fig.show='hold'}
+      # R function to calculate the value of the derivatives at each time value
+      # Use the names of the variables as defined in the vectors above
+      
+      deterministicDynamics <- function(t, state, parameters){
+      with(as.list(c(state, parameters)), {  # Do not edit this line
+      dV = r*V - k*V*P  # <-- You may edit this line
+      dP = e*k*V*P - d*P # <-- You may edit this line.
+      return(list(c(dV, dP)))  # <-- If you have more equations you will need to list the dVariables
+      })
+      }
+      
+      stochasticDynamics <- function(t, state, parameters){
+      with(as.list(c(state, parameters)), {  # Do not edit this line
+      dV = -V*P  # <-- You may edit this line
+      dP = V*P # <-- You may edit this line.
+      return(list(c(dV, dP)))  # <-- If you have more equations you will need to list the dVariables
+      })
+      }
+     
+      ```
+      
+      
+      
+      ## Putting it all together
+      
+      Now we have everything we need!  Basically the next step is to run the command `euler`, which will print to the screen a plot of your equation. If you have entered everything above correctly, you may copy the following code to your working file.
+      
+      If you have multiple initial conditions, you will get a stacked plot for each run.
+      
+      ```{r, fig.show='hold'}
+  eulerStochastic(deltaT,timeSteps,initialCondition,deterministicDynamics,stochasticDynamics,parameters,nSimulations,sigma)
+      ```
+      
+      
+
+      
