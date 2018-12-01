@@ -97,9 +97,9 @@ vignette: >
       $$ \begin{align} \frac{dV}{dt} &= r V - (k+n)VP = rV-kVP - nVP \\ \frac{dP}{dt} &= e (k+n) V P - dP = ekVP-dP + nVP\end{align} $$
      
      So in this example, the function $f$ (the deterministic dynamics) is the following:
-      $$ f(\vec{y},\vec{\alpha})=\begin{pcases} rV-kVP \\ ekVP-dP \end{pcases} $$
+      $$ f(\vec{y},\vec{\alpha})=\begin{cases} rV-kVP \\ ekVP-dP \end{cases} $$
       So in this example, the function $g$  (the stochastic dynamics) represents all the terms that involve n, which is the following:
-      $$ g(\vec{y},\vec{\alpha})=\begin{pcases} -VP \\ VP \end{pcases} $$  
+      $$ g(\vec{y},\vec{\alpha})=\begin{cases} -VP \\ VP \end{cases} $$  
       Next we need to code the deterministic and stochastic dynamics:
       ```{r, fig.show='hold'}
       # R function to calculate the value of the derivatives at each time value
