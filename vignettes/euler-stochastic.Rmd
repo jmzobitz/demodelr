@@ -1,5 +1,5 @@
 ---
-  title: "Solving Stochastic Differential Equations Numerically"
+title: "Solving Stochastic Differential Equations Numerically"
 author: "John M. Zobitz"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -7,9 +7,9 @@ vignette: >
   %\VignetteIndexEntry{Numerical SDEs}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
-    ---
+---
     
-    <!-- Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette. -->
+
     
     ```{r setup, include = FALSE}
     knitr::opts_chunk$set(
