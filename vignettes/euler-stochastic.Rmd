@@ -92,7 +92,7 @@ Now we need to specify the stochastic parameters - the number of simulations and
 If these variables are not specified, the default is 1 for both.        
       
 ### Set up your dynamics
-You need to have a function for the dynamics of the differential equation.  The function `euler` looks for two functions function called `deterministicDynamics` and `stochasticDynamics`.
+You need to have a function for the dynamics of the differential equation.  The function `eulerStochastic` looks for two functions function called `deterministicDynamics` and `stochasticDynamics`.
       
 The format of this function is structured, but easily modifiable.  Here is a sample code that shows the dynamics for the Lotka-Volterra equations, where a noise term $n$ is added into the parameter $k$:
 
