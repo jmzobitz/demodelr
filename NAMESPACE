@@ -3,6 +3,7 @@
 export("%>%")
 export(GeomQuiver)
 export(StatQuiver)
+export(birthDeathStochastic)
 export(bootstrap_model)
 export(bootstrap_samples)
 export(casino)
