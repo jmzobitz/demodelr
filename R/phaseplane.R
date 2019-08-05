@@ -53,16 +53,17 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
 
   # Define the grid for our solution
   in_grid <- expand.grid(x=seq(x_window[1],x_window[2],length.out=n_points),
-                       y=seq(y_window[1],y_window[2],length.out=n_points))
+                         y=seq(y_window[1],y_window[2],length.out=n_points))
+  names(in_grid)<-c(x_label,y_label)
+  p<- in_grid %>%
+    mutate(u=pmap_dbl(in_grid,dx),v=pmap_dbl(in_grid,dy))
 
-p<- in_grid %>%
-  mutate(u=pmap_dbl(in_grid,dx),v=pmap_dbl(in_grid,dy)) %>%
-  ggplot(aes(x=x,y=y,u=u,v=v)) +
-  geom_quiver() +
-  xlab(x_label) +
-  ylab(y_label)
+  p %>%
+    ggplot(aes_string(x=colnames(p)[1], y=colnames(p)[2],u=colnames(p)[3],v=colnames(p)[4])) +
+    geom_quiver() +
+    xlab(x_label) +
+    ylab(y_label) %>%
+    print()
 
-
-print(p)
 }
 
