@@ -54,8 +54,8 @@ systems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameter
   # Gather the solution in a format for plotting.
   outPlot <- run_results %>%
     bind_rows() %>%
-    ggplot(aes(x=time, y=value,color=run,shape=variables)) +
-    geom_point(size=3)+facet_grid(run~variables) +
+    ggplot(aes(x=time, y=value,color=run,shape=variables,group=run)) +
+    geom_line(size=2)+facet_grid(.~variables) +
     labs(title="Differential Equation Solution",x="Time",y="")+
     ### Expand the graph to make sure axes cross at (0,0)
     expand_limits(y=0) +

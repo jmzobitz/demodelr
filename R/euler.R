@@ -23,7 +23,7 @@ euler <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=
 
   #  A quick check in case we have a one dimensional system
   if (is.null(dim(initialCondition))) {nSolns <- 1}
-    else { nSolns <- dim(initialCondition)[1] }
+  else { nSolns <- dim(initialCondition)[1] }
 
 
   # Make a list of things we are bringing back
@@ -53,20 +53,21 @@ euler <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=
       gather(key=variables,value=value,-run,-time)
 
 
-}
+  }
 
 
   # Gather the solution in a format for plotting.
   outPlot <- run_results %>%
-    bind_rows() %>% ggplot(aes(x=time, y=value,color=run,shape=variables)) +
-  geom_point(size=3)+facet_grid(run~variables) +
-  labs(title="Euler's Method Solution",x="Time",y="")+
-  ### Expand the graph to make sure axes cross at (0,0)
-  expand_limits(y=0) +
-  theme(legend.position="none")
+    bind_rows() %>% ggplot(aes(x=time, y=value,color=run,shape=variables,group=run)) +
+    geom_line(size=2)+facet_grid(.~variables) +
+    labs(title="Euler's Method Solution",x="Time",y="")+
+    ### Expand the graph to make sure axes cross at (0,0)
+    expand_limits(y=0) +
+    theme(legend.position="none")
 
-return(outPlot)
+  return(outPlot)
 
 }
+
 
 

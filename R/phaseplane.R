@@ -58,12 +58,13 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
   p<- in_grid %>%
     mutate(u=pmap_dbl(in_grid,dx),v=pmap_dbl(in_grid,dy))
 
-  p %>%
+  out_plot <- p %>%
     ggplot(aes_string(x=colnames(p)[1], y=colnames(p)[2],u=colnames(p)[3],v=colnames(p)[4])) +
     geom_quiver() +
     xlab(x_label) +
-    ylab(y_label) %>%
-    print()
+    ylab(y_label)
+
+  return(out_plot)
 
 }
 
