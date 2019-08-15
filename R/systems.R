@@ -8,6 +8,7 @@
 #' @param initialCondition Listing of initial conditions
 #' @param dynamics a Function that we have for our dynamics
 #' @param parameters The values of the parameters we are using
+#' @param returnData A T/F if we want to return just the solution data than a plot.
 #' @return A plot of your solved equation solution
 #' @examples
 #' systems(deltaT,timeSteps,initialCondition,FUN=dynamics,parameters=parameters)
@@ -20,7 +21,7 @@
 #' @import deSolve
 #' @export
 
-systems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=parameters) {
+systems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=parameters,returnData=FALSE) {
 
   #  A quick check in case we have a one dimensional system
   if (is.null(dim(initialCondition))) {nSolns <- 1}
@@ -54,7 +55,8 @@ systems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameter
   # Gather the solution in a format for plotting.
   outPlot <- run_results %>%
     bind_rows() %>%
-    ggplot(aes(x=time, y=value,color=run,shape=variables,group=run)) +
+    mutate(run=as.factor(run)) %>%
+    ggplot(aes(x=time, y=value,color=as.factor(run),shape=variables,group=run)) +
     geom_line(size=2)+facet_grid(.~variables) +
     labs(title="Differential Equation Solution",x="Time",y="")+
     ### Expand the graph to make sure axes cross at (0,0)
@@ -62,8 +64,13 @@ systems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameter
     theme(legend.position="none")
 
 
+  if(returnData) {
 
-  return(outPlot)
+    outData <- run_results %>% bind_rows() %>%
+      mutate(run=as.factor(run))
+    return(outData)
+  } else { return(outPlot) }
+
 
 }
 

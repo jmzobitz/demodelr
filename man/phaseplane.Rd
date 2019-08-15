@@ -39,22 +39,28 @@ dy <- function(x,y) {
  sin(y)
 }
 
-phaseplane(20,c(-3,3),c(-3,3),'X','Y',dx,dy)
+phaseplane(20,c(-3,3),c(-3,3),'x','y',dx,dy)
 
 # For a one dimensional system: dy/dt = f(t,y).  In this case the xWindow represents time.
-# However, we still need to write dx as a function of x and y, but the plot can be labeled T
+# However, the first function looks a little different.
 
-dy <- function(x,y) {
+dt <- function(t,y) {
+1
+}
+
+dy <- function(t,y) {
 -y
 }
 
-phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
+phaseplane(20,c(-3,3),c(-3,3),'t','y',dt,dy)
 
 # Here is a second example for the differential equation dy/dt = -cos(t) y
-# In this case, the x coordinate represents time.
 
-dy <- function(x,y) {
--cos(x)*y
+dt <- function(t,y) {
+1
+}
+dy <- function(t,y) {
+-cos(t)*y
 }
 
 phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)

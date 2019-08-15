@@ -5,7 +5,7 @@
 \title{Numerical solution for a differential equation.}
 \usage{
 systems(deltaT = 1, timeSteps = 1, initialCondition, FUN = dynamics,
-  parameters = parameters)
+  parameters = parameters, returnData = FALSE)
 }
 \arguments{
 \item{deltaT}{Size of timesteps}
@@ -15,6 +15,8 @@ systems(deltaT = 1, timeSteps = 1, initialCondition, FUN = dynamics,
 \item{initialCondition}{Listing of initial conditions}
 
 \item{parameters}{The values of the parameters we are using}
+
+\item{returnData}{A T/F if we want to return just the solution data than a plot.}
 
 \item{dynamics}{a Function that we have for our dynamics}
 }

@@ -8,6 +8,7 @@
 #' @param initialCondition Listing of initial conditions
 #' @param dynamics a Function that we have for our dynamics
 #' @param parameters The values of the parameters we are using
+#' @param returnData A T/F if we want to return just the solution data than a plot.
 #' @return A plot of your Euler's method solution
 #' @examples
 #' euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
@@ -19,7 +20,7 @@
 #' @import tidyr
 #' @export
 
-euler <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=parameters) {
+euler <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=parameters,returnData=FALSE) {
 
   #  A quick check in case we have a one dimensional system
   if (is.null(dim(initialCondition))) {nSolns <- 1}
@@ -58,14 +59,21 @@ euler <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=
 
   # Gather the solution in a format for plotting.
   outPlot <- run_results %>%
-    bind_rows() %>% ggplot(aes(x=time, y=value,color=run,shape=variables,group=run)) +
+    bind_rows() %>%
+    mutate(run=as.factor(run)) %>%
+    ggplot(aes(x=time, y=value,color=as.factor(run),shape=variables,group=run)) +
     geom_line(size=2)+facet_grid(.~variables) +
     labs(title="Euler's Method Solution",x="Time",y="")+
     ### Expand the graph to make sure axes cross at (0,0)
     expand_limits(y=0) +
     theme(legend.position="none")
 
-  return(outPlot)
+  if(returnData) {
+
+    outData <- run_results %>% bind_rows() %>%
+      mutate(run=as.factor(run))
+    return(outData)
+  } else { return(outPlot) }
 
 }
 
