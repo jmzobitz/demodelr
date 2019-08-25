@@ -26,7 +26,6 @@
 
 #' @import ggplot2
 #' @import modelr
-#' @import broom
 #' @export
 
 

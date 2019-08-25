@@ -1,6 +1,6 @@
-#' Euler Maruyama method solution for a stochastic differential equation.
+#' Euler Maruyama method solution for a stochastic system of differential equations.
 #'
-#' \code{birthDeathStochastic} solves a multi-dimensional differential equation with the Euler Maruyama method with stochastic elements using a birth death process.
+#' \code{birthDeathStochasticSystems} solves a multi-dimensional differential equation with the Euler Maruyama method with stochastic elements using a birth death process.
 
 
 #' @param deltaT Size of timesteps
@@ -18,9 +18,10 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
+#' @importFrom expm sqrtm
 #' @export
 
-birthDeathStochastic <- function(deltaT=1,timeSteps=1,initialCondition,FUN=birth,FUN_2=death,parameters=parameters,nSimulations=1,sigma=1) {
+birthDeathStochasticSystems <- function(deltaT=1,timeSteps=1,initialCondition,FUN=birth,FUN_2=death,parameters=parameters,nSimulations=1,sigma=1) {
 
 
   # Compute the number of variables:
@@ -36,13 +37,15 @@ birthDeathStochastic <- function(deltaT=1,timeSteps=1,initialCondition,FUN=birth
 
     for (i in 2:timeSteps) {
       oldP = newP
+
       meanP <- (unlist(birth(time[i],oldP,parameters))-unlist(death(time[i],oldP,parameters)))
-      stdP <- sqrt(unlist(birth(time[i],oldP,parameters))+unlist(death(time[i],oldP,parameters)))
-      newP <-  meanP*deltaT+ stdP*sigma*sqrt(deltaT)*rnorm(nVariables)+oldP   # Your differential equation goes here.
+      stdP <- Re(sqrtm(meanP %*% t(meanP)) %*% as.vector(rnorm(nVariables)))
+
+      newP <-  as.numeric(meanP*deltaT+ stdP*sigma*sqrt(deltaT)+oldP)   # Your differential equation goes here.
+      newP <- setNames(newP,names(initialCondition))
 
       ## Add in a reality constraint that they can't be negative
       newP <- pmax(newP,0)
-
       soln=rbind(soln,newP)
 
     }
@@ -97,5 +100,3 @@ birthDeathStochastic <- function(deltaT=1,timeSteps=1,initialCondition,FUN=birth
 
 
 }
-
-
