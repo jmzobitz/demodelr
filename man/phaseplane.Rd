@@ -41,28 +41,28 @@ dy <- function(x,y) {
 
 phaseplane(20,c(-3,3),c(-3,3),'x','y',dx,dy)
 
-# For a one dimensional system: dy/dt = f(t,y).  In this case the xWindow represents time.
+# For a one dimensional system: dy/dx = f(x,y).  In this case the xWindow represents time.
 # However, the first function looks a little different.
 
-dt <- function(t,y) {
+dx <- function(x,y) {
 1
 }
 
-dy <- function(t,y) {
+dy <- function(x,y) {
 -y
 }
 
-phaseplane(20,c(-3,3),c(-3,3),'t','y',dt,dy)
+phaseplane(20,c(-3,3),c(-3,3),'x','y',dx,dy)
 
-# Here is a second example for the differential equation dy/dt = -cos(t) y
+# Here is a second example for the differential equation dy/dx = -cos(x) y
 
-dt <- function(t,y) {
+dx <- function(x,y) {
 1
 }
-dy <- function(t,y) {
--cos(t)*y
+dy <- function(x,y) {
+-cos(x)*y
 }
 
-phaseplane(20,c(-3,3),c(-3,3),'T','Y',1,dy)
+phaseplane(20,c(-3,3),c(-3,3),'x','y',dx,dy)
 
 }
