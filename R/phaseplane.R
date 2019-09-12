@@ -78,7 +78,7 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
     y= .[[2]]  -dt*v/((lens2)+.1)/2
   )
 
-  print(p)
+
   out_plot <- p %>%
     ggplot(aes_string(x=colnames(p)[1], y=colnames(p)[2],u=colnames(p)[3],v=colnames(p)[4])) +
     #geom_quiver(center=TRUE) +
