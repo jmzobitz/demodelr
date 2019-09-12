@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^\.Rproj\.user$
 ^data-process$
+^doc$
+^Meta$

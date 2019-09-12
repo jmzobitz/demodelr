@@ -61,6 +61,7 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
   in_grid <- expand.grid(x=seq(x_window[1],x_window[2],length.out=n_points),
                          y=seq(y_window[1],y_window[2],length.out=n_points))
   names(in_grid)<-c(x_label,y_label)
+
   p<- in_grid %>%
     mutate(u=pmap_dbl(in_grid,dx),v=pmap_dbl(in_grid,dy),
            lens=sqrt(u^2+v^2),
@@ -69,15 +70,15 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
   maxx <- max(abs(p$u));
   maxy <- max(abs(p$v));
   dt <- min( abs(diff(x_window))/maxx, abs(diff(y_window))/maxy)/n_points;
-
+  print(names(p))
   p <- p %>% mutate(
-    xend = x + dt*u/((lens2)+.1)/2,
-    yend = y + dt*v/((lens2)+.1)/2,
-    x = x- dt*u/((lens2)+.1)/2,
-    y= y -dt*v/((lens2)+.1)/2
+    xend = .[[1]]  + dt*u/((lens2)+.1)/2,
+    yend = .[[2]]  + dt*v/((lens2)+.1)/2,
+    x = .[[1]] - dt*u/((lens2)+.1)/2,
+    y= .[[2]]  -dt*v/((lens2)+.1)/2
   )
 
-
+  print(p)
   out_plot <- p %>%
     ggplot(aes_string(x=colnames(p)[1], y=colnames(p)[2],u=colnames(p)[3],v=colnames(p)[4])) +
     #geom_quiver(center=TRUE) +
@@ -88,4 +89,3 @@ phaseplane <- function(n_points,x_window,y_window,x_label,y_label,dx,dy) {
   return(out_plot)
 
 }
-
