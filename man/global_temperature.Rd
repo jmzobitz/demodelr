@@ -4,7 +4,9 @@
 \name{global_temperature}
 \alias{global_temperature}
 \title{Measured average global temperature by year}
-\format{A data frame with 135 rows and 2 variables}
+\format{
+A data frame with 135 rows and 2 variables
+}
 \source{
 The data were collected from NOAA. \url{https://climate.nasa.gov/vital-signs/global-temperature/}
 }

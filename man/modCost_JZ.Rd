@@ -4,8 +4,17 @@
 \alias{modCost_JZ}
 \title{Markov Chain parameter estimates}
 \usage{
-modCost_JZ(model, obs, x = "time", y = NULL, err = NULL,
-  weight = "none", scaleVar = FALSE, cost = NULL, ...)
+modCost_JZ(
+  model,
+  obs,
+  x = "time",
+  y = NULL,
+  err = NULL,
+  weight = "none",
+  scaleVar = FALSE,
+  cost = NULL,
+  ...
+)
 }
 \description{
 \code{modCost_JZ} Computes and Markov Chain Monte Carlo parameter estimate for a given model.  This is a change from the code provided in the FME package to account for the likelihood.

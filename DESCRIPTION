@@ -16,7 +16,7 @@ Imports: tidyverse,
     deSolve,
     tidyr,
     dplyr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr

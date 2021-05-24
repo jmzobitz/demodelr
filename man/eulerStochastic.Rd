@@ -4,9 +4,16 @@
 \alias{eulerStochastic}
 \title{Euler's method solution for a differential equation.}
 \usage{
-eulerStochastic(deltaT = 1, timeSteps = 1, initialCondition,
-  FUN = deterministicDynamics, FUN_2 = stochasticDynamics,
-  parameters = parameters, nSimulations = 1, sigma = 1)
+eulerStochastic(
+  deltaT = 1,
+  timeSteps = 1,
+  initialCondition,
+  FUN = deterministicDynamics,
+  FUN_2 = stochasticDynamics,
+  parameters = parameters,
+  nSimulations = 1,
+  sigma = 1
+)
 }
 \arguments{
 \item{deltaT}{Size of timesteps}

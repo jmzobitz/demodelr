@@ -4,8 +4,7 @@
 \alias{informationCriteria}
 \title{\code{informationCriteria} fits a functional relationship to data, summarizes the results, makes a plot of the fitted formula, and reports values needed to compute the AIC and the BIC.}
 \usage{
-informationCriteria(data, regression_formula, x_label = "x",
-  y_label = "y")
+informationCriteria(data, regression_formula, x_label = "x", y_label = "y")
 }
 \arguments{
 \item{data}{two column of data to be plotted.

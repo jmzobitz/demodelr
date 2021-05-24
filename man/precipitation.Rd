@@ -4,7 +4,9 @@
 \name{precipitation}
 \alias{precipitation}
 \title{Measured precipitation from a rainfall event}
-\format{A data frame with 56 rows and 5 variables}
+\format{
+A data frame with 56 rows and 5 variables
+}
 \source{
 The data were collected from Community Collaborative Rain Hail and Snow Network (CoCoRaHS). \url{https://www.cocorahs.org/ViewData/ListDailyPrecipReports.aspx}
 }

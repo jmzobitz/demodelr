@@ -13,16 +13,16 @@
 #' @return The result is a list with two elements (denoted by the “$”), values and vectors.
 #' result$values are the eigenvalues, stored as a vector. The leading eigenvalue is the first entry in the vector.
 #'
-# result$vectors gives the corresponding right eigenvectors, sequentially stored as columns of a matrix (so eigenvector #1 corresponds to eigenvalue #1.
+# result$vectors gives the corresponding right eigenvectors, sequentially stored as columns of a matrix (so eigenvector #1 corresponds to eigenvalue #1.  The vectors are all normalized to have a length of 1.
 
 #' @examples
-#' eigenvalues(c(1,2,3,4),2)
+#' eigenvalues(c(1,2,3,4))
 
 #' @export
 
 
 
-eigenvalues <- function(matrix_entries,matrix_rows) {
+eigenvalues <- function(matrix_entries,matrix_rows=2) {
 
   if (sqrt(length(matrix_entries)) != matrix_rows) {
     stop("Your matrix is not a square matrix")

@@ -4,9 +4,16 @@
 \alias{birthDeathStochasticSystems}
 \title{Euler Maruyama method solution for a stochastic system of differential equations.}
 \usage{
-birthDeathStochasticSystems(deltaT = 1, timeSteps = 1,
-  initialCondition, FUN = birth, FUN_2 = death,
-  parameters = parameters, nSimulations = 1, sigma = 1)
+birthDeathStochasticSystems(
+  deltaT = 1,
+  timeSteps = 1,
+  initialCondition,
+  FUN = birth,
+  FUN_2 = death,
+  parameters = parameters,
+  nSimulations = 1,
+  sigma = 1
+)
 }
 \arguments{
 \item{deltaT}{Size of timesteps}

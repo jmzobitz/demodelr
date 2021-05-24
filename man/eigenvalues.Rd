@@ -4,7 +4,7 @@
 \alias{eigenvalues}
 \title{Matrix eigenvalues and eigenvectors}
 \usage{
-eigenvalues(matrix_entries, matrix_rows)
+eigenvalues(matrix_entries, matrix_rows = 2)
 }
 \arguments{
 \item{matrix_entries}{entries of your matrix row wise.
@@ -23,5 +23,5 @@ result$values are the eigenvalues, stored as a vector. The leading eigenvalue is
 \code{eigenvalues} visualizes the vector field for a one or two dimensional differential equation.
 }
 \examples{
-eigenvalues(c(1,2,3,4),2)
+eigenvalues(c(1,2,3,4))
 }

@@ -4,24 +4,30 @@
 \alias{phaseplane}
 \title{Phase plane of differential equation.}
 \usage{
-phaseplane(n_points, x_window, y_window, x_label, y_label, dx, dy)
+phaseplane(
+  system_eq,
+  x_var,
+  y_var,
+  x_window = c(-4, 4),
+  y_window = c(-4, 4),
+  plot_points = 10,
+  eq_soln = FALSE
+)
 }
 \arguments{
-\item{n_points}{number of points we evaluate on the grid in both directions}
+\item{system_eq}{(REQUIRED) The 1 or 2 dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))}
 
-\item{x_window}{x axis limits.  Must be of the form c(minVal,maxVal)}
+\item{x_var}{(REQUIRED) x axis variable (used in plot and formula)}
 
-\item{y_window}{y axis limits.  Must be of the form c(minVal,maxVal)}
+\item{y_var}{(REQUIRED) y axis variable (used in plot and formula)}
 
-\item{x_label}{x axis label for plot}
+\item{x_window}{x axis limits.  Must be of the form c(minVal,maxVal).  Defaults to -4 to 4.}
 
-\item{y_label}{y axis label for plot}
+\item{y_window}{y axis limits.  Must be of the form c(minVal,maxVal). Defaults to -4 to 4.}
 
-\item{dx}{a function for the dx/dt = f(x,y)}
+\item{plot_points}{number of points we evaluate on the grid in both directions. Defaults to 10.}
 
-\item{dy}{a function for the dy/dt = f(x,y)}
-
-\item{initialCondition}{Listing of initial conditions}
+\item{eq_soln}{TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window}
 }
 \value{
 A phase plane diagram of system of differential equations
@@ -30,39 +36,26 @@ A phase plane diagram of system of differential equations
 \code{phaseplane} visualizes the vector field for a one or two dimensional differential equation.
 }
 \examples{
-# For a two variable system of differential equations we define the dx/dt and the dy/dt separately:
-dx <- function(x,y) {
-cos(x)
-}
+# For a two variable system of differential equations we use the formula notation for dx/dt and the dy/dt separately:
+system_eq <- c(dx ~ cos(y),
+              dy ~ sin(x))
+phaseplane(system_eq,'x','y')
 
-dy <- function(x,y) {
- sin(y)
-}
+# For a one dimensional system: dy/dt = f(t,y).  In this case the xWindow represents time.
+# However, the code is structured a little differently.  Consider dy/dt = -y*(1-y):
 
-phaseplane(20,c(-3,3),c(-3,3),'x','y',dx,dy)
+system_eq <- c(dt ~ 1,
+               dy ~ -y*(1-y))
 
-# For a one dimensional system: dy/dx = f(x,y).  In this case the xWindow represents time.
-# However, the first function looks a little different.
+ phaseplane(system_eq,"t","y")
 
-dx <- function(x,y) {
-1
-}
+# Here is a second example for the differential equation dy/dt = -cos(t) y
 
-dy <- function(x,y) {
--y
-}
+system_eq <- c(dt ~ 1,
+               dy ~ -cos(t)*y
 
-phaseplane(20,c(-3,3),c(-3,3),'x','y',dx,dy)
+ phaseplane(system_eq,"t","y")
 
-# Here is a second example for the differential equation dy/dx = -cos(x) y
-
-dx <- function(x,y) {
-1
-}
-dy <- function(x,y) {
--cos(x)*y
-}
-
-phaseplane(20,c(-3,3),c(-3,3),'x','y',dx,dy)
+In this case there may be extraneous equilibrium solutions reported due to the time dependence in the differential equations - so be sure to verify your solutions!
 
 }

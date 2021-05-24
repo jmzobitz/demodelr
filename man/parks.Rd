@@ -4,7 +4,9 @@
 \name{parks}
 \alias{parks}
 \title{Visitor and resource usage to a national park}
-\format{A data frame with 8 rows and 3 variables}
+\format{
+A data frame with 8 rows and 3 variables
+}
 \source{
 Laura Sinay, Leon Sinay. 2006. “A Simple Mathematical Model for the Effects of the Growth of Tourism on Environment.”
 }

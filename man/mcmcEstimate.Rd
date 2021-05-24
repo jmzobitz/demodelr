@@ -4,8 +4,15 @@
 \alias{mcmcEstimate}
 \title{Markov Chain parameter estimates}
 \usage{
-mcmcEstimate(obs_data, indep_var, parameters, lower_bound, upper_bound,
-  iterations = 1500, burn_percent = 0.2)
+mcmcEstimate(
+  obs_data,
+  indep_var,
+  parameters,
+  lower_bound,
+  upper_bound,
+  iterations = 1500,
+  burn_percent = 0.2
+)
 }
 \arguments{
 \item{obs_data}{the data we need in order to solve optimize our cost function.}

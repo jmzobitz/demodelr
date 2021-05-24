@@ -7,8 +7,13 @@
 Code is adapted from: \url{https://cran.r-project.org/web/packages/broom/vignettes/bootstrapping.html}
 }
 \usage{
-bootstrap_model(data, regression_formula, n = 100, x_label = "x",
-  y_label = "y")
+bootstrap_model(
+  data,
+  regression_formula,
+  n = 100,
+  x_label = "x",
+  y_label = "y"
+)
 }
 \arguments{
 \item{data}{two column of data to be plotted.

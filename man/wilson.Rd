@@ -4,7 +4,9 @@
 \name{wilson}
 \alias{wilson}
 \title{Measured Weight of a dog over time}
-\format{A data frame with 19 rows and 2 variables}
+\format{
+A data frame with 19 rows and 2 variables
+}
 \source{
 From http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/
 }

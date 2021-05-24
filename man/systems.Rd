@@ -4,8 +4,14 @@
 \alias{systems}
 \title{Numerical solution for a differential equation.}
 \usage{
-systems(deltaT = 1, timeSteps = 1, initialCondition, FUN = dynamics,
-  parameters = parameters, returnData = FALSE)
+systems(
+  deltaT = 1,
+  timeSteps = 1,
+  initialCondition,
+  FUN = dynamics,
+  parameters = parameters,
+  returnData = FALSE
+)
 }
 \arguments{
 \item{deltaT}{Size of timesteps}

@@ -4,8 +4,7 @@
 \alias{plotRegression_Data}
 \title{\code{plotRegression_Data} fits a functional relationship to data, summarizes the results, and makes a plot of the fitted formula.}
 \usage{
-plotRegression_Data(data, regression_formula, x_label = "x",
-  y_label = "y")
+plotRegression_Data(data, regression_formula, x_label = "x", y_label = "y")
 }
 \arguments{
 \item{data}{two column of data to be plotted.
