@@ -1,17 +1,17 @@
 #' Euler's method solution for a differential equation.
 #'
-#' \code{euler} solves a multi-dimensional differential equation with Euler's method.
+#' \code{euler} solves a multi-dimensional differential equation with Euler's method.  The parameters listed as required are needed
 #' See the vignette for detailed examples of usage.
 
-#' @param deltaT Size of timesteps
+#' @param system_eq (REQUIRED) The 1 or 2 dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
 #' @param timeSteps Number of timesteps we solve.  deltaT*timeSteps = total time
-#' @param initialCondition Listing of initial conditions
-#' @param dynamics a Function that we have for our dynamics
-#' @param parameters The values of the parameters we are using
-#' @param returnData A T/F if we want to return just the solution data than a plot.
-#' @return A plot of your Euler's method solution
+#' @param initial_condition (REQUIRED) Listing of initial conditions, as a vector
+#' @param parameters The values of the parameters we are using (optional)
+#' @param t_start The starting time point (defaults to t = 0)
+#' @param deltaT The timestep length (defaults to 1)
+#' @param n_steps The number of timesteps to compute solution (defaults to n_steps = 1)
+#' @return A tidy of data frame the solutions
 #' @examples
-#' euler(deltaT,timeSteps,initialCondition,variableNames,FUN=dynamics,parameters=parameters)
 #' # Run the vignette that works through an example
 #' vignette("eulers-method")
 
@@ -20,62 +20,49 @@
 #' @import tidyr
 #' @export
 
-euler <- function(deltaT=1,timeSteps=1,initialCondition,FUN=dynamics,parameters=parameters,returnData=FALSE) {
+euler <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n_steps=1) {
 
-  #  A quick check in case we have a one dimensional system
-  if (is.null(dim(initialCondition))) {nSolns <- 1}
-  else { nSolns <- dim(initialCondition)[1] }
+    # Add time to our condition vector, identify the names
+    curr_vec <- c(init_cond,t=t_start)
+
+    vec_names <- names(curr_vec)
+
+    time_eq <- c(dt ~ 1)  # This is an equation to keep track of the dt
+    new_rate_eq <- c(system_eq,time_eq) %>%
+      formula.tools::rhs()
 
 
-  # Make a list of things we are bringing back
-  run_results <- vector("list", nSolns)
-  time = seq(from=0,by=deltaT,length.out=timeSteps)  # the output time vector
-  # Loop through all the initial conditions.
-  for(j in 1:nSolns) {
+    # Start building the list
+    out_list <- vector("list",length=n_steps)
+    out_list[[1]] <- curr_vec
 
-    if (nSolns ==1) {
-      soln <- initialCondition
-    } else {
-      soln <- initialCondition[j,]
+    for(i in 2:n_steps) {
+
+      # Define the list of inputs to the rate equation
+      in_list <- c(parameters,curr_vec) %>% as.list()
+
+      curr_rate <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
+        set_names(nm =vec_names)
+
+      # Now we add them together and update
+      v3 <- c(curr_vec, curr_rate*deltaT)
+      curr_vec <-  tapply(v3, names(v3), sum)
+
+      out_list[[i]] <- curr_vec
+
     }
 
-    newP <- soln
+    # Accumulate as we go and build up the data frame. This seems like magic.
+    out_results <- out_list %>%
+      bind_rows() %>%
+      relocate(t)  # Put t at the start
 
 
-    for (i in 2:timeSteps) {
-      oldP = newP
-      newP <-  unlist(dynamics(time[i],oldP,parameters))*deltaT+oldP   # Your differential equation goes here.
-      soln=rbind(soln,newP)
 
-    }
+    return(out_results)
 
-    run_results[[j]] <- data.frame(soln,row.names=NULL) %>%
-      mutate(run=j,time=time) %>%
-      gather(key=variables,value=value,-run,-time)
 
 
   }
-
-
-  # Gather the solution in a format for plotting.
-  outPlot <- run_results %>%
-    bind_rows() %>%
-    mutate(run=as.factor(run)) %>%
-    ggplot(aes(x=time, y=value,color=as.factor(run),shape=variables,group=run)) +
-    geom_line(size=2)+facet_grid(.~variables) +
-    labs(title="Euler's Method Solution",x="Time",y="")+
-    ### Expand the graph to make sure axes cross at (0,0)
-    expand_limits(y=0) +
-    theme(legend.position="none")
-
-  if(returnData) {
-
-    outData <- run_results %>% bind_rows() %>%
-      mutate(run=as.factor(run))
-    return(outData)
-  } else { return(outPlot) }
-
-}
-
 
 

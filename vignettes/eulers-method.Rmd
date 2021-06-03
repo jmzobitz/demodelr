@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
+NOTE: THIS NEEDS TO BE UPDATED WITH THE REVISED CODE FROM 2021
 Here we are going to show how we can utilize Euler's method to easily solve a system of differential equation.  To recap, the most general form of a differential equation is: 
 
 $$ \displaystyle \frac{d\vec{y}}{dt} = f(\vec{y},\vec{\alpha},t), $$
