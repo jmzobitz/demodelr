@@ -15,7 +15,7 @@ Must be a data.frame}
 
 \item{parameters}{The data frame matrix of values of the parameters we are using.  This will be made using expand.grid or equivalent}
 
-\item{logLikely}{Do we compute the log likelihood function (default is FALSE)}
+\item{logLikely}{Do we compute the log likelihood function (default is FALSE).  NOTE: what gets returned is - logLikely - meaning that this will be a positive number to work with.}
 }
 \value{
 A list with two entries: (1) the likelihood values and (2) values of parameters that optimize the likelihood.

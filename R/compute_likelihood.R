@@ -7,7 +7,7 @@
 #' First column is the independent variable, second column dependent variable.
 #' Must be a data.frame
 #' @param parameters The data frame matrix of values of the parameters we are using.  This will be made using expand.grid or equivalent
-#' @param logLikely Do we compute the log likelihood function (default is FALSE)
+#' @param logLikely Do we compute the log likelihood function (default is FALSE).  NOTE: what gets returned is - logLikely - meaning that this will be a positive number to work with.
 #' @return A list with two entries: (1) the likelihood values and (2) values of parameters that optimize the likelihood.
 
 #'
@@ -31,7 +31,7 @@ compute_likelihood <-function(model,data,parameters,logLikely=FALSE) {
     singlelikelihoods = dnorm(mydata, mean = y, sd = error, log = logLikely)
 
     if (logLikely) {
-      return(-sum(singlelikelihoods))
+      return(-sum(singlelikelihoods))  # Here we make the log likelihood positive.
     } else {
       return(prod(singlelikelihoods))
     }

@@ -14,7 +14,7 @@ euler(
 )
 }
 \arguments{
-\item{system_eq}{(REQUIRED) The 1 or 2 dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))}
+\item{system_eq}{(REQUIRED) The 1 or multi dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))}
 
 \item{initial_condition}{(REQUIRED) Listing of initial conditions, as a vector}
 

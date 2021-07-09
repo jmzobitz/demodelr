@@ -3,7 +3,7 @@
 #' \code{euler} solves a multi-dimensional differential equation with Euler's method.  The parameters listed as required are needed
 #' See the vignette for detailed examples of usage.
 
-#' @param system_eq (REQUIRED) The 1 or 2 dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
+#' @param system_eq (REQUIRED) The 1 or multi dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
 #' @param timeSteps Number of timesteps we solve.  deltaT*timeSteps = total time
 #' @param initial_condition (REQUIRED) Listing of initial conditions, as a vector
 #' @param parameters The values of the parameters we are using (optional)
@@ -15,7 +15,6 @@
 #' # Run the vignette that works through an example
 #' vignette("eulers-method")
 
-#' @import ggplot2
 #' @import dplyr
 #' @import tidyr
 #' @export
