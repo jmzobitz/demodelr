@@ -1,6 +1,6 @@
 #' Simulate a one dimensional random walk
 #'
-#' \code{randomWalk} does a 1-dimensional random walk where you are equally likely to move to the left or the right.
+#' \code{random_walk} does a 1-dimensional random walk where you are equally likely to move to the left or the right.
 #'
 #' @param steps number of steps you run the walk
 #' @param nSimulations the number of times you want to simulate the results
@@ -15,7 +15,7 @@
 #' @import tidyr
 #' @export
 
-randomWalk <- function(steps,nSimulations) {
+random_walk <- function(steps,nSimulations) {
 
 
   x <- array(0,dim=c(steps,nSimulations))
