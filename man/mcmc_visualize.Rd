@@ -4,7 +4,15 @@
 \alias{mcmc_visualize}
 \title{Markov Chain parameter estimates}
 \usage{
-mcmc_visualize(model, data, mcmc_out)
+mcmc_visualize(
+  model,
+  data,
+  mcmc_out,
+  mode = "emp",
+  initial_condition = NULL,
+  deltaT = NULL,
+  n_steps = NULL
+)
 }
 \arguments{
 \item{model}{the model equations that we use to compute the result.}
@@ -12,6 +20,14 @@ mcmc_visualize(model, data, mcmc_out)
 \item{data}{the data used to assess the model}
 
 \item{mcmc_out}{A dataframe: the first column is the accept flag  of the mcmc run (TRUE/FALSE), the log likelihood, and the parameter values}
+
+\item{mode}{two choices: emp --> empirical (default) or de --> differential equations. The estimator works differently depending on which is used.}
+
+\item{initial_condition}{The initial condition for the differential equation (DE mode only)}
+
+\item{deltaT}{The length between timesteps (DE mode only)}
+
+\item{n_steps}{The number of time steps we run the model (DE mode only)}
 }
 \description{
 \code{mcmc_visualize} Computes summary histograms and model-data comparisons from and Markov Chain Monte Carlo parameter estimate for a given model

@@ -4,7 +4,17 @@
 \alias{mcmc_estimate}
 \title{Markov Chain parameter estimates}
 \usage{
-mcmc_estimate(model, data, parameters, iterations = 1, knob_flag = FALSE)
+mcmc_estimate(
+  model,
+  data,
+  parameters,
+  iterations = 1,
+  knob_flag = FALSE,
+  mode = "emp",
+  initial_condition = NULL,
+  deltaT = NULL,
+  n_steps = NULL
+)
 }
 \arguments{
 \item{model}{the model equations that we use to compute the result.}
@@ -16,6 +26,14 @@ mcmc_estimate(model, data, parameters, iterations = 1, knob_flag = FALSE)
 \item{iterations}{the number of iterations we wish to run the MCMC for.}
 
 \item{knob_flag}{determines if we tune the range that can be search (annealling)}
+
+\item{mode}{two choices: emp --> empirical (default) or de --> differential equations. The estimator works differently depending on which is used.}
+
+\item{initial_condition}{The initial condition for the differential equation (DE mode only)}
+
+\item{deltaT}{The length between timesteps (DE mode only)}
+
+\item{n_steps}{The number of time steps we run the model (DE mode only)}
 }
 \value{
 A dataframe: the first column is the accept flag  of the mcmc run (TRUE/FALSE), the log likelihood, and the parameter values
