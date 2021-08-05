@@ -22,7 +22,7 @@
 rk4 <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n_steps=1) {
 
   # Add time to our condition vector, identify the names
-  curr_vec <- c(init_cond,t=t_start)
+  curr_vec <- c(initial_condition,t=t_start)
 
   vec_names <- names(curr_vec)
 
