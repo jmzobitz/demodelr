@@ -88,7 +88,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
 
       # Since we have the log likelihood we want to minimize the log likelihood.  If this is positive, then we may want to keep it
-      if (accept_flag & (l_diff < random_accept[[i]]  )   ) {
+      if (accept_flag & (l_diff < random_accept[[i]]  ) & !is.na(l_diff)   ) {
 
         # Update date the current parameters
         curr_param <- new_param
