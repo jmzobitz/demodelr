@@ -114,6 +114,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
       } else {
 
         accept_flag <- FALSE
+        l_diff <- NA
 
         if (knob_flag) {
           # Adjust bounds if we are rejecting:
@@ -327,6 +328,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
       } else {
 
         accept_flag <- FALSE
+        l_diff <- NA
 
         if (knob_flag) {
           # Adjust bounds if we are rejecting:
