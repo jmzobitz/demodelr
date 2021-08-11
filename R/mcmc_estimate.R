@@ -28,7 +28,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
              range = upper_bound-lower_bound) %>%
       rowwise() %>%
       mutate(value = runif(1,min=lower_bound,max=upper_bound)) %>%
-      relocate(name,value)
+      dplyr::relocate(name,value)
 
     # Have a vector that just gives out the current parameter values
     curr_param <- param_info %>%
@@ -153,7 +153,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
              range = upper_bound-lower_bound) %>%
       rowwise() %>%
       mutate(value = runif(1,min=lower_bound,max=upper_bound)) %>%
-      relocate(name,value)
+      dplyr::relocate(name,value)
 
     # Have a vector that just gives out the current parameter values
     curr_param <- param_info %>%
@@ -368,7 +368,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
           lhood = "likelihood") %>%
     unnest(cols=c(lhood)) %>%
     select(-log_lik) %>%
-    relocate(accept_flag,l_hood)
+    dplyr::relocate(accept_flag,l_hood)
 
 
   return(out_results)

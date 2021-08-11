@@ -49,20 +49,20 @@ phaseplane <- function(system_eq,x_var,y_var,x_window=c(-4,4),y_window=c(-4,4),p
   # Define the grid for our solution
   in_grid <- expand.grid(x=seq(x_window[1],x_window[2],length.out=n_points),
                          y=seq(y_window[1],y_window[2],length.out=n_points)) %>%
-    set_names(nm =c(x_var,y_var) )
+    purrr::set_names(nm =c(x_var,y_var) )
 
 
   skip_vec = tibble(x=seq(x_window[1],x_window[2],length.out=n_points),
                     y=seq(y_window[1],y_window[2],length.out=n_points)) %>%
     slice(c(seq(1,n_points,by=seq_by),n_points)) %>%
-    set_names(nm =c(x_var,y_var) )
+    purrr::set_names(nm =c(x_var,y_var) )
 
 
   # Create a vector of arrows
 
   vec_field<- in_grid %>%
     map(.x=system_eq,.f=~eval(formula.tools::rhs(.x),envir = in_grid)) %>%
-    set_names(nm =c("u","v") ) %>%
+    purrr::set_names(nm =c("u","v") ) %>%
     bind_cols()
 
 

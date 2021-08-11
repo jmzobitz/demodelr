@@ -22,7 +22,7 @@
 euler <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n_steps=1) {
 
     # Add time to our condition vector, identify the names
-    curr_vec <- c(init_cond,t=t_start)
+    curr_vec <- c(initial_condition,t=t_start)
 
     vec_names <- names(curr_vec)
 
@@ -41,7 +41,7 @@ euler <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1
       in_list <- c(parameters,curr_vec) %>% as.list()
 
       curr_rate <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
-        set_names(nm =vec_names)
+        purrr::set_names(nm =vec_names)
 
       # Now we add them together and update
       v3 <- c(curr_vec, curr_rate*deltaT)
@@ -54,7 +54,7 @@ euler <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1
     # Accumulate as we go and build up the data frame. This seems like magic.
     out_results <- out_list %>%
       bind_rows() %>%
-      relocate(t)  # Put t at the start
+      dplyr::relocate(t)  # Put t at the start
 
 
 

@@ -39,7 +39,7 @@ mcmc_visualize <- function(model, data, mcmc_out,mode="emp",initial_condition = 
     select(-accept_flag, -l_hood) %>%
     summarize(across(.fns = quantile, probs = c(0.025, 0.50, 0.975))) %>%
     mutate(probs = c("2.5%", "50%", "97.5%")) %>%
-    relocate(probs) %>%
+    dplyr::relocate(probs) %>%
     print()
 
 

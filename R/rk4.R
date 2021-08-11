@@ -42,19 +42,19 @@ rk4 <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n
 
     # This is our rate
     k1 <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
-      set_names(nm = vec_names)
+      purrr::set_names(nm = vec_names)
     in_list_k1 <- c(parameters,curr_vec+0.5*deltaT*k1) %>% as.list()
 
     k2 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k1) %>%
-      set_names(nm = vec_names)
+      purrr::set_names(nm = vec_names)
     in_list_k2 <- c(parameters,curr_vec+0.5*deltaT*k2) %>% as.list()
 
     k3 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k2) %>%
-      set_names(nm = vec_names)
+      purrr::set_names(nm = vec_names)
 
     in_list_k3 <- c(parameters,curr_vec+deltaT*k3) %>% as.list()
     k4 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k3) %>%
-      set_names(nm = vec_names)
+      purrr::set_names(nm = vec_names)
 
     curr_vec <- curr_vec + 1/6*deltaT*(k1+2*k2+2*k3+k4)
 
@@ -65,7 +65,7 @@ rk4 <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n
   # Accumulate as we go and build up the data frame. This seems like magic.
   out_results <- out_list %>%
     bind_rows() %>%
-    relocate(t)  # Put t at the start
+    dplyr::relocate(t)  # Put t at the start
 
 
 

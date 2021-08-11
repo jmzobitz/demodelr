@@ -80,10 +80,10 @@ birth_death_stochastic <- function(birth_rate,death_rate,init_cond,parameters=NU
     in_list <- c(parameters,curr_vec) %>% as.list()
 
     curr_mean <-sapply(new_mean_eq,FUN=eval,envir=in_list) %>%
-      set_names(nm =vec_names)
+      purrr::set_names(nm =vec_names)
 
     curr_std <-sapply(new_std_eq,FUN=eval,envir=in_list) %>%
-      set_names(nm =vec_names)
+      purrr::set_names(nm =vec_names)
 
     # For a system of equations we need to compute the matrix square root. This should work even for systems where we have one equation
     sqrt_matrix <- (Re(expm::sqrtm(curr_std[1:(n_vars-1)] %*% t(curr_std[1:(n_vars-1)])) ))
@@ -93,7 +93,7 @@ birth_death_stochastic <- function(birth_rate,death_rate,init_cond,parameters=NU
 
     # This is our update equation
     out_compute <- (s_rev*sigma*sqrt(deltaT)) %*% rnorm(n_vars) %>%
-      set_names(nm =vec_names)
+      purrr::set_names(nm =vec_names)
 
     # Now we add them together and update
     v3 <- c(curr_vec, curr_mean*deltaT,out_compute)
@@ -109,7 +109,7 @@ birth_death_stochastic <- function(birth_rate,death_rate,init_cond,parameters=NU
   # Accumulate as we go and build up the data frame. This seems like magic.
   out_results <- out_list %>%
     bind_rows() %>%
-    relocate(t)  # Put t at the start
+    dplyr::relocate(t)  # Put t at the start
 
 
 

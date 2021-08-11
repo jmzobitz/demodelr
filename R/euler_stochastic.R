@@ -50,10 +50,10 @@ euler_stochastic <- function(deterministic_rate,stochastic_rate,init_cond,parame
     in_list <- c(parameters,curr_vec) %>% as.list()
 
     curr_rate <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
-      set_names(nm =vec_names)
+      purrr::set_names(nm =vec_names)
 
     curr_stoch_rate <-sapply(new_stochastic_rate,FUN=eval,envir=in_list) %>%
-      set_names(nm =vec_names)
+      purrr::set_names(nm =vec_names)
 
     # Now we add them together and update
     v3 <- c(curr_vec, curr_rate*deltaT,curr_stoch_rate*sigma*sqrt(deltaT)*rnorm(n_vars))
@@ -68,7 +68,7 @@ euler_stochastic <- function(deterministic_rate,stochastic_rate,init_cond,parame
   # Accumulate as we go and build up the data frame. This seems like magic.
   out_results <- out_list %>%
     bind_rows() %>%
-    relocate(t)  # Put t at the start
+    dplyr::relocate(t)  # Put t at the start
 
 
 
