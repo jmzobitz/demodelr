@@ -53,7 +53,7 @@ mcmc_visualize <- function(model, data, mcmc_out,mode="emp",initial_condition = 
 
   if (mode == "emp") {
     # Get the right hand side of your equations
-    new_eq <- my_model %>%
+    new_eq <- model %>%
       formula.tools::rhs()
 
     # Internal function to compute the model
