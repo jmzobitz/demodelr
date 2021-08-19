@@ -10,7 +10,6 @@
 #' @param deltaT The length between timesteps (DE mode only)
 #' @param n_steps The number of time steps we run the model (DE mode only)
 #'
-#' @import FME
 #' @import GGally
 #' @import dplyr
 #' @import ggplot2
