@@ -2,7 +2,7 @@ Package: demodelr
 Type: Package
 Title: Simulating differential equations with data.
 Version: 1.0.0
-Depends: R (>= 3.4.1)
+Depends: R (>= 4.1.1)
 Author: John Zobitz
 Maintainer: <zobitz@augsburg.edu>
 Description: A collection of files for use with the text Exploring modeling with data and differential equations using R.
@@ -11,10 +11,11 @@ Encoding: UTF-8
 LazyData: true
 Imports: tidyverse,
     ggplot2,
-    ggquiver,
-    deSolve,
+    purrr,
     tidyr,
-    dplyr
+    dplyr,
+    formula.tools,
+    GGally
 RoxygenNote: 7.1.1
 Suggests: knitr,
     rmarkdown
