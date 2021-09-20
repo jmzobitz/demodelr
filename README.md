@@ -9,8 +9,8 @@ Installation in R is done through the devtools package:
 If you encounter problems with code in this repository, feel free to post an [issue](https://github.com/jmzobitz/demodelr/issues).
 
 ## License
-This work is distributed under the Creative Commons, Attribution-Non Commercial 4.0 License.  You may copy, distribute, display and perform the work and make derivative works and remixes based on it only if they give the author (Zobitz) attribute and use it for non-commerical purposes.
+This work is distributed under the Creative Commons, Attribution-Non Commercial 4.0 License.  You may copy, distribute, display and perform the work and make derivative works and remixes based on it only if they give the author (Zobitz) attribution and use it for non-commerical purposes.
 
 ## Disclaimer
-Information and documents contained within this repository are available as-is. Codes or documents, or their use, may not be supported or maintained under any program or service and may not be compatible with data currently available from the NEON Data Portal.
+Information and documents contained within this repository are available as-is. Codes or documents, or their use, may not be supported or maintained under any program or service.
 
