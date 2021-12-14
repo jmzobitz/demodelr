@@ -4,6 +4,7 @@
 #' @param system_eq (REQUIRED) The 1 or 2 dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
 #' @param x_var (REQUIRED) x axis variable (used in plot and formula)
 #' @param y_var (REQUIRED) y axis variable (used in plot and formula)
+#' @param parameters The values of the parameters we are using (optional)
 #' @param x_window x axis limits.  Must be of the form c(minVal,maxVal).  Defaults to -4 to 4.
 #' @param y_window y axis limits.  Must be of the form c(minVal,maxVal). Defaults to -4 to 4.
 #' @param plot_points number of points we evaluate on the grid in both directions. Defaults to 10.
@@ -40,7 +41,7 @@
 
 
 
-phaseplane <- function(system_eq,x_var,y_var,x_window=c(-4,4),y_window=c(-4,4),plot_points=10,eq_soln=FALSE)
+phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_window=c(-4,4),plot_points=10,eq_soln=FALSE)
 {
   n_points = 2000 # Default number of grid points in each direction
 
@@ -60,10 +61,23 @@ phaseplane <- function(system_eq,x_var,y_var,x_window=c(-4,4),y_window=c(-4,4),p
 
   # Create a vector of arrows
 
-  vec_field<- in_grid %>%
-    map(.x=system_eq,.f=~eval(formula.tools::rhs(.x),envir = in_grid)) %>%
+  # PROPOSED
+  # Define the list of inputs to the rate equation
+  in_list <- c(parameters,in_grid) %>% as.list()
+
+  new_rate_eq <- system_eq %>%
+    formula.tools::rhs()
+
+  vec_field <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
+    as_tibble() %>%
     purrr::set_names(nm =c("u","v") ) %>%
     bind_cols()
+
+  # # CURR
+  # vec_field<- in_grid %>%
+  #   map(.x=system_eq,.f=~eval(formula.tools::rhs(.x),envir = in_grid)) %>%
+  #   purrr::set_names(nm =c("u","v") ) %>%
+  #   bind_cols()
 
 
   p <- in_grid %>%
@@ -99,6 +113,7 @@ phaseplane <- function(system_eq,x_var,y_var,x_window=c(-4,4),y_window=c(-4,4),p
         distinct()  # Check if they are unique
 
       eq_pts_print <- eq_pts
+
     }
 
 
