@@ -8,6 +8,7 @@ phaseplane(
   system_eq,
   x_var,
   y_var,
+  parameters = NULL,
   x_window = c(-4, 4),
   y_window = c(-4, 4),
   plot_points = 10,
@@ -20,6 +21,8 @@ phaseplane(
 \item{x_var}{(REQUIRED) x axis variable (used in plot and formula)}
 
 \item{y_var}{(REQUIRED) y axis variable (used in plot and formula)}
+
+\item{parameters}{The values of the parameters we are using (optional)}
 
 \item{x_window}{x axis limits.  Must be of the form c(minVal,maxVal).  Defaults to -4 to 4.}
 
