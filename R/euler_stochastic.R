@@ -10,7 +10,7 @@
 #' @param t_start The starting time point (defaults to t = 0)
 #' @param deltaT The timestep length (defaults to 1)
 #' @param n_steps The number of timesteps to compute solution (defaults to n_steps = 1)
-#' @param sigma scaling factor for of the stochastic part of the SDE
+#' @param D diffusion coefficient for the stochastic part of the SDE
 
 #' @return A tidy of data frame the solutions
 
@@ -23,7 +23,7 @@
 #' @import tidyr
 #' @export
 
-euler_stochastic <- function(deterministic_rate,stochastic_rate,init_cond,parameters=NULL,t_start=0,deltaT=1,n_steps=1,sigma=1) {
+euler_stochastic <- function(deterministic_rate,stochastic_rate,init_cond,parameters=NULL,t_start=0,deltaT=1,n_steps=1,D=1) {
 
   # Add time to our condition vector, identify the names
   curr_vec <- c(init_cond,t=t_start)
@@ -56,7 +56,7 @@ euler_stochastic <- function(deterministic_rate,stochastic_rate,init_cond,parame
       purrr::set_names(nm =vec_names)
 
     # Now we add them together and update
-    v3 <- c(curr_vec, curr_rate*deltaT,curr_stoch_rate*sigma*sqrt(deltaT)*rnorm(n_vars))
+    v3 <- c(curr_vec, curr_rate*deltaT,curr_stoch_rate*sqrt(2*D*deltaT)*rnorm(n_vars))
     curr_vec <-  tapply(v3, names(v3), sum)
 
     out_list[[i]] <- curr_vec
@@ -77,5 +77,3 @@ euler_stochastic <- function(deterministic_rate,stochastic_rate,init_cond,parame
 
 
 }
-
-

@@ -12,7 +12,7 @@ euler_stochastic(
   t_start = 0,
   deltaT = 1,
   n_steps = 1,
-  sigma = 1
+  D = 1
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ euler_stochastic(
 
 \item{n_steps}{The number of timesteps to compute solution (defaults to n_steps = 1)}
 
-\item{sigma}{scaling factor for of the stochastic part of the SDE}
+\item{D}{diffusion coefficient for the stochastic part of the SDE}
 }
 \value{
 A tidy of data frame the solutions
