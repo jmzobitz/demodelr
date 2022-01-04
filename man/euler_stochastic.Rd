@@ -7,7 +7,7 @@
 euler_stochastic(
   deterministic_rate,
   stochastic_rate,
-  init_cond,
+  initial_condition,
   parameters = NULL,
   t_start = 0,
   deltaT = 1,
@@ -20,7 +20,7 @@ euler_stochastic(
 
 \item{stochastic_rate}{The 1 or multi dimensional system of equations for the stochastic part of the differential equation, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))}
 
-\item{init_cond}{Listing of initial conditions (we can only do one initial condition)}
+\item{initial_condition}{(REQUIRED) Listing of initial conditions, as a vector}
 
 \item{parameters}{The values of the parameters we are using}
 

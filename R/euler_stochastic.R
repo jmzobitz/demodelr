@@ -5,7 +5,7 @@
 
 #' @param deterministic_rate The 1 or multi dimensional system of equations for the deterministic part of the differential equation, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
 #' @param stochastic_rate The 1 or multi dimensional system of equations for the stochastic part of the differential equation, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
-#' @param init_cond Listing of initial conditions (we can only do one initial condition)
+#' @param initial_condition (REQUIRED) Listing of initial conditions, as a vector
 #' @param parameters The values of the parameters we are using
 #' @param t_start The starting time point (defaults to t = 0)
 #' @param deltaT The timestep length (defaults to 1)
@@ -23,7 +23,7 @@
 #' @import tidyr
 #' @export
 
-euler_stochastic <- function(deterministic_rate,stochastic_rate,init_cond,parameters=NULL,t_start=0,deltaT=1,n_steps=1,D=1) {
+euler_stochastic <- function(deterministic_rate,stochastic_rate,initial_condition,parameters=NULL,t_start=0,deltaT=1,n_steps=1,D=1) {
 
   # Add time to our condition vector, identify the names
   curr_vec <- c(init_cond,t=t_start)
