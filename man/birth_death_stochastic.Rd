@@ -12,7 +12,7 @@ birth_death_stochastic(
   t_start = 0,
   deltaT = 1,
   n_steps = 1,
-  sigma = 1
+  D = 1
 )
 }
 \arguments{

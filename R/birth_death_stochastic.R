@@ -24,7 +24,7 @@
 #' @import tidyr
 #' @export
 
-birth_death_stochastic <- function(birth_rate,death_rate,initial_condition,parameters=NULL,t_start=0,deltaT=1,n_steps=1,sigma=1) {
+birth_death_stochastic <- function(birth_rate,death_rate,initial_condition,parameters=NULL,t_start=0,deltaT=1,n_steps=1,D=1) {
 
   # Add time to our condition vector, identify the names
   curr_vec <- c(initial_condition,t=t_start)
