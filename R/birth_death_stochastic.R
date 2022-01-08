@@ -5,12 +5,12 @@
 
 #' @param birth_rate The 1 or multi dimensional system of equations for the birth rate, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
 #' @param death_rate The 1 or multi dimensional system of equations for the death rate of the differential equation, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
-#' @param init_cond Listing of initial conditions (we can only do one initial condition)
+#' @param initial_condition (REQUIRED) Listing of initial conditions (we can only do one initial condition)
 #' @param parameters The values of the parameters we are using
 #' @param t_start The starting time point (defaults to t = 0)
 #' @param deltaT The timestep length (defaults to 1)
 #' @param n_steps The number of timesteps to compute solution (defaults to n_steps = 1)
-#' @param sigma scaling factor for of the stochastic part of the SDE
+#' @param D diffusion coefficient for the stochastic part of the SDE
 
 #' @return A tidy of data frame the solutions
 
@@ -24,10 +24,10 @@
 #' @import tidyr
 #' @export
 
-birth_death_stochastic <- function(birth_rate,death_rate,init_cond,parameters=NULL,t_start=0,deltaT=1,n_steps=1,sigma=1) {
+birth_death_stochastic <- function(birth_rate,death_rate,initial_condition,parameters=NULL,t_start=0,deltaT=1,n_steps=1,sigma=1) {
 
   # Add time to our condition vector, identify the names
-  curr_vec <- c(init_cond,t=t_start)
+  curr_vec <- c(initial_condition,t=t_start)
 
   vec_names <- names(curr_vec)
   n_vars <- length(vec_names)  # Number of variables
@@ -92,7 +92,7 @@ birth_death_stochastic <- function(birth_rate,death_rate,init_cond,parameters=NU
     s_rev <- rbind(cbind(sqrt_matrix,0),0)
 
     # This is our update equation
-    out_compute <- (s_rev*sigma*sqrt(deltaT)) %*% rnorm(n_vars) %>%
+    out_compute <- (s_rev**sqrt(2*D*deltaT)) %*% rnorm(n_vars) %>%
       purrr::set_names(nm =vec_names)
 
     # Now we add them together and update
