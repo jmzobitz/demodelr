@@ -1,6 +1,6 @@
 #' Markov Chain parameter estimates
 #'
-#' \code{mcmc_visualize} Computes summary histograms and model-data comparisons from and Markov Chain Monte Carlo parameter estimate for a given model
+#' \code{mcmc_analyze} Computes summary histograms and model-data comparisons from and Markov Chain Monte Carlo parameter estimate for a given model
 #'
 #' @param model the model equations that we use to compute the result.
 #' @param data the data used to assess the model
@@ -18,7 +18,7 @@
 
 
 
-mcmc_visualize <- function(model, data, mcmc_out,mode="emp",initial_condition = NULL,deltaT = NULL,n_steps=NULL) {
+mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NULL,deltaT = NULL,n_steps=NULL) {
 
   # rename this to avoid confusion
   in_data <- data
@@ -75,19 +75,13 @@ mcmc_visualize <- function(model, data, mcmc_out,mode="emp",initial_condition = 
       mutate(m_data = lapply(X = in_params, FUN = compute_model, new_eq, in_data)) %>%
       unnest(cols = c(m_data)) %>%
       ungroup() %>%
-      select(-id, -in_params) %>%
-      group_by(across(1)) %>%
-      summarize(across(.cols = c("model"), .fns = quantile, probs = c(0.025, 0.50, 0.975))) %>%
-      mutate(probs = c("q025", "q50", "q975")) %>%
-      ungroup() %>%
-      pivot_wider(names_from = "probs", values_from = "model")
+      select(-id, -in_params)
 
-
+    glimpse(out_model)
     ggplot(out_model) +
-      geom_line(aes_string(x = independent_var, y = "q50")) +
-      geom_ribbon(aes_string(x = independent_var, ymin = "q025", ymax = "q975"), alpha = 0.3) +
+      geom_boxplot(aes_string(x = independent_var, y = "model",group = independent_var)) +
       geom_point(data = in_data, aes_string(x = independent_var, y = names(in_data)[2]), color = "red", size = 2) +
-      labs(y = "")
+      labs(y = names(in_data)[2])
 
 
   } else if (mode == "de") {
