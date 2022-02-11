@@ -79,8 +79,8 @@ mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NU
 
     glimpse(out_model)
     ggplot(out_model) +
-      geom_boxplot(aes_string(x = independent_var, y = "model",group = independent_var)) +
-      geom_point(data = in_data, aes_string(x = independent_var, y = names(in_data)[2]), color = "red", size = 2,shape = 15) +
+      geom_boxplot(aes_string(x = independent_var, y = "model",group = independent_var),outlier.shape = NA) +
+      geom_point(data = in_data, aes_string(x = independent_var, y = names(in_data)[2]), color = "red", size = 2) +
       labs(y = names(in_data)[2])
 
 
