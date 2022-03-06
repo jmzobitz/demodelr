@@ -61,7 +61,6 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
   # Create a vector of arrows
 
-  # PROPOSED
   # Define the list of inputs to the rate equation
   in_list <- c(parameters,in_grid) %>% as.list()
 
@@ -69,16 +68,9 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
     formula.tools::rhs()
 
   vec_field <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
-    as_tibble() %>%
+    as_tibble(.name_repair = make.names) %>%
     purrr::set_names(nm =c("u","v") ) %>%
     bind_cols()
-
-  # # CURR
-  # vec_field<- in_grid %>%
-  #   map(.x=system_eq,.f=~eval(formula.tools::rhs(.x),envir = in_grid)) %>%
-  #   purrr::set_names(nm =c("u","v") ) %>%
-  #   bind_cols()
-
 
   p <- in_grid %>%
     cbind(vec_field) %>%
