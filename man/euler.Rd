@@ -25,17 +25,39 @@ euler(
 \item{deltaT}{The timestep length (defaults to 1)}
 
 \item{n_steps}{The number of timesteps to compute solution (defaults to n_steps = 1)}
-
-\item{timeSteps}{Number of timesteps we solve.  deltaT*timeSteps = total time}
 }
 \value{
-A tidy of data frame the solutions
+A tidy of data frame for the calculated solutions and the time
 }
 \description{
 \code{euler} solves a multi-dimensional differential equation with Euler's method.  The parameters listed as required are needed
 See the vignette for detailed examples of usage.
 }
 \examples{
-# Run the vignette that works through an example
-vignette("eulers-method")
+# Define the rate equation:
+lynx_hare_eq <- c(
+ dHdt ~ r * H - b * H * L,
+ dLdt ~ e * b * H * L - d * L
+)
+
+# Define the parameters (as a named vector):
+lynx_hare_params <- c(r = 2, b = 0.5, e = 0.1, d = 1)
+
+# Define the initial condition (as a named vector):
+lynx_hare_init <- c(H = 1, L = 3)
+
+# Define deltaT and the number of time steps:
+deltaT <- 0.05
+n_steps <- 200
+
+# Compute the solution via Euler's method:
+out_solution <- euler(system_eq = lynx_hare_eq,
+                     parameters = lynx_hare_params,
+                     initial_condition = lynx_hare_init,
+                     deltaT = deltaT,
+                     n_steps = n_steps
+)
+}
+\seealso{
+\code{\link{rk4}}
 }

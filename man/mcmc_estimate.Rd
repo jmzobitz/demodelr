@@ -25,7 +25,7 @@ mcmc_estimate(
 
 \item{iterations}{the number of iterations we wish to run the MCMC for.}
 
-\item{knob_flag}{determines if we tune the range that can be search (annealling)}
+\item{knob_flag}{determines if we tune the range that can be search (annealing)}
 
 \item{mode}{two choices: emp --> empirical (default) or de --> differential equations. The estimator works differently depending on which is used.}
 
@@ -40,4 +40,53 @@ A dataframe: the first column is the accept flag  of the mcmc run (TRUE/FALSE), 
 }
 \description{
 \code{mcmc_estimate} Computes and Markov Chain Monte Carlo parameter estimate for a given model
+}
+\examples{
+## Example with an empirical model:
+## Step 1: Define the model and parameters
+phos_model <- daphnia ~ c * algae^(1 / theta)
+
+phos_param <- tibble::tibble( name = c("c", "theta"), lower_bound = c(0, 1), upper_bound = c(2, 20))
+
+## Step 2: Determine MCMC settings
+# Define the number of iterations
+phos_iter <- 1000
+
+## Step 3: Compute MCMC estimate
+phos_mcmc <- mcmc_estimate(model = phos_model,
+data = phosphorous,
+parameters = phos_param,
+iterations = phos_iter)
+
+## Example with a differential equation:
+## Step 1: Define the model, parameters, and data
+## Define the tourism model
+tourism_model <- c(dRdt ~ resources * (1 - resources) - a * visitors,
+dVdt ~ b * visitors * (resources - visitors))
+# Define the parameters that you will use with their bounds
+tourism_param <- tibble::tibble( name = c("a", "b"), lower_bound = c(10, 0), upper_bound = c(30, 5))
+
+## Step 2: Determine MCMC settings
+# Define the initial conditions
+tourism_init <- c(resources = 0.995, visitors = 0.00167)
+deltaT <- .1 # timestep length
+n_steps <- 15 # must be a number greater than 1
+# Define the number of iterations
+tourism_iter <- 1000
+
+## Step 3: Compute MCMC estimate
+tourism_out <- mcmc_estimate(
+ model = tourism_model,
+ data = parks,
+ parameters = tourism_param,
+ mode = "de",
+ initial_condition = tourism_init, deltaT = deltaT,
+ n_steps = n_steps,
+ iterations = tourism_iter)
+
+
+
+}
+\seealso{
+\code{\link{mcmc_analyze}}
 }

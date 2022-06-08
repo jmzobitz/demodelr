@@ -23,3 +23,22 @@ A list with two entries: (1) the likelihood values and (2) values of parameters 
 \description{
 \code{compute_likelihood} computes the likelihood for a model
 }
+\examples{
+### Contour plot of a logistic model for two parameters K and b
+### using data collected from growth of yeast population
+
+# Define the solution to the differential equation with
+# parameters K and b Gause model equation
+gause_model <- volume ~ K / (1 + exp(log(K / 0.45 - 1) - b * time))
+# Identify the ranges of the parameters that we wish to investigate
+kParam <- seq(5, 20, length.out = 100)
+bParam <- seq(0, 1, length.out = 100)
+# Allow for all the possible combinations of parameters
+gause_parameters <- expand.grid(K = kParam, b = bParam)
+# Now compute the likelihood
+gause_likelihood <- compute_likelihood( model = gause_model,
+                                       data = yeast,
+                                       parameters = gause_parameters,
+                                       logLikely = FALSE
+)
+}

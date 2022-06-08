@@ -14,7 +14,7 @@ The data were collected from Community Collaborative Rain Hail and Snow Network 
 data(precipitation)
 }
 \description{
-A dataset containing measured precipitation data from the Minneapolis St. Oaul Area:
+A dataset containing measured precipitation data from the Minneapolis St. Paul Area:
 }
 \details{
 \itemize{
@@ -22,7 +22,7 @@ A dataset containing measured precipitation data from the Minneapolis St. Oaul A
   \item time. Time measurement is made
   \item station_id Shorthand name for station in CoCoRaHS network
   \item station_name Name of station in CoCoRaHS network
-  \item precip. Observed precipitiation (inches)
+  \item precip. Observed precipitation (inches)
 }
 }
 \keyword{datasets}

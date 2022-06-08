@@ -7,15 +7,68 @@
 #' @param data the data used to assess the model
 #' @param parameters a data frame that lists the names of the parameters along with upper and lower bounds
 #' @param iterations the number of iterations we wish to run the MCMC for.
-#' @param knob_flag determines if we tune the range that can be search (annealling)
+#' @param knob_flag determines if we tune the range that can be search (annealing)
 #' @param mode two choices: emp --> empirical (default) or de --> differential equations. The estimator works differently depending on which is used.
 #' @param initial_condition The initial condition for the differential equation (DE mode only)
 #' @param deltaT The length between timesteps (DE mode only)
 #' @param n_steps The number of time steps we run the model (DE mode only)
 
 #' @return A dataframe: the first column is the accept flag  of the mcmc run (TRUE/FALSE), the log likelihood, and the parameter values
+#'
+#' @seealso \code{\link{mcmc_analyze}}
+#'
+#' @examples
+#' ## Example with an empirical model:
+#' ## Step 1: Define the model and parameters
+#' phos_model <- daphnia ~ c * algae^(1 / theta)
+#'
+# ## Define the parameters that you will use with their bounds
+#' phos_param <- tibble::tibble( name = c("c", "theta"), lower_bound = c(0, 1), upper_bound = c(2, 20))
+#'
+#' ## Step 2: Determine MCMC settings
+#' # Define the number of iterations
+#' phos_iter <- 1000
+#'
+#' ## Step 3: Compute MCMC estimate
+#' phos_mcmc <- mcmc_estimate(model = phos_model,
+#' data = phosphorous,
+#' parameters = phos_param,
+#' iterations = phos_iter)
+#'
+#' ## Example with a differential equation:
+#' ## Step 1: Define the model, parameters, and data
+#' ## Define the tourism model
+#' tourism_model <- c(dRdt ~ resources * (1 - resources) - a * visitors,
+#' dVdt ~ b * visitors * (resources - visitors))
+#' # Define the parameters that you will use with their bounds
+#' tourism_param <- tibble::tibble( name = c("a", "b"), lower_bound = c(10, 0), upper_bound = c(30, 5))
+#'
+#' ## Step 2: Determine MCMC settings
+#' # Define the initial conditions
+#' tourism_init <- c(resources = 0.995, visitors = 0.00167)
+#' deltaT <- .1 # timestep length
+#' n_steps <- 15 # must be a number greater than 1
+#' # Define the number of iterations
+#' tourism_iter <- 1000
+#'
+#' ## Step 3: Compute MCMC estimate
+#' tourism_out <- mcmc_estimate(
+#'  model = tourism_model,
+#'  data = parks,
+#'  parameters = tourism_param,
+#'  mode = "de",
+#'  initial_condition = tourism_init, deltaT = deltaT,
+#'  n_steps = n_steps,
+#'  iterations = tourism_iter)
+#'
+#'
 
+#'
+#' @importFrom rlang .data
+#' @importFrom stats sd runif rexp
 #' @import dplyr
+#' @import tibble
+#' @import tidyr
 #' @export
 
 
@@ -24,16 +77,16 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
   if (mode == "emp") {
 
     param_info <- parameters %>%
-      mutate(knob=1,
-             range = upper_bound-lower_bound) %>%
-      rowwise() %>%
-      mutate(value = runif(1,min=lower_bound,max=upper_bound)) %>%
-      dplyr::relocate(name,value)
+      dplyr::mutate(knob=1,
+             range = .data$upper_bound-.data$lower_bound) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(value = runif(1,min=.data$lower_bound,max=.data$upper_bound)) %>%
+      dplyr::relocate(.data$name,.data$value)
 
     # Have a vector that just gives out the current parameter values
     curr_param <- param_info %>%
-      select(name,value) %>%
-      pivot_wider()
+      dplyr::select(.data$name,.data$value) %>%
+      tidyr::pivot_wider()
 
     # The current likelihood for comparison
     curr_likelihood <- compute_likelihood(model,data,curr_param,logLikely = TRUE)$likelihood
@@ -45,8 +98,8 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
     # Identify which params we want to use and the tuning
     param_samples <- sample(param_info$name,size=iterations,replace=TRUE)
-    tune_values <- runif(iterations)-0.5
-    random_accept = rexp(iterations)  # A test to see if we want to keep a parameter that is slightly worse
+    tune_values <- stats::runif(iterations)-0.5
+    random_accept = stats::rexp(iterations)  # A test to see if we want to keep a parameter that is slightly worse
 
     # Define some ctarget values
     A_STAR<-0.4  # target acceptance rate
@@ -64,16 +117,17 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
       # Sample one of the parameters
       sample_param <- param_info %>%
-        mutate(old_value = value,
-               value = if_else(name==curr_sample,
-                               knob * range * curr_tune+value,value),
-               in_bounds = between(value,lower_bound,upper_bound))
+        dplyr::mutate(old_value = .data$value,
+               value = if_else(.data$name==curr_sample,
+                               .data$knob * range * curr_tune+.data$value,.data$value),
+               in_bounds = between(.data$value,.data$lower_bound,.data$upper_bound))
 
 
       if (sum(sample_param$in_bounds) == nParams) {  # If we are in the ranges, then go, otherwise ignore
 
         new_param <- sample_param %>%
-          select(name,value) %>% pivot_wider()
+          dplyr::select(.data$name,.data$value) %>%
+          tidyr::pivot_wider()
 
         sample_likelihood <- compute_likelihood(model,data,new_param,logLikely = TRUE)$likelihood
 
@@ -99,13 +153,13 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
         if (knob_flag) {
           param_info <- sample_param %>%
-            mutate(knob = if_else(name==curr_sample,
-                                  max(knob*INC,1e-8),knob) ) %>%
-            select(-in_bounds)
+            dplyr::mutate(knob = if_else(.data$name==curr_sample,
+                                  max(.data$knob*INC,1e-8),.data$knob) ) %>%
+            dplyr::select(-.data$in_bounds)
 
         } else {
           param_info <- sample_param %>%
-            select(-in_bounds)
+            dplyr::select(-.data$in_bounds)
         }
 
 
@@ -119,15 +173,15 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
         if (knob_flag) {
           # Adjust bounds if we are rejecting:
           param_info <- sample_param %>%
-            mutate(value = old_value,
-                   knob = if_else(name==curr_sample,
-                                  max(knob*DEC,1e-8),knob) ) %>%
-            select(-old_value,-in_bounds)
+            dplyr::mutate(value = .data$old_value,
+                   knob = if_else(.data$name==curr_sample,
+                                  max(.data$knob*DEC,1e-8),.data$knob) ) %>%
+            dplyr::select(-.data$old_value,-.data$in_bounds)
         } else {
           # Adjust bounds if we are accepting:
           param_info <- sample_param %>%
-            mutate(value = old_value) %>%
-            select(-old_value,-in_bounds)
+            dplyr::mutate(value = .data$old_value) %>%
+            dplyr::select(-.data$old_value,-.data$in_bounds)
         }
 
 
@@ -149,27 +203,27 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
   } else if (mode == "de") {  # Differential equation mode
 
     param_info <- parameters %>%
-      mutate(knob=1,
-             range = upper_bound-lower_bound) %>%
-      rowwise() %>%
-      mutate(value = runif(1,min=lower_bound,max=upper_bound)) %>%
-      dplyr::relocate(name,value)
+      dplyr::mutate(knob=1,
+             range = .data$upper_bound-.data$lower_bound) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(value = runif(1,min=.data$lower_bound,max=.data$upper_bound)) %>%
+      dplyr::relocate(.data$name,.data$value)
 
     # Have a vector that just gives out the current parameter values
     curr_param <- param_info %>%
-      select(name,value) %>%
-      pivot_wider()
+      dplyr::select(.data$name,.data$value) %>%
+      tidyr::pivot_wider()
 
     # Define this as a vector solution
     curr_param_vec <- param_info %>%
-      select(name,value) %>%
-      deframe()
+      dplyr::select(.data$name,.data$value) %>%
+      tibble::deframe()
 
     # Mutate the data in a long format for comparison
     data_long <- data %>%
-      pivot_longer(cols=c(-1)) %>%
-      rename(t=1) %>%
-      mutate(type="data")
+      tidyr::pivot_longer(cols=c(-1)) %>%
+      dplyr::rename(t=1) %>%
+      dplyr::mutate(type="data")
 
     # Compute the model values, pivot longer, nest
     out_solution <- rk4(model,
@@ -180,24 +234,24 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
     # Make the solution long, add in the long data, nest, and pivot. This helps the linear approximation
     out_solution_long <- out_solution %>%
-      pivot_longer(cols=c(-"t")) %>%
-      mutate(type="model") %>%
+      tidyr::pivot_longer(cols=c(-"t")) %>%
+      dplyr::mutate(type="model") %>%
       rbind(data_long) %>%
-      group_by(name,type) %>% nest() %>%
-      pivot_wider(names_from="type",values_from="data")
+      dplyr::group_by(.data$name,.data$type) %>% nest() %>%
+      tidyr::pivot_wider(names_from="type",values_from="data")
 
     # Now apply the map to get out the model results AT the timesteps the data are measured at
     out_solution_trim <- out_solution_long %>%
-      mutate(model_results = map2(.x=model, .y=data,.f=~(approx(.x$t, .x$value, xout = .y$t, method = "linear") %>% as_tibble()))) %>%
-      select(-model,-data) %>%
-      unnest(cols=c(model_results)) %>%
-      rename(t=x,value=y) %>%
-      mutate(type="model") %>%
-      inner_join(data_long,by=c("t","name"))
+      dplyr::mutate(model_results = map2(.x=model, .y=data,.f=~(approx(.x$t, .x$value, xout = .y$t, method = "linear") %>% as_tibble()))) %>%
+      dplyr::select(-model,-data) %>%
+      tidyr::unnest(cols=c(.data$model_results)) %>%
+      dplyr::rename(t=.data$x,value=.data$y) %>%
+      dplyr::mutate(type="model") %>%
+      dplyr::inner_join(data_long,by=c("t","name"))
 
     # Internal function to compute the likelihood
     likelihood <- function(y,mydata,logLikely){
-      error = sd(mydata-y)
+      error = stats::sd(mydata-y)
       singlelikelihoods = dnorm(mydata, mean = y, sd = error, log = logLikely)
 
       if (logLikely) {
@@ -223,8 +277,8 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
     # Identify which params we want to use and the tuning
     param_samples <- sample(param_info$name,size=iterations,replace=TRUE)
-    tune_values <- runif(iterations)-0.5
-    random_accept = rexp(iterations)  # A test to see if we want to keep a parameter that is slightly worse
+    tune_values <- stats::runif(iterations)-0.5
+    random_accept = stats::rexp(iterations)  # A test to see if we want to keep a parameter that is slightly worse
 
     # Define some ctarget values
     A_STAR<-0.4  # target acceptance rate
@@ -242,22 +296,23 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
       # Sample one of the parameters
       sample_param <- param_info %>%
-        mutate(old_value = value,
-               value = if_else(name==curr_sample,
-                               knob * range * curr_tune+value,value),
-               in_bounds = between(value,lower_bound,upper_bound))
+        dplyr::mutate(old_value = .data$value,
+               value = if_else(.data$name==curr_sample,
+                               .data$knob * range * curr_tune+.data$value,.data$value),
+               in_bounds = between(.data$value,.data$lower_bound,.data$upper_bound))
 
 
       if (sum(sample_param$in_bounds) == nParams) {  # If we are in the ranges, then go, otherwise ignore
 
         new_param <- sample_param %>%
-          select(name,value) %>% pivot_wider()
+          dplyr::select(.data$name,.data$value) %>%
+          tidyr::pivot_wider()
 
-        #### HERE IS WHERE WE NEED TO PUT IN THE CODE ...
+
         # Define this as a vector solution
         new_param_vec <- sample_param %>%
-          select(name,value) %>%
-          deframe()
+          dplyr::select(.data$name,.data$value) %>%
+          tibble::deframe()
 
 
         # Compute the model values, pivot longer, nest
@@ -269,20 +324,20 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
         # Make the solution long, add in the long data, nest, and pivot. This helps the linear approximation
         out_solution_long <- out_solution %>%
-          pivot_longer(cols=c(-"t")) %>%
-          mutate(type="model") %>%
+          tidyr::pivot_longer(cols=c(-"t")) %>%
+          dplyr::mutate(type="model") %>%
           rbind(data_long) %>%
-          group_by(name,type) %>% nest() %>%
-          pivot_wider(names_from="type",values_from="data")
+          dplyr::group_by(.data$name,.data$type) %>% nest() %>%
+          tidyr::pivot_wider(names_from="type",values_from="data")
 
         # Now apply the map to get out the model results AT the timesteps the data are measured at
         out_solution_trim <- out_solution_long %>%
-          mutate(model_results = map2(.x=model, .y=data,.f=~(approx(.x$t, .x$value, xout = .y$t, method = "linear") %>% as_tibble()))) %>%
-          select(-model,-data) %>%
-          unnest(cols=c(model_results)) %>%
-          rename(t=x,value=y) %>%
-          mutate(type="model") %>%
-          inner_join(data_long,by=c("t","name"))
+          dplyr::mutate(model_results = map2(.x=model, .y=data,.f=~(approx(.x$t, .x$value, xout = .y$t, method = "linear") %>% as_tibble()))) %>%
+          dplyr::select(-model,-data) %>%
+          tidyr::unnest(cols=c(.data$model_results)) %>%
+          dplyr::rename(t=.data$x,value=.data$y) %>%
+          dplyr::mutate(type="model") %>%
+          dplyr::inner_join(data_long,by=c("t","name"))
 
         # The current likelihood for comparison
         sample_likelihood <- tibble(l_hood = likelihood(out_solution_trim$value.x,out_solution_trim$value.y,TRUE),
@@ -313,13 +368,13 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
         if (knob_flag) {
           param_info <- sample_param %>%
-            mutate(knob = if_else(name==curr_sample,
-                                  max(knob*INC,1e-8),knob) ) %>%
-            select(-in_bounds)
+            dplyr::mutate(knob = if_else(.data$name==curr_sample,
+                                  max(.data$knob*INC,1e-8),.data$knob) ) %>%
+            dplyr::select(-.data$in_bounds)
 
         } else {
           param_info <- sample_param %>%
-            select(-in_bounds)
+            dplyr::select(-.data$in_bounds)
         }
 
 
@@ -333,15 +388,15 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
         if (knob_flag) {
           # Adjust bounds if we are rejecting:
           param_info <- sample_param %>%
-            mutate(value = old_value,
-                   knob = if_else(name==curr_sample,
-                                  max(knob*DEC,1e-8),knob) ) %>%
-            select(-old_value,-in_bounds)
+            dplyr::mutate(value = .data$old_value,
+                   knob = if_else(.data$name==curr_sample,
+                                  max(.data$knob*DEC,1e-8),.data$knob) ) %>%
+            dplyr::select(-.data$old_value,-.data$in_bounds)
         } else {
           # Adjust bounds if we are accepting:
           param_info <- sample_param %>%
-            mutate(value = old_value) %>%
-            select(-old_value,-in_bounds)
+            dplyr::mutate(value = .data$old_value) %>%
+            dplyr::select(-.data$old_value,-.data$in_bounds)
         }
 
 
@@ -363,12 +418,12 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
   }
 
   out_results <- tibble(nested = out_iter) %>%
-    hoist(nested,
+    tidyr::hoist(.data$nested,
           accept_flag = "acceptFlag",
           lhood = "likelihood") %>%
-    unnest(cols=c(lhood)) %>%
-    select(-log_lik) %>%
-    dplyr::relocate(accept_flag,l_hood)
+    tidyr::unnest(cols=c(.data$lhood)) %>%
+    dplyr::select(-.data$log_lik) %>%
+    dplyr::relocate(accept_flag,.data$l_hood)
 
 
   return(out_results)

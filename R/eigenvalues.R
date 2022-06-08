@@ -2,7 +2,7 @@
 #'
 #' \code{eigenvalues} visualizes the vector field for a one or two dimensional differential equation.
 #'
-#' @param matrix_entries entries of your matrix row wise.
+#' @param matrix_entries entries of your matrix in row wise format.
 #' So the matrix
 #' #   4  3
 #' #   2  1
@@ -17,6 +17,10 @@
 
 #' @examples
 #' eigenvalues(c(1,2,3,4))
+#'
+#' # Note: for the 3 x 3 case, we need to define the number of matrix rows:
+#' eigenvalues(c(1,2,3,4,5,6,7,8,9),matrix_rows=3)
+
 
 #' @export
 

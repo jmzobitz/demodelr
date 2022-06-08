@@ -11,10 +11,10 @@ A data frame with 7 rows and 2 variables
 Table 1 from Gause, G. F. 1932. “Experimental Studies on the Struggle for Existence: I. Mixed Population of Two Species of Yeast.” Journal of Experimental Biology 9 (4): 389–402.
 }
 \usage{
-data(teast)
+data(yeast)
 }
 \description{
-A dataset containing phosophorous content in Daphnia and algae. The variables are as follows:
+A dataset containing measurements of growth of yeast in a culture. The variables are as follows:
 }
 \details{
 \itemize{

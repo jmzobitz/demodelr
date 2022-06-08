@@ -4,18 +4,42 @@
 #' See the vignette for detailed examples of usage.
 
 #' @param system_eq (REQUIRED) The 1 or multi dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
-#' @param timeSteps Number of timesteps we solve.  deltaT*timeSteps = total time
 #' @param initial_condition (REQUIRED) Listing of initial conditions, as a vector
 #' @param parameters The values of the parameters we are using (optional)
 #' @param t_start The starting time point (defaults to t = 0)
 #' @param deltaT The timestep length (defaults to 1)
 #' @param n_steps The number of timesteps to compute solution (defaults to n_steps = 1)
-#' @return A tidy of data frame the solutions
+#' @return A tidy of data frame for the calculated solutions and the time
+
+#' @seealso \code{\link{rk4}}
 #' @examples
-#' # Run the vignette that works through an example
-#' vignette("eulers-method")
+#' # Define the rate equation:
+#' lynx_hare_eq <- c(
+#'  dHdt ~ r * H - b * H * L,
+#'  dLdt ~ e * b * H * L - d * L
+#' )
+#'
+#' # Define the parameters (as a named vector):
+#' lynx_hare_params <- c(r = 2, b = 0.5, e = 0.1, d = 1)
+#'
+#' # Define the initial condition (as a named vector):
+#' lynx_hare_init <- c(H = 1, L = 3)
+#'
+#' # Define deltaT and the number of time steps:
+#' deltaT <- 0.05
+#' n_steps <- 200
+#'
+#' # Compute the solution via Euler's method:
+#' out_solution <- euler(system_eq = lynx_hare_eq,
+#'                      parameters = lynx_hare_params,
+#'                      initial_condition = lynx_hare_init,
+#'                      deltaT = deltaT,
+#'                      n_steps = n_steps
+#' )
 
 #' @import dplyr
+#' @import formula.tools
+#' @import purrr
 #' @import tidyr
 #' @export
 
@@ -53,7 +77,7 @@ euler <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1
 
     # Accumulate as we go and build up the data frame. This seems like magic.
     out_results <- out_list %>%
-      bind_rows() %>%
+      dplyr::bind_rows() %>%
       dplyr::relocate(t)  # Put t at the start
 
 

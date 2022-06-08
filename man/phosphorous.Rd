@@ -14,7 +14,7 @@ The data were digitized from Sterner and Elser \emph{Ecological Stoichiometry}, 
 data(phosphorous)
 }
 \description{
-A dataset containing phosophorous content in Daphnia and algae. The variables are as follows:
+A dataset containing phosphorous content in Daphnia and algae. The variables are as follows:
 }
 \details{
 \itemize{

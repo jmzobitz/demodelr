@@ -1,41 +1,49 @@
 #' Phase plane of differential equation.
 #'
 #' \code{phaseplane} visualizes the vector field for a one or two dimensional differential equation.
-#' @param system_eq (REQUIRED) The 1 or 2 dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
-#' @param x_var (REQUIRED) x axis variable (used in plot and formula)
-#' @param y_var (REQUIRED) y axis variable (used in plot and formula)
-#' @param parameters The values of the parameters we are using (optional)
-#' @param x_window x axis limits.  Must be of the form c(minVal,maxVal).  Defaults to -4 to 4.
-#' @param y_window y axis limits.  Must be of the form c(minVal,maxVal). Defaults to -4 to 4.
-#' @param plot_points number of points we evaluate on the grid in both directions. Defaults to 10.
-#' @param eq_soln TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window
+#' @param system_eq (required) The 1 or 2 dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
+#' @param x_var (required) x axis variable (used to create the plot and label axes)
+#' @param y_var (required) y axis variable (used to create the plot and label axes)
+#' @param parameters (optional) any parameters in the system of equations
+#' @param x_window (optional) x axis limits.  Must be of the form c(minVal,maxVal).  Defaults to -4 to 4.
+#' @param y_window (optional) y axis limits.  Must be of the form c(minVal,maxVal). Defaults to -4 to 4.
+#' @param plot_points (optional) number of points we evaluate on the grid in both directions. Defaults to 10.
+#' @param eq_soln (optional) TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window
 #' @return A phase plane diagram of system of differential equations
 #' @examples
-#' # For a two variable system of differential equations we use the formula notation for dx/dt and the dy/dt separately:
+#' # For a two variable system of differential equations we use the
+#' # formula notation for dx/dt and the dy/dt separately:
 #' system_eq <- c(dx ~ cos(y),
 #'               dy ~ sin(x))
-#' phaseplane(system_eq,'x','y')
+#' phaseplane(system_eq,x_var='x',y_var='y')
 #'
-#' # For a one dimensional system: dy/dt = f(t,y).  In this case the xWindow represents time.
-#' # However, the code is structured a little differently.  Consider dy/dt = -y*(1-y):
+#' # For a one dimensional system: dy/dt = f(t,y).  In this case the
+#' # xWindow represents time.
+#' # However, the code is structured a little differently.
+#' # Consider dy/dt = -y*(1-y):
 #'
 #' system_eq <- c(dt ~ 1,
 #'                dy ~ -y*(1-y))
 #'
-#'  phaseplane(system_eq,"t","y")
+#'  phaseplane(system_eq,x_var="t",y_var="y")
 #'
-#' # Here is a second example for the differential equation dy/dt = -cos(t) y
+#' # Here is an finding equilibrium solutions
+#' system_eq <- c(dx ~ y+x,
+#'               dy ~ x-y)
 #'
-#' system_eq <- c(dt ~ 1,
-#'                dy ~ -cos(t)*y
+#' phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
 #'
-#'  phaseplane(system_eq,"t","y")
+#' # We would expect an equilibrium at the origin,
+#' # but no equilibrium solution was found, but if we narrow the search range:
 #'
-#' In this case there may be extraneous equilibrium solutions reported due to the time dependence in the differential equations - so be sure to verify your solutions!
+#' phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
 #'
+#' # Confirm any equilbrium solutions through evaluation of the DE.
+#' @importFrom rlang .data
 #' @import ggplot2
 #' @import dplyr
 #' @import purrr
+#' @import tidyr
 #' @export
 
 
@@ -48,7 +56,7 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
   seq_by <- round(n_points/plot_points)
   # We will then figure out a regular sample of points to right size the window.
   # Define the grid for our solution
-  in_grid <- expand.grid(x=seq(x_window[1],x_window[2],length.out=n_points),
+  in_grid <- tidyr::expand_grid(x=seq(x_window[1],x_window[2],length.out=n_points),
                          y=seq(y_window[1],y_window[2],length.out=n_points)) %>%
     purrr::set_names(nm =c(x_var,y_var) )
 
@@ -74,8 +82,8 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
   p <- in_grid %>%
     cbind(vec_field) %>%
-    mutate(lens=sqrt(u^2+v^2),  # Length of arrow
-           lens2 = lens/max(lens)) # Scaling it by the maximum length
+    mutate(lens=sqrt(.data$u^2+.data$v^2),  # Length of arrow
+           lens2 = .data$lens/max(.data$lens)) # Scaling it by the maximum length
 
 
   maxx <- max(abs(p$u));  # The largest x and y vector.
@@ -86,23 +94,25 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
     # Test if there are any equilibrium points.  If there are none in the range, it won't plot.
     if (formula.tools::rhs(system_eq)[[1]]==1) {
-      eq_pts <- p %>% filter((between(v,-1e-3,1e-3))) %>%
-        select(1,2) %>%  # Select the first two columns
+      eq_pts <- p %>%
+        dplyr::filter((between(.data$v,-1e-3,1e-3))) %>%
+        dplyr::select(1,2) %>%  # Select the first two columns
         round(digits=1) %>%  # Round the digits for precision
-        distinct()  # Check if they are unique
+        dplyr::distinct()  # Check if they are unique
 
 
       eq_pts_print <- eq_pts %>%
-        select(2) %>%  # Select the first two columns
+        dplyr::select(1,2) %>%  # Select the first two columns
         round(digits=1) %>%  # Round the digits for precision
-        distinct()  # Check if they are unique
+        dplyr::distinct()  # Check if they are unique
 
     } else {
 
-      eq_pts <- p %>% filter(across(.cols=c("u","v"),.fns=~(between(.x,-1e-3,1e-3)))) %>%
-        select(1,2) %>%  # Select the first two columns
+      eq_pts <- p %>%
+        dplyr::filter(across(.cols=c("u","v"),.fns=~(between(.x,-1e-3,1e-3)))) %>%
+        dplyr::select(1,2) %>%  # Select the first two columns
         round(digits=1) %>%  # Round the digits for precision
-        distinct()  # Check if they are unique
+        dplyr::distinct()  # Check if they are unique
 
       eq_pts_print <- eq_pts
 
@@ -125,22 +135,22 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
 
   p_plot <- p %>% mutate(
-    xend = .[[1]]  + dt*u/((lens2)+.1)/2,
-    yend = .[[2]]  + dt*v/((lens2)+.1)/2,
-    x_adj = .[[1]] - dt*u/((lens2)+.1)/2,
-    y_adj= .[[2]]  -dt*v/((lens2)+.1)/2
+    xend = .[[1]]  + dt*.data$u/((.data$lens2)+.1)/2,
+    yend = .[[2]]  + dt*.data$v/((.data$lens2)+.1)/2,
+    x_adj = .[[1]] - dt*.data$u/((.data$lens2)+.1)/2,
+    y_adj= .[[2]]  -dt*.data$v/((.data$lens2)+.1)/2
   )
 
 
 
-  # Now plot
-  out_plot <- p_plot %>%
-    filter(.[[1]] %in% skip_vec[[1]],
-           .[[2]] %in% skip_vec[[2]]) %>%
-    ggplot(aes(x=x_adj,y=y_adj)) +
-    geom_segment(aes(xend = xend, yend = yend), arrow = arrow(length = unit(0.3,"cm")),lineend = 'butt')+
-    xlab(x_var) +
-    ylab(y_var)
+   # Now plot
+   out_plot <- p_plot %>%
+     dplyr::filter(.[[1]] %in% skip_vec[[1]],
+            .[[2]] %in% skip_vec[[2]]) %>%
+     ggplot2::ggplot(aes(x=.data$x_adj,y=.data$y_adj)) +
+     geom_segment(aes(xend = .data$xend, yend = .data$yend), arrow = arrow(length = unit(0.3,"cm")),lineend = 'butt')+
+     xlab(x_var) +
+     ylab(y_var)
 
   return(out_plot)
 

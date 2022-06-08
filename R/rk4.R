@@ -4,20 +4,42 @@
 #' See the vignette for detailed examples of usage.
 
 #' @param system_eq (REQUIRED) The 1 or 2 dimensional system of equations, written in formula notation as a vector (i.e.  c(dx ~ f(x,y), dy ~ g(x,y)))
-#' @param timeSteps Number of timesteps we solve.  deltaT*timeSteps = total time
 #' @param initial_condition (REQUIRED) Listing of initial conditions, as a vector
 #' @param parameters The values of the parameters we are using (optional)
 #' @param t_start The starting time point (defaults to t = 0)
 #' @param deltaT The timestep length (defaults to 1)
 #' @param n_steps The number of timesteps to compute solution (defaults to n_steps = 1)
-#' @return A tidy of data frame the solutions
-#' @examples
-#' @references See https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
+#' @return A tidy of data frame for the calculated solutions and the time
+#' @seealso See \href{https://en.wikipedia.org/wiki/Runge\%E2\%80\%93Kutta_methods}{Runge Kutta methods} for more explanation of Runge-Kutta methods, as well as the code \code{\link{euler}}
 
-#' @import ggplot2
+#' @examples
+#' # Define the rate equation:
+#' quarantine_eq <- c(
+#'  dSdt ~ -k * S * I,
+#'  dIdt ~ k * S * I - beta * I
+#' )
+#' # Define the parameters (as a named vector):
+#' quarantine_parameters <- c(k = .05, beta = .2)
+#' # Define the initial condition (as a named vector):
+#' quarantine_init <- c(S = 300, I = 1)
+#' # Define deltaT and the number of time steps:
+#' deltaT <- .1 # timestep length
+#' n_steps <- 10 # must be a number greater than 1
+#' # Compute the solution via Euler's method:
+#' out_solution <- rk4(system_eq = quarantine_eq,
+#'                    parameters = quarantine_parameters,
+#'                    initial_condition = quarantine_init, deltaT = deltaT,
+#'                    n_steps = n_steps
+#' )
+
+
+
 #' @import dplyr
+#' @import formula.tools
+#' @import purrr
 #' @import tidyr
 #' @export
+
 
 rk4 <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n_steps=1) {
 
@@ -64,7 +86,7 @@ rk4 <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n
 
   # Accumulate as we go and build up the data frame. This seems like magic.
   out_results <- out_list %>%
-    bind_rows() %>%
+    dplyr::bind_rows() %>%
     dplyr::relocate(t)  # Put t at the start
 
 

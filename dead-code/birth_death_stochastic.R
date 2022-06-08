@@ -14,12 +14,11 @@
 
 #' @return A tidy of data frame the solutions
 
-#' @examples
-
-#' TBD
-
 
 #' @import dplyr
+#' @import purrr
+#' @importFrom expm sqrtm
+#' @importFrom stats as.formula rnorm
 #' @import formula.tools
 #' @import tidyr
 #' @export
@@ -39,7 +38,7 @@ birth_death_stochastic <- function(birth_rate,death_rate,initial_condition,param
   # Identify the mean and the variance
   for (i in seq_along(birth_rate)) {
 
-    mean_eq[[i]] <- as.formula(
+    mean_eq[[i]] <- stats::as.formula(
       paste0(
         as.character(formula.tools::lhs(birth_rate[i])),
         "~",
@@ -92,7 +91,7 @@ birth_death_stochastic <- function(birth_rate,death_rate,initial_condition,param
     s_rev <- rbind(cbind(sqrt_matrix,0),0)
 
     # This is our update equation
-    out_compute <- (s_rev**sqrt(2*D*deltaT)) %*% rnorm(n_vars) %>%
+    out_compute <- (s_rev**sqrt(2*D*deltaT)) %*% stats::rnorm(n_vars) %>%
       purrr::set_names(nm =vec_names)
 
     # Now we add them together and update
@@ -108,7 +107,7 @@ birth_death_stochastic <- function(birth_rate,death_rate,initial_condition,param
 
   # Accumulate as we go and build up the data frame. This seems like magic.
   out_results <- out_list %>%
-    bind_rows() %>%
+    dplyr::bind_rows() %>%
     dplyr::relocate(t)  # Put t at the start
 
 

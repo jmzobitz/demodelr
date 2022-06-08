@@ -8,7 +8,7 @@
 A data frame with 19 rows and 2 variables
 }
 \source{
-From http://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/
+From \url{https://bscheng.com/2014/05/07/modeling-logistic-growth-data-in-r/}
 }
 \usage{
 data(wilson)

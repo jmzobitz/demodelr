@@ -1,6 +1,6 @@
 #' Measured phosphorous of Daphnia and algae
 #'
-#' A dataset containing phosophorous content in Daphnia and algae. The variables are as follows:
+#' A dataset containing phosphorous content in Daphnia and algae. The variables are as follows:
 #'
 #' \itemize{
 #'   \item algae. Phosphorous content in algal food (\%)

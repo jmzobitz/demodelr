@@ -25,16 +25,34 @@ rk4(
 \item{deltaT}{The timestep length (defaults to 1)}
 
 \item{n_steps}{The number of timesteps to compute solution (defaults to n_steps = 1)}
-
-\item{timeSteps}{Number of timesteps we solve.  deltaT*timeSteps = total time}
 }
 \value{
-A tidy of data frame the solutions
+A tidy of data frame for the calculated solutions and the time
 }
 \description{
 \code{rk4} solves a multi-dimensional differential equation with Runge-Kutta 4th order method.  The parameters listed as required are needed
 See the vignette for detailed examples of usage.
 }
-\references{
-See https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
+\examples{
+# Define the rate equation:
+quarantine_eq <- c(
+ dSdt ~ -k * S * I,
+ dIdt ~ k * S * I - beta * I
+)
+# Define the parameters (as a named vector):
+quarantine_parameters <- c(k = .05, beta = .2)
+# Define the initial condition (as a named vector):
+quarantine_init <- c(S = 300, I = 1)
+# Define deltaT and the number of time steps:
+deltaT <- .1 # timestep length
+n_steps <- 10 # must be a number greater than 1
+# Compute the solution via Euler's method:
+out_solution <- rk4(system_eq = quarantine_eq,
+                   parameters = quarantine_parameters,
+                   initial_condition = quarantine_init, deltaT = deltaT,
+                   n_steps = n_steps
+)
+}
+\seealso{
+See \href{https://en.wikipedia.org/wiki/Runge\%E2\%80\%93Kutta_methods}{Runge Kutta methods} for more explanation of Runge-Kutta methods, as well as the code \code{\link{euler}}
 }

@@ -39,5 +39,61 @@ A tidy of data frame the solutions
 \code{euler_stochastic} solves a multi-dimensional differential equation with the Euler-Maruyama method with stochastic elements.
 }
 \examples{
-TBD
+### Simulate the stochastic differential equation dx = r*x*(1-x/K) dt + dW(t)
+# Identify the deterministic and stochastic parts of the DE:
+deterministic_logistic <- c(dx ~ r*x*(1-x/K))
+stochastic_logistic <- c(dx ~ 1)
+
+# Identify the initial condition and any parameters
+init_logistic <- c(x=3)
+
+logistic_parameters <- c(r=0.8, K=100) # parameters: a named vector
+
+# Identify how long we run the simulation
+deltaT_logistic <- .05 # timestep length
+timesteps_logistic <- 200 # must be a number greater than 1
+
+# Identify the standard deviation of the stochastic noise
+D_logistic <- 1
+
+# Do one simulation of this differential equation
+logistic_out <- euler_stochastic(
+deterministic_rate = deterministic_logistic,
+stochastic_rate = stochastic_logistic,
+initial_condition = init_logistic,
+parameters = logistic_parameters,
+deltaT = deltaT_logistic,
+n_steps = timesteps_logistic, D = D_logistic
+)
+### Simulate a stochastic process for the tourism model presented in
+### Sinay, Laura, and Leon Sinay. 2006. “A Simple Mathematical
+### Model for the Effects of the Growth of Tourism on Environment.”
+### In International Tourism Conference. Alanya, Turkey.
+### where we have the following SDE:
+### dr = r*(1-r)-a*v dt, dv = b*v*(r-v) dt + v*(r-v) dW(t)
+
+# Identify the deterministic and stochastic parts of the DE:
+deterministic_tourism<- c(dr ~ r*(1-r)-a*v, dv ~ b*v*(r-v))
+stochastic_tourism <-  c(dr ~ 0, dv ~ v*(r-v))
+
+# Identify the initial condition and any parameters
+init_tourism <- c(r = 0.995, v = 0.00167)
+tourism_parameters <- c(a = 0.15, b = 0.3316)   #
+
+deltaT_tourism <- .5 # timestep length
+timeSteps_tourism <- 200 # must be a number greater than 1
+
+# Identify the diffusion coefficient
+D_tourism <- .05
+
+# Do one simulation of this differential equation
+tourism_out <- euler_stochastic(
+  deterministic_rate = deterministic_tourism,
+ stochastic_rate = stochastic_tourism,
+ initial_condition = init_tourism,
+ parameters = tourism_parameters,
+ deltaT = deltaT_tourism,
+ n_steps = timeSteps_tourism,
+ D = D_tourism
+)
 }

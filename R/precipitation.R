@@ -1,13 +1,13 @@
 #' Measured precipitation from a rainfall event
 #'
-#' A dataset containing measured precipitation data from the Minneapolis St. Oaul Area:
+#' A dataset containing measured precipitation data from the Minneapolis St. Paul Area:
 #'
 #' \itemize{
 #'   \item date. Calendar day of year of measurement
 #'   \item time. Time measurement is made
 #'   \item station_id Shorthand name for station in CoCoRaHS network
 #'   \item station_name Name of station in CoCoRaHS network
-#'   \item precip. Observed precipitiation (inches)
+#'   \item precip. Observed precipitation (inches)
 #' }
 #'
 #' @docType data

@@ -1,23 +1,24 @@
 Package: demodelr
 Type: Package
-Title: Simulating differential equations with data.
+Title: Simulating Differential Equations with Data
 Version: 1.0.0
 Depends: R (>= 4.1.0)
 Author: John Zobitz
-Maintainer: <zobitz@augsburg.edu>
+Maintainer: John Zobitz <zobitz@augsburg.edu>
 Description: A collection of files for use with the text Exploring modeling with data and differential equations using R.
-License: This work is distributed under the Creative Commons, Attribution-Non Commercial 4.0 License.  You may copy, distribute, display and perform the work and make derivative works and remixes based on it only if they give the author (Zobitz) attribute and use it for non-commerical purposes.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: tidyverse,
+Imports: 
     ggplot2,
     purrr,
     tidyr,
     dplyr,
     formula.tools,
     GGally,
-    expm
+    rlang,
+    utils,
+    tibble
 RoxygenNote: 7.1.1
 Suggests: knitr,
     rmarkdown
-VignetteBuilder: knitr

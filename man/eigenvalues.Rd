@@ -7,7 +7,7 @@
 eigenvalues(matrix_entries, matrix_rows = 2)
 }
 \arguments{
-\item{matrix_entries}{entries of your matrix row wise.
+\item{matrix_entries}{entries of your matrix in row wise format.
 So the matrix
 #   4  3
 #   2  1
@@ -24,4 +24,7 @@ result$values are the eigenvalues, stored as a vector. The leading eigenvalue is
 }
 \examples{
 eigenvalues(c(1,2,3,4))
+
+# Note: for the 3 x 3 case, we need to define the number of matrix rows:
+eigenvalues(c(1,2,3,4,5,6,7,8,9),matrix_rows=3)
 }
