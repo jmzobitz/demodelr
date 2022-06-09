@@ -27,18 +27,19 @@
 #'
 #'  phaseplane(system_eq,x_var="t",y_var="y")
 #'
-#' # Here is an finding equilibrium solutions
-#' system_eq <- c(dx ~ y+x,
-#'               dy ~ x-y)
+#' # Here is an example to find equilibrium solutions.
+#' # NOTE: Uncomment the following code to evaluate
+#' # system_eq <- c(dx ~ y+x,
+#' #               dy ~ x-y)
 #'
-#' phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
+#' # phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
 #'
 #' # We would expect an equilibrium at the origin,
 #' # but no equilibrium solution was found, but if we narrow the search range:
 #'
-#' phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
+#' # phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
 #'
-#' # Confirm any equilbrium solutions through evaluation of the DE.
+#' # Confirm any equilbrium solutions through direct evaluation of the differential equation.
 #' @importFrom rlang .data
 #' @import ggplot2
 #' @import dplyr
@@ -132,18 +133,17 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
   }
 
+col_names <- names(p)
 
+names(p) <- c("curr_vec_x","curr_vec_y",col_names[-(1:2)])
 
-  p_plot <- p %>% mutate(
-    curr_vec_x=1,
-    curr_vec_y=2,
+  p_plot <- p %>%
+    mutate(
     xend = .data$curr_vec_x  + dt*.data$u/((.data$lens2)+.1)/2,
     yend = .data$curr_vec_y  + dt*.data$v/((.data$lens2)+.1)/2,
     x_adj = .data$curr_vec_x - dt*.data$u/((.data$lens2)+.1)/2,
     y_adj= .data$curr_vec_y  -dt*.data$v/((.data$lens2)+.1)/2
   )
-
-
 
    # Now plot
    out_plot <- p_plot %>%

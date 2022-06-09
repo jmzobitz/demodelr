@@ -4,8 +4,7 @@ There were no ERRORs or WARNINGs or NOTEs
 
 In this version I have changed the following:
 
-* Changed the DESCRIPTION file to remove the Maintainer and used an Authors field that has similar information.
-
+* Changed the DESCRIPTION file to remove the Maintainer and used an Authors field that has similar information as given in the following NOTE:
 Check: CRAN incoming feasibility, Result: NOTE
   Maintainer: 'John Zobitz <zobitz@augsburg.edu>'
 
@@ -15,8 +14,7 @@ Check: R code for possible problems, Result: NOTE
   phaseplane: no visible binding for global variable '.'
   Undefined global functions or variables:
   
-* Modified the examples for mcmc_analyze and mcmc_estimate so that the CPU time does not exceed 5 seconds
-  
+* Modified the examples for mcmc_analyze and mcmc_estimate so that the CPU time does not exceed 5 seconds as given in the following NOTE:
   Check: examples, Result: NOTE
   Examples with CPU (user + system) or elapsed time > 10s
                   user system elapsed

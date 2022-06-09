@@ -55,16 +55,17 @@ system_eq <- c(dt ~ 1,
 
  phaseplane(system_eq,x_var="t",y_var="y")
 
-# Here is an finding equilibrium solutions
-system_eq <- c(dx ~ y+x,
-              dy ~ x-y)
+# Here is an example to find equilibrium solutions.
+# NOTE: Uncomment the following code to evaluate
+# system_eq <- c(dx ~ y+x,
+#               dy ~ x-y)
 
-phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
+# phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
 
 # We would expect an equilibrium at the origin,
 # but no equilibrium solution was found, but if we narrow the search range:
 
-phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
+# phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
 
-# Confirm any equilbrium solutions through evaluation of the DE.
+# Confirm any equilbrium solutions through direct evaluation of the differential equation.
 }
