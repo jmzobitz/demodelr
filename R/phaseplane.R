@@ -135,18 +135,21 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
 
   p_plot <- p %>% mutate(
-    xend = .[[1]]  + dt*.data$u/((.data$lens2)+.1)/2,
-    yend = .[[2]]  + dt*.data$v/((.data$lens2)+.1)/2,
-    x_adj = .[[1]] - dt*.data$u/((.data$lens2)+.1)/2,
-    y_adj= .[[2]]  -dt*.data$v/((.data$lens2)+.1)/2
+    curr_vec_x=1,
+    curr_vec_y=2,
+    xend = .data$curr_vec_x  + dt*.data$u/((.data$lens2)+.1)/2,
+    yend = .data$curr_vec_y  + dt*.data$v/((.data$lens2)+.1)/2,
+    x_adj = .data$curr_vec_x - dt*.data$u/((.data$lens2)+.1)/2,
+    y_adj= .data$curr_vec_y  -dt*.data$v/((.data$lens2)+.1)/2
   )
 
 
 
    # Now plot
    out_plot <- p_plot %>%
-     dplyr::filter(.[[1]] %in% skip_vec[[1]],
-            .[[2]] %in% skip_vec[[2]]) %>%
+     mutate(curr_vec_x=1,curr_vec_y=2) %>%
+     dplyr::filter(.data$curr_vec_x %in% skip_vec[[1]],
+            .data$curr_vec_y %in% skip_vec[[2]]) %>%
      ggplot2::ggplot(aes(x=.data$x_adj,y=.data$y_adj)) +
      geom_segment(aes(xend = .data$xend, yend = .data$yend), arrow = arrow(length = unit(0.3,"cm")),lineend = 'butt')+
      xlab(x_var) +
