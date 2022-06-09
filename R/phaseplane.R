@@ -147,7 +147,6 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
    # Now plot
    out_plot <- p_plot %>%
-     mutate(curr_vec_x=1,curr_vec_y=2) %>%
      dplyr::filter(.data$curr_vec_x %in% skip_vec[[1]],
             .data$curr_vec_y %in% skip_vec[[2]]) %>%
      ggplot2::ggplot(aes(x=.data$x_adj,y=.data$y_adj)) +
