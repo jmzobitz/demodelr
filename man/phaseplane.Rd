@@ -30,7 +30,7 @@ phaseplane(
 
 \item{plot_points}{(optional) number of points we evaluate on the grid in both directions. Defaults to 10.}
 
-\item{eq_soln}{(optional) TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window}
+\item{eq_soln}{(optional) TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window. This will print out the equilibrium solutions to the console.}
 }
 \value{
 A phase plane diagram of system of differential equations
@@ -54,18 +54,21 @@ system_eq <- c(dt ~ 1,
                dy ~ -y*(1-y))
 
  phaseplane(system_eq,x_var="t",y_var="y")
-
+\donttest{
 # Here is an example to find equilibrium solutions.
-# NOTE: Uncomment the following code to evaluate
-# system_eq <- c(dx ~ y+x,
-#               dy ~ x-y)
 
-# phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
+ system_eq <- c(dx ~ y+x,
+               dy ~ x-y)
+
+ phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
 
 # We would expect an equilibrium at the origin,
 # but no equilibrium solution was found, but if we narrow the search range:
 
-# phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
+ phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
 
 # Confirm any equilbrium solutions through direct evaluation of the differential equation.
+
+}
+
 }

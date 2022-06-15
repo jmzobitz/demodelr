@@ -9,76 +9,81 @@
 #' @param initial_condition The initial condition for the differential equation (DE mode only)
 #' @param deltaT The length between timesteps (DE mode only)
 #' @param n_steps The number of time steps we run the model (DE mode only)
+#' @param verbose TRUE / FALSE indicate if parameter estimates should be printed to console (option, defaults to TRUE)
 #'
 #' @seealso \code{\link{mcmc_estimate}}
 #'
-#' @examples
-#' ### NOTE: For all examples uncomment the code to run
+#' @return Two plots: (1) fitted model results compared to data, and (2) pairwise parameter histograms and scatterplots to test model equifinality.
 #'
+#' @examples
+#' \donttest{
 #' ## Example with an empirical model:
 #' ## Step 1: Define the model and parameters
-#' #phos_model <- daphnia ~ c * algae^(1 / theta)
+#' phos_model <- daphnia ~ c * algae^(1 / theta)
 #'
 # ## Define the parameters that you will use with their bounds
-#' #phos_param <- tibble::tibble( name = c("c", "theta"),
-#' #lower_bound = c(0, 1),
-#' #upper_bound = c(2, 20))
+#' phos_param <- tibble::tibble( name = c("c", "theta"),
+#' lower_bound = c(0, 1),
+#' upper_bound = c(2, 20))
 #'
 #' ## Step 2: Determine MCMC settings
 #' # Define the number of iterations
-#' #phos_iter <- 10 # In practice the number of iterations would be larger
+#' phos_iter <- 1000
 #'
 #' ## Step 3: Compute MCMC estimate
-#' #phos_mcmc <- mcmc_estimate(model = phos_model,
-#' #data = phosphorous,
-#' #parameters = phos_param,
-#' #iterations = phos_iter)
+#' phos_mcmc <- mcmc_estimate(model = phos_model,
+#' data = phosphorous,
+#' parameters = phos_param,
+#' iterations = phos_iter)
 #'
 #' ## Step 4: Analyze results:
-#' #mcmc_analyze(model = phos_model,
-#' #data = phosphorous,
-#' #mcmc_out = phos_mcmc)
+#' mcmc_analyze(model = phos_model,
+#' data = phosphorous,
+#' mcmc_out = phos_mcmc)
 #'
 #' ## Example with a differential equation:
 #' ## Step 1: Define the model, parameters, and data
 #' ## Define the tourism model
-#' #tourism_model <- c(dRdt ~ resources * (1 - resources) - a * visitors,
-#' #dVdt ~ b * visitors * (resources - visitors))
+#' tourism_model <- c(dRdt ~ resources * (1 - resources) - a * visitors,
+#' dVdt ~ b * visitors * (resources - visitors))
 #'
 #' # Define the parameters that you will use with their bounds
-#' #tourism_param <- tibble::tibble( name = c("a", "b"),
-#' #lower_bound = c(10, 0),
-#' #upper_bound = c(30, 5))
+#' tourism_param <- tibble::tibble( name = c("a", "b"),
+#' lower_bound = c(10, 0),
+#' upper_bound = c(30, 5))
 #'
 #' ## Step 2: Determine MCMC settings
 #' # Define the initial conditions
-#' #tourism_init <- c(resources = 0.995, visitors = 0.00167)
-#' #deltaT <- .1 # timestep length
-#' #n_steps <- 15 # must be a number greater than 1
+#' tourism_init <- c(resources = 0.995, visitors = 0.00167)
+#' deltaT <- .1 # timestep length
+#' n_steps <- 15 # must be a number greater than 1
 #' # Define the number of iterations
-#' #tourism_iter <- 1000
+#' tourism_iter <- 1000
 #'
 #' ## Step 3: Compute MCMC estimate
-#' #tourism_out <- mcmc_estimate(
-#' # model = tourism_model,
-#' # data = parks,
-#' # parameters = tourism_param,
-#' # mode = "de",
-#' # initial_condition = tourism_init, deltaT = deltaT,
-#' # n_steps = n_steps,
-#' # iterations = tourism_iter)
+#' tourism_out <- mcmc_estimate(
+#'  model = tourism_model,
+#'  data = parks,
+#'  parameters = tourism_param,
+#'  mode = "de",
+#'  initial_condition = tourism_init, deltaT = deltaT,
+#'  n_steps = n_steps,
+#'  iterations = tourism_iter)
 #'
 #' ## Step 4: Analyze results
-#' #mcmc_analyze(
-#' # model = tourism_model,
-#' # data = parks,
-#' # mcmc_out = tourism_out,
-#' # mode = "de",
-#' # initial_condition = tourism_init, deltaT = deltaT,
-#' # n_steps = n_steps
-#' #)
+#' mcmc_analyze(
+#'  model = tourism_model,
+#'  data = parks,
+#'  mcmc_out = tourism_out,
+#'  mode = "de",
+#'  initial_condition = tourism_init, deltaT = deltaT,
+#'  n_steps = n_steps
+#' )
 #'
+#' }
 #' @importFrom rlang .data
+#' @importFrom utils capture.output
+#' @importFrom utils head
 #' @importFrom stats quantile
 #' @import GGally
 #' @import dplyr
@@ -89,28 +94,38 @@
 
 
 
-mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NULL,deltaT = NULL,n_steps=NULL) {
+mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NULL,deltaT = NULL,n_steps=NULL,verbose=TRUE) {
 
   # rename this to avoid confusion
   in_data <- data
   independent_var <- names(in_data)[1] # We will always have the independent variable first
 
   # Determine the summary results:
-  print("The parameter values at the optimized log likelihood:")
-  mcmc_out %>%
-    dplyr::filter(.data$accept_flag) %>%
-    dplyr::slice_min(.data$l_hood) %>%
-    dplyr::select(-.data$accept_flag) %>%
-    print()
+  if(verbose) {
+    message("The parameter values at the optimized log likelihood:")
+    print_params <- mcmc_out %>%
+      dplyr::filter(.data$accept_flag) %>%
+      dplyr::slice_min(.data$l_hood) %>%
+      dplyr::select(-.data$accept_flag)
 
-  print("The 95% confidence intervals for the parameters:")
-  mcmc_out %>%
-    dplyr::filter(.data$accept_flag) %>%
-    dplyr::select(-.data$accept_flag, -.data$l_hood) %>%
-    dplyr::summarize(across(.fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) %>%
-    dplyr::mutate(probs = c("2.5%", "50%", "97.5%")) %>%
-    dplyr::relocate(.data$probs) %>%
-    print()
+    out_message <- paste(utils::capture.output(utils::head(print_params, dim(print_params)[1])), collapse="\n")
+     message(out_message)
+
+    message("The 95% confidence intervals for the parameters:")
+    print_probs <- mcmc_out %>%
+      dplyr::filter(.data$accept_flag) %>%
+      dplyr::select(-.data$accept_flag, -.data$l_hood) %>%
+      dplyr::summarize(across(.fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) %>%
+      dplyr::mutate(probs = c("2.5%", "50%", "97.5%")) %>%
+      dplyr::relocate(.data$probs)
+
+
+    out_message <- paste(utils::capture.output(utils::head(print_probs, dim(print_probs)[1])), collapse="\n")
+    message(out_message)
+
+
+  }
+
 
 
   # Plot the estimates

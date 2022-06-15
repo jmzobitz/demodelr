@@ -8,8 +8,10 @@
 #' @param x_window (optional) x axis limits.  Must be of the form c(minVal,maxVal).  Defaults to -4 to 4.
 #' @param y_window (optional) y axis limits.  Must be of the form c(minVal,maxVal). Defaults to -4 to 4.
 #' @param plot_points (optional) number of points we evaluate on the grid in both directions. Defaults to 10.
-#' @param eq_soln (optional) TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window
+#' @param eq_soln (optional) TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window. This will print out the equilibrium solutions to the console.
+#'
 #' @return A phase plane diagram of system of differential equations
+#'
 #' @examples
 #' # For a two variable system of differential equations we use the
 #' # formula notation for dx/dt and the dy/dt separately:
@@ -26,21 +28,26 @@
 #'                dy ~ -y*(1-y))
 #'
 #'  phaseplane(system_eq,x_var="t",y_var="y")
-#'
+#' \donttest{
 #' # Here is an example to find equilibrium solutions.
-#' # NOTE: Uncomment the following code to evaluate
-#' # system_eq <- c(dx ~ y+x,
-#' #               dy ~ x-y)
 #'
-#' # phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
+#'  system_eq <- c(dx ~ y+x,
+#'                dy ~ x-y)
+#'
+#'  phaseplane(system_eq,x_var='x',y_var='y',eq_soln=TRUE)
 #'
 #' # We would expect an equilibrium at the origin,
 #' # but no equilibrium solution was found, but if we narrow the search range:
 #'
-#' # phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
+#'  phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
 #'
 #' # Confirm any equilbrium solutions through direct evaluation of the differential equation.
+#'
+#' }
+#'
 #' @importFrom rlang .data
+#' @importFrom utils capture.output
+#' @importFrom utils head
 #' @import ggplot2
 #' @import dplyr
 #' @import purrr
@@ -110,7 +117,7 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
     } else {
 
       eq_pts <- p %>%
-        dplyr::filter(across(.cols=c("u","v"),.fns=~(between(.x,-1e-3,1e-3)))) %>%
+        dplyr::filter(if_all(.cols=c("u","v"),.fns=~(between(.x,-1e-3,1e-3)))) %>%
         dplyr::select(1,2) %>%  # Select the first two columns
         round(digits=1) %>%  # Round the digits for precision
         dplyr::distinct()  # Check if they are unique
@@ -122,12 +129,17 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
 
     if(dim(eq_pts_print)[1]>0) {
-      print("Possible equilbrium solutions at:")
-      print(eq_pts_print)
-      print("Be sure to confirm these equilibrium solutions in the differential equation.")
+
+      message("Possible equilibrium solutions at:")
+
+      out_message <- paste(utils::capture.output(utils::head(eq_pts_print, dim(eq_pts_print)[1])), collapse="\n")
+
+      message(out_message)
+
+      message("Be sure to confirm these equilibrium solutions in the differential equation.")
 
     } else {
-      print("No equilibrium solutions were detected in the provided window. Please confirm with the differential equation")
+      message("No equilibrium solutions were detected in the provided window. Please confirm with the differential equation")
     }
 
 

@@ -6,7 +6,9 @@ Depends: R (>= 4.1.0)
 Authors@R: 
     person("John", "Zobitz", , "zobitz@augsburg.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1830-143X"))
-Description: A collection of files for use with the text Exploring modeling with data and differential equations using R.
+Description: Functions to support "Exploring modeling with data and 
+    differential equations using R"" by John Zobitz. See online text:
+    <https://jmzobitz.github.io/ModelingWithR/index.html>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

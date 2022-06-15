@@ -1,3 +1,24 @@
+## Resubmission 15-06-2022
+This is a resubmission. 
+There were no ERRORs or WARNINGs or NOTEs
+
+Thank you for reviewing my previous submission. Based on the previous review I have changed the following:
+
+- The DESCRIPTION file contains a reference to a forthcoming textbook that describes the methods in this package as shown below:
+
+  Description: Functions to support "Exploring modeling with data and 
+    differential equations using R"" by John Zobitz. See online text:
+    <https://jmzobitz.github.io/ModelingWithR/index.html>.
+
+- mcmc_analyze.Rd now has \value tag describing the exported method:
+
+  Two plots: (1) fitted model results compared to data, and (2) pairwise parameter histograms and scatterplots to test model equifinality. 
+
+- Examples in (1) phaseplane.Rd, (2) mcmc_analyze.Rd, and (3) mcmc_estimate.Rd now are wrapped in \donttest rather than commented out code lines.
+
+- The files phaseplane.R and mcmc_analyze.R both had information messages provided to the console. These messages are first captured with utils::capture.output and a message is subsequently written to the console. The information messages can be supressed with the parameter eq_soln in phaseplane.R and verbose in mcmc_analyze.R
+
+
 ## Resubmission 08-06-2022
 This is a resubmission. 
 There were no ERRORs or WARNINGs or NOTEs
