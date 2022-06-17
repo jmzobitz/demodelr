@@ -1,3 +1,22 @@
+## Resubmission 17-06-22
+This is a resubmission.
+There were no ERRORs or WARNINGs or NOTEs
+
+Thank you for providing more information on how to structure my DESCRIPTION file. Based on the previous review I have created a more extensive Description as written below:
+
+  Designed to support the visualization, numerical computation, 
+    qualitative analysis, model-data fusion, and stochastic simulation for 
+    autonomous systems of differential equations. Euler and Runge-Kutta 
+    methods are implemented, along with tools to visualize the two-dimensional
+    phaseplane. Likelihood surfaces and a simple Markov Chain Monte Carlo 
+    parameter estimator can be used for model-data fusion of differential 
+    equations and empirical models. The Euler-Maruyama method is provided
+    for simulation of stochastic differential equations. The package was 
+    originally written for internal use to support teaching by Zobitz, and
+    refined to support the text "Exploring modeling with data and 
+    differential equations using R" by John Zobitz. See online text:
+    <https://jmzobitz.github.io/ModelingWithR/index.html>.
+
 ## Resubmission 15-06-2022
 This is a resubmission. 
 There were no ERRORs or WARNINGs or NOTEs
