@@ -1,4 +1,6 @@
 # demodelr
+<img width="358" alt="demodelr hex image of Orinoro forest in Finland in background, with the package name in the foreground. Finnish flag color blue of #002F6C used." src="https://user-images.githubusercontent.com/10458830/174935768-892fbfda-32f8-49a9-99e6-fdb44d978ade.png">
+
 demodelr is a R package to support the textbook [Exploring Modeling with Data and Differential Equations Using R](https://jmzobitz.github.io/ModelingWithR/)
 
 ## Installation 
@@ -13,4 +15,5 @@ This work is distributed under the Creative Commons, Attribution-Non Commercial 
 
 ## Disclaimer
 Information and documents contained within this repository are available as-is. Codes or documents, or their use, may not be supported or maintained under any program or service.
+
 
