@@ -1,7 +1,12 @@
 ## Resubmission 21-06-22
-This is a resubmission.
+This is a re-resubmission.
 There were no ERRORs or WARNINGs or NOTEs
 
+My apologies - I didn't realize that my comments file was entirely completed. Please ignore my previous submission.
+
+I have revised the Description in the DESCRIPTION file to remove any extraneous spaces, to the best of my ability. The reference to the online text is now written in the form ".. "Exploring modeling with data and differential equations
+     using R" by John Zobitz (2021) <https://jmzobitz.github.io/ModelingWithR/index.html>"
+     
 ## Resubmission 17-06-22
 This is a resubmission.
 There were no ERRORs or WARNINGs or NOTEs
