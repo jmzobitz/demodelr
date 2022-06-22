@@ -1,5 +1,5 @@
 # demodelr
-<img width="358" alt="demodelr hex image of Orinoro forest in Finland in background, with the package name in the foreground. Finnish flag color blue of #002F6C used." src="https://user-images.githubusercontent.com/10458830/174935768-892fbfda-32f8-49a9-99e6-fdb44d978ade.png">
+<img width="358" alt="demodelr hex image of Orinoro forest in Finland in background, with the package name in the foreground. Finnish flag color blue of #002F6C used for hex outline and text. Go visit Finland; it rocks. Photo courtesy of my spouse Shannon." src="https://user-images.githubusercontent.com/10458830/174935768-892fbfda-32f8-49a9-99e6-fdb44d978ade.png">
 
 demodelr is a R package to support the textbook [Exploring Modeling with Data and Differential Equations Using R](https://jmzobitz.github.io/ModelingWithR/)
 
