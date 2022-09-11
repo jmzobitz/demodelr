@@ -1,3 +1,8 @@
+## Patch update 11-09-22
+This is a patch update, fixing a data frame (global_temperature) with the correct and desired variables.
+
+There were no ERRORs or WARNINGs or NOTEs
+
 ## Resubmission 21-06-22
 This is a re-resubmission.
 There were no ERRORs or WARNINGs or NOTEs
