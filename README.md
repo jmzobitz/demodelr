@@ -4,8 +4,8 @@
 demodelr is a R package to support the textbook [Exploring Modeling with Data and Differential Equations Using R](https://jmzobitz.github.io/ModelingWithR/)
 
 ## Installation 
-Development installation in R is done [CRAN](https://cran.r-project.org/web/packages/demodelr/index.html):
-
+Installation in R is done via [CRAN](https://CRAN.R-project.org/package=demodelr):
+   
 `install.packages("demodelr")` 
 
 Also through the devtools package:

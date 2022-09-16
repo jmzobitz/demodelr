@@ -1,3 +1,8 @@
+## Resubmission 15-09-22
+In README.md fixed the link to the package on CRAN to a canonical URL
+
+There were no ERRORs or WARNINGs or NOTEs
+
 ## Patch update 11-09-22
 This is a patch update, fixing a data frame (global_temperature) with the correct and desired variables.
 
