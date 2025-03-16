@@ -9,6 +9,7 @@
 #' @param y_window (optional) y axis limits.  Must be of the form c(minVal,maxVal). Defaults to -4 to 4.
 #' @param plot_points (optional) number of points we evaluate on the grid in both directions. Defaults to 10.
 #' @param eq_soln (optional) TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window. This will print out the equilibrium solutions to the console.
+#' @param precision (optional) number of digits to report the equilibrium solution
 #'
 #' @return A phase plane diagram of system of differential equations
 #'
@@ -57,7 +58,7 @@
 
 
 
-phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_window=c(-4,4),plot_points=10,eq_soln=FALSE)
+phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_window=c(-4,4),plot_points=10,eq_soln=FALSE,precision=2)
 {
   n_points = 2000 # Default number of grid points in each direction
 
@@ -65,31 +66,31 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
   # We will then figure out a regular sample of points to right size the window.
   # Define the grid for our solution
   in_grid <- tidyr::expand_grid(x=seq(x_window[1],x_window[2],length.out=n_points),
-                         y=seq(y_window[1],y_window[2],length.out=n_points)) %>%
+                         y=seq(y_window[1],y_window[2],length.out=n_points)) |>
     purrr::set_names(nm =c(x_var,y_var) )
 
 
   skip_vec = tibble(x=seq(x_window[1],x_window[2],length.out=n_points),
-                    y=seq(y_window[1],y_window[2],length.out=n_points)) %>%
-    slice(c(seq(1,n_points,by=seq_by),n_points)) %>%
+                    y=seq(y_window[1],y_window[2],length.out=n_points)) |>
+    slice(c(seq(1,n_points,by=seq_by),n_points)) |>
     purrr::set_names(nm =c(x_var,y_var) )
 
 
   # Create a vector of arrows
 
   # Define the list of inputs to the rate equation
-  in_list <- c(parameters,in_grid) %>% as.list()
+  in_list <- c(parameters,in_grid) |> as.list()
 
-  new_rate_eq <- system_eq %>%
+  new_rate_eq <- system_eq |>
     formula.tools::rhs()
 
-  vec_field <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
-    as_tibble(.name_repair = make.names) %>%
-    purrr::set_names(nm =c("u","v") ) %>%
+  vec_field <-sapply(new_rate_eq,FUN=eval,envir=in_list) |>
+    as_tibble(.name_repair = make.names) |>
+    purrr::set_names(nm =c("u","v") ) |>
     bind_cols()
 
-  p <- in_grid %>%
-    cbind(vec_field) %>%
+  p <- in_grid |>
+    cbind(vec_field) |>
     mutate(lens=sqrt(.data$u^2+.data$v^2),  # Length of arrow
            lens2 = .data$lens/max(.data$lens)) # Scaling it by the maximum length
 
@@ -102,24 +103,24 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
     # Test if there are any equilibrium points.  If there are none in the range, it won't plot.
     if (formula.tools::rhs(system_eq)[[1]]==1) {
-      eq_pts <- p %>%
-        dplyr::filter((between(.data$v,-1e-3,1e-3))) %>%
-        dplyr::select(1,2) %>%  # Select the first two columns
-        round(digits=1) %>%  # Round the digits for precision
+      eq_pts <- p |>
+        dplyr::filter((between(.data$v,-1e-3,1e-3))) |>
+        dplyr::select(1,2) |>  # Select the first two columns
+        round(digits=precision) |>  # Round the digits for precision
         dplyr::distinct()  # Check if they are unique
 
 
-      eq_pts_print <- eq_pts %>%
-        dplyr::select(1,2) %>%  # Select the first two columns
-        round(digits=1) %>%  # Round the digits for precision
+      eq_pts_print <- eq_pts |>
+        dplyr::select(1,2) |>  # Select the first two columns
+        round(digits=precision) |>  # Round the digits for precision
         dplyr::distinct()  # Check if they are unique
 
     } else {
 
-      eq_pts <- p %>%
-        dplyr::filter(if_all(.cols=c("u","v"),.fns=~(between(.x,-1e-3,1e-3)))) %>%
-        dplyr::select(1,2) %>%  # Select the first two columns
-        round(digits=1) %>%  # Round the digits for precision
+      eq_pts <- p |>
+        dplyr::filter(if_all(.cols=c("u","v"),.fns=~(between(.x,-1e-3,1e-3)))) |>
+        dplyr::select(1,2) |>  # Select the first two columns
+        round(digits=precision) |>  # Round the digits for precision
         dplyr::distinct()  # Check if they are unique
 
       eq_pts_print <- eq_pts
@@ -149,7 +150,7 @@ col_names <- names(p)
 
 names(p) <- c("curr_vec_x","curr_vec_y",col_names[-(1:2)])
 
-  p_plot <- p %>%
+  p_plot <- p |>
     mutate(
     xend = .data$curr_vec_x  + dt*.data$u/((.data$lens2)+.1)/2,
     yend = .data$curr_vec_y  + dt*.data$v/((.data$lens2)+.1)/2,
@@ -158,9 +159,9 @@ names(p) <- c("curr_vec_x","curr_vec_y",col_names[-(1:2)])
   )
 
    # Now plot
-   out_plot <- p_plot %>%
+   out_plot <- p_plot |>
      dplyr::filter(.data$curr_vec_x %in% skip_vec[[1]],
-            .data$curr_vec_y %in% skip_vec[[2]]) %>%
+            .data$curr_vec_y %in% skip_vec[[2]]) |>
      ggplot2::ggplot(aes(x=.data$x_adj,y=.data$y_adj)) +
      geom_segment(aes(xend = .data$xend, yend = .data$yend), arrow = arrow(length = unit(0.3,"cm")),lineend = 'butt')+
      xlab(x_var) +
