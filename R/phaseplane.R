@@ -9,7 +9,7 @@
 #' @param y_window (optional) y axis limits.  Must be of the form c(minVal,maxVal). Defaults to -4 to 4.
 #' @param plot_points (optional) number of points we evaluate on the grid in both directions. Defaults to 10.
 #' @param eq_soln (optional) TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window. This will print out the equilibrium solutions to the console.
-#' @param precision (optional) number of digits to report the equilibrium solution
+#' @param precision (optional) number of digits to report the equilibrium solution. Increasing the number of digits may report a larger number of possible equilibrium solutions to test.
 #'
 #' @return A phase plane diagram of system of differential equations
 #'
