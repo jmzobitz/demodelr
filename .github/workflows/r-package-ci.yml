@@ -23,8 +23,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          R -e 'install.packages("pak")'
-          R -e 'pak::pak()'
+          R -e 'install.packages("remotes")'
+          R -e 'remotes::install_deps(dependencies = TRUE)'
 
       - name: Build the package
         run: R CMD build .
