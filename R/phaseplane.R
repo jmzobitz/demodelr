@@ -42,7 +42,8 @@
 #'
 #'  phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
 #'
-#' # Confirm any equilbrium solutions through direct evaluation of the differential equation.
+#' # Confirm any equilibrium solutions through direct evaluation of the differential equation.
+#'
 #'
 #' }
 #'
