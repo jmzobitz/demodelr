@@ -49,7 +49,7 @@ rk4 <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n
   vec_names <- names(curr_vec)
 
   time_eq <- c(dt ~ 1)  # This is an equation to keep track of the dt
-  new_rate_eq <- c(system_eq,time_eq) %>%
+  new_rate_eq <- c(system_eq,time_eq) |>
     formula.tools::rhs()
 
 
@@ -60,22 +60,22 @@ rk4 <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n
   for(i in 2:n_steps) {
 
     # Define the list of inputs to the rate equation
-    in_list <- c(parameters,curr_vec) %>% as.list()
+    in_list <- c(parameters,curr_vec) |> as.list()
 
     # This is our rate
-    k1 <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
+    k1 <-sapply(new_rate_eq,FUN=eval,envir=in_list) |>
       purrr::set_names(nm = vec_names)
-    in_list_k1 <- c(parameters,curr_vec+0.5*deltaT*k1) %>% as.list()
+    in_list_k1 <- c(parameters,curr_vec+0.5*deltaT*k1) |> as.list()
 
-    k2 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k1) %>%
+    k2 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k1) |>
       purrr::set_names(nm = vec_names)
-    in_list_k2 <- c(parameters,curr_vec+0.5*deltaT*k2) %>% as.list()
+    in_list_k2 <- c(parameters,curr_vec+0.5*deltaT*k2) |> as.list()
 
-    k3 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k2) %>%
+    k3 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k2) |>
       purrr::set_names(nm = vec_names)
 
-    in_list_k3 <- c(parameters,curr_vec+deltaT*k3) %>% as.list()
-    k4 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k3) %>%
+    in_list_k3 <- c(parameters,curr_vec+deltaT*k3) |> as.list()
+    k4 <-sapply(new_rate_eq,FUN=eval,envir=in_list_k3) |>
       purrr::set_names(nm = vec_names)
 
     curr_vec <- curr_vec + 1/6*deltaT*(k1+2*k2+2*k3+k4)
@@ -85,8 +85,8 @@ rk4 <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1,n
   }
 
   # Accumulate as we go and build up the data frame. This seems like magic.
-  out_results <- out_list %>%
-    dplyr::bind_rows() %>%
+  out_results <- out_list |>
+    dplyr::bind_rows() |>
     dplyr::relocate(t)  # Put t at the start
 
 
