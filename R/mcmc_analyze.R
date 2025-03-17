@@ -94,7 +94,7 @@
 
 
 
-mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NULL,deltaT = NULL,n_steps=NULL,verbose=TRUE) {
+mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_condition = NULL,deltaT = NULL,n_steps=NULL,verbose=TRUE) {
 
   # rename this to avoid confusion
   in_data <- data
@@ -103,20 +103,20 @@ mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NU
   # Determine the summary results:
   if(verbose) {
     message("The parameter values at the optimized log likelihood:")
-    print_params <- mcmc_out %>%
-      dplyr::filter(.data$accept_flag) %>%
-      dplyr::slice_min(.data$l_hood) %>%
+    print_params <- mcmc_out |>
+      dplyr::filter(.data$accept_flag) |>
+      dplyr::slice_min(.data$l_hood) |>
       dplyr::select(-.data$accept_flag)
 
     out_message <- paste(utils::capture.output(utils::head(print_params, dim(print_params)[1])), collapse="\n")
      message(out_message)
 
     message("The 95% confidence intervals for the parameters:")
-    print_probs <- mcmc_out %>%
-      dplyr::filter(.data$accept_flag) %>%
-      dplyr::select(-.data$accept_flag, -.data$l_hood) %>%
-      dplyr::summarize(across(.fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) %>%
-      dplyr::mutate(probs = c("2.5%", "50%", "97.5%")) %>%
+    print_probs <- mcmc_out |>
+      dplyr::filter(.data$accept_flag) |>
+      dplyr::select(-.data$accept_flag, -.data$l_hood) |>
+      dplyr::summarize(across(.fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
+      dplyr::mutate(probs = c("2.5%", "50%", "97.5%")) |>
       dplyr::relocate(.data$probs)
 
 
@@ -129,38 +129,38 @@ mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NU
 
 
   # Plot the estimates
-  param_estimates <- mcmc_out %>%
-    dplyr::filter(.data$accept_flag) %>%
+  param_estimates <- mcmc_out |>
+    dplyr::filter(.data$accept_flag) |>
     dplyr::select(-.data$accept_flag, -.data$l_hood)
 
-  GGally::ggpairs(data = param_estimates, diag = list(continuous = "barDiag", discrete = "barDiag", na = "naDiag")) %>%
+  GGally::ggpairs(data = param_estimates, diag = list(continuous = "barDiag", discrete = "barDiag", na = "naDiag")) |>
     print()
 
   if (mode == "emp") {
     # Get the right hand side of your equations
-    new_eq <- model %>%
+    new_eq <- model |>
       formula.tools::rhs()
 
     # Internal function to compute the model
     compute_model_emp <- function(parameters, model_eq, mydata) {
-      in_list <- c(parameters, mydata) %>% as.list()
+      in_list <- c(parameters, mydata) |> as.list()
       out_data <- eval(model_eq, envir = in_list)
 
-      out_tibble <- mydata %>%
+      out_tibble <- mydata |>
         dplyr::mutate(model = out_data)
       return(out_tibble)
     }
 
-    out_model <- mcmc_out %>%
-      dplyr::filter(.data$accept_flag) %>%
-      dplyr::select(-.data$accept_flag, -.data$l_hood) %>%
-      dplyr::mutate(id = 1:n()) %>%
-      dplyr::group_by(id) %>%
-      tidyr::nest() %>%
-      dplyr::rename(in_params = data) %>%
-      dplyr::mutate(m_data = lapply(X = .data$in_params, FUN = compute_model_emp, new_eq, in_data)) %>%
-      tidyr::unnest(cols = c(.data$m_data)) %>%
-      dplyr::ungroup() %>%
+    out_model <- mcmc_out |>
+      dplyr::filter(.data$accept_flag) |>
+      dplyr::select(-.data$accept_flag, -.data$l_hood) |>
+      dplyr::mutate(id = 1:n()) |>
+      dplyr::group_by(id) |>
+      tidyr::nest() |>
+      dplyr::rename(in_params = data) |>
+      dplyr::mutate(m_data = lapply(X = .data$in_params, FUN = compute_model_emp, new_eq, in_data)) |>
+      tidyr::unnest(cols = c(.data$m_data)) |>
+      dplyr::ungroup() |>
       dplyr::select(-id, -.data$in_params)
 
 
@@ -173,7 +173,7 @@ mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NU
   } else if (mode == "de") {
     ### THIS IS MODE DEPENDENT (EMPIRICAL OR DIFFERENTIAL EQUATION)
     # Get the right hand side of your equations
-    # new_eq <- my_model %>%
+    # new_eq <- my_model |>
     #   formula.tools::rhs()
     #
     # # Internal function to compute the model
@@ -183,8 +183,8 @@ mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NU
                       parameters = parameters,
                       initial_condition=initial_condition,
                       deltaT=deltaT,
-                      n_steps = n_steps) %>%
-        tidyr::pivot_longer(cols=c(-"t")) %>%
+                      n_steps = n_steps) |>
+        tidyr::pivot_longer(cols=c(-"t")) |>
         dplyr::rename(model=.data$value)
 
 
@@ -192,27 +192,27 @@ mcmc_analyze <- function(model, data, mcmc_out,mode="emp",initial_condition = NU
     }
 
 
-    out_model <- mcmc_out %>%
-      dplyr::filter(.data$accept_flag) %>%
-      dplyr::select(-.data$accept_flag, -.data$l_hood) %>%
-      dplyr::mutate(id = 1:n()) %>%
-      dplyr::group_by(id) %>%
-      tidyr::nest() %>%
-      dplyr::rename(in_params = data) %>%
-      dplyr::mutate(m_data = lapply(X = .data$in_params, FUN = compute_model_de, model, initial_condition,deltaT,n_steps)) %>%
-      tidyr::unnest(cols = c(.data$m_data)) %>%
-      dplyr::ungroup() %>%
-      dplyr::select(-id, -.data$in_params) %>%
-      dplyr::group_by(across(c(1,2))) %>%
-      dplyr::summarize(across(.cols = c("model"), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) %>%
-      dplyr::mutate(probs = c("q025", "q50", "q975")) %>%
-      dplyr::ungroup() %>%
+    out_model <- mcmc_out |>
+      dplyr::filter(.data$accept_flag) |>
+      dplyr::select(-.data$accept_flag, -.data$l_hood) |>
+      dplyr::mutate(id = 1:n()) |>
+      dplyr::group_by(id) |>
+      tidyr::nest() |>
+      dplyr::rename(in_params = data) |>
+      dplyr::mutate(m_data = lapply(X = .data$in_params, FUN = compute_model_de, model, initial_condition,deltaT,n_steps)) |>
+      tidyr::unnest(cols = c(.data$m_data)) |>
+      dplyr::ungroup() |>
+      dplyr::select(-id, -.data$in_params) |>
+      dplyr::group_by(across(c(1,2))) |>
+      dplyr::summarize(across(.cols = c("model"), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
+      dplyr::mutate(probs = c("q025", "q50", "q975")) |>
+      dplyr::ungroup() |>
       tidyr::pivot_wider(names_from = "probs", values_from = "model")
 
 
     # Mutate the data in a long format for comparison
-    data_long <- data %>%
-      tidyr::pivot_longer(cols=c(-1)) %>%
+    data_long <- data |>
+      tidyr::pivot_longer(cols=c(-1)) |>
       dplyr::rename(t=1)
 
     ggplot2::ggplot(out_model) +
