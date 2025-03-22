@@ -428,9 +428,9 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
     tidyr::hoist(.data$nested,
           accept_flag = "acceptFlag",
           lhood = "likelihood") |>
-    tidyr::unnest(cols=c(.data$lhood)) |>
-    dplyr::select(-.data$log_lik) |>
-    dplyr::relocate(accept_flag,.data$l_hood)
+    tidyr::unnest(cols=c("lhood")) |>
+    dplyr::select(-log_lik) |>
+    dplyr::relocate(accept_flag,l_hood)
 
 
   return(out_results)
