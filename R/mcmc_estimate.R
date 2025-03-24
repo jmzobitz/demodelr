@@ -81,6 +81,8 @@
 
 mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mode = c("emp", "de"),initial_condition = NULL,deltaT = NULL,n_steps=NULL) {
 
+  mode = match.arg(mode)
+
   if (mode == "emp") {
 
     param_info <- parameters |>

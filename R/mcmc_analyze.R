@@ -96,6 +96,8 @@
 
 mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_condition = NULL,deltaT = NULL,n_steps=NULL,verbose=TRUE) {
 
+  mode = match.arg(mode)
+
   # rename this to avoid confusion
   in_data <- data
   independent_var <- names(in_data)[1] # We will always have the independent variable first
