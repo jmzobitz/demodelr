@@ -1,3 +1,8 @@
+## Version update 22-08-25
+Updated to remove lifecycle warnings for tidyverse and requested user updates, necessitating a new version number.
+
+There were no ERRORs or WARNINGs or NOTEs
+
 ## Resubmission 15-09-22
 In README.md fixed the link to the package on CRAN to a canonical URL
 

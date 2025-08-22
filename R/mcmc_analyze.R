@@ -96,6 +96,8 @@
 
 mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_condition = NULL,deltaT = NULL,n_steps=NULL,verbose=TRUE) {
 
+  mode = match.arg(mode)
+
   # rename this to avoid confusion
   in_data <- data
   independent_var <- names(in_data)[1] # We will always have the independent variable first
@@ -115,7 +117,7 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
     print_probs <- mcmc_out |>
       dplyr::filter(.data$accept_flag) |>
       dplyr::select(-.data$accept_flag, -.data$l_hood) |>
-      dplyr::summarize(across(.fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
+      dplyr::reframe(dplyr::across(.cols=tidyselect::everything(), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
       dplyr::mutate(probs = c("2.5%", "50%", "97.5%")) |>
       dplyr::relocate(.data$probs)
 
@@ -203,8 +205,9 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
       tidyr::unnest(cols = c(.data$m_data)) |>
       dplyr::ungroup() |>
       dplyr::select(-id, -.data$in_params) |>
-      dplyr::group_by(across(c(1,2))) |>
-      dplyr::summarize(across(.cols = c("model"), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
+      dplyr::group_by(dplyr::across(.cols=c(1,2))) |>
+      dplyr::summarize(dplyr::across(.cols = c("model"), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
+
       dplyr::mutate(probs = c("q025", "q50", "q975")) |>
       dplyr::ungroup() |>
       tidyr::pivot_wider(names_from = "probs", values_from = "model")
@@ -218,7 +221,7 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
     ggplot2::ggplot(out_model) +
       geom_line(aes(x = t, y = .data$q50)) +
       geom_ribbon(aes(x = t, ymin = .data$q025, ymax = .data$q975), alpha = 0.3) +
-      geom_point(data = data_long, aes(x = t, y = .data$value), color = "red", size = 2) +
+      geom_point(data = data_long, aes(x = t, y = .data$value), color = "red", linewidth = 2) +
       labs(y = "") + facet_grid(name~.,scales="free_y")
 
   }

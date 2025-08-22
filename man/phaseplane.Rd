@@ -12,7 +12,8 @@ phaseplane(
   x_window = c(-4, 4),
   y_window = c(-4, 4),
   plot_points = 10,
-  eq_soln = FALSE
+  eq_soln = FALSE,
+  precision = 2
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ phaseplane(
 \item{plot_points}{(optional) number of points we evaluate on the grid in both directions. Defaults to 10.}
 
 \item{eq_soln}{(optional) TRUE / FALSE - lets you know if you want the code to estimate if there are any equilibrium solutions in the provided window. This will print out the equilibrium solutions to the console.}
+
+\item{precision}{(optional) number of digits to report the equilibrium solution. Increasing the number of digits may report a larger number of possible equilibrium solutions to test.}
 }
 \value{
 A phase plane diagram of system of differential equations
@@ -67,7 +70,8 @@ system_eq <- c(dt ~ 1,
 
  phaseplane(system_eq,x_var='x',y_var='y',x_window = c(-0.1,0.1),y_window=c(-0.1,0.1),eq_soln=TRUE)
 
-# Confirm any equilbrium solutions through direct evaluation of the differential equation.
+# Confirm any equilibrium solutions through direct evaluation of the differential equation.
+
 
 }
 

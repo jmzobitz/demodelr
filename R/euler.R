@@ -51,7 +51,7 @@ euler <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1
     vec_names <- names(curr_vec)
 
     time_eq <- c(dt ~ 1)  # This is an equation to keep track of the dt
-    new_rate_eq <- c(system_eq,time_eq) %>%
+    new_rate_eq <- c(system_eq,time_eq) |>
       formula.tools::rhs()
 
 
@@ -62,9 +62,9 @@ euler <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1
     for(i in 2:n_steps) {
 
       # Define the list of inputs to the rate equation
-      in_list <- c(parameters,curr_vec) %>% as.list()
+      in_list <- c(parameters,curr_vec) |> as.list()
 
-      curr_rate <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
+      curr_rate <-sapply(new_rate_eq,FUN=eval,envir=in_list) |>
         purrr::set_names(nm =vec_names)
 
       # Now we add them together and update
@@ -76,8 +76,8 @@ euler <- function(system_eq,initial_condition,parameters=NULL,t_start=0,deltaT=1
     }
 
     # Accumulate as we go and build up the data frame. This seems like magic.
-    out_results <- out_list %>%
-      dplyr::bind_rows() %>%
+    out_results <- out_list |>
+      dplyr::bind_rows() |>
       dplyr::relocate(t)  # Put t at the start
 
 

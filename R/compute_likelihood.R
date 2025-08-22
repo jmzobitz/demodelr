@@ -45,7 +45,7 @@ compute_likelihood <-function(model,data,parameters,logLikely=FALSE) {
   in_data <- data  # Rename so the function works
 
   # Get the right hand side of your equations
-  new_eq <-model %>%
+  new_eq <-model |>
     formula.tools::rhs()
 
   # Internal function to compute the likelihood
@@ -64,7 +64,7 @@ compute_likelihood <-function(model,data,parameters,logLikely=FALSE) {
 
   # Internal function to compute the model
   compute_model <- function(parameters,model_eq,mydata) {
-    in_list <- c(parameters,mydata) %>% as.list()
+    in_list <- c(parameters,mydata) |> as.list()
     out_data <- eval(model_eq,envir=in_list)
 
     return(out_data)
@@ -72,31 +72,31 @@ compute_likelihood <-function(model,data,parameters,logLikely=FALSE) {
 
 
   # We will map along the data frame of parameters
-  out_likelihood <- parameters %>%
-    dplyr::mutate(id=1:n()) %>%
-    dplyr::group_by(id) %>%
-    tidyr::nest() %>%
-    dplyr::rename(in_params=data) %>%
+  out_likelihood <- parameters |>
+    dplyr::mutate(id=1:n()) |>
+    dplyr::group_by(id) |>
+    tidyr::nest() |>
+    dplyr::rename(in_params=data) |>
     dplyr::mutate(m_data = lapply(X=.data$in_params,FUN=compute_model, new_eq,in_data),
            l_hood = lapply(X=.data$m_data,FUN=likelihood,in_data[[2]],logLikely)
 
-    ) %>%
-    tidyr::unnest(cols=c(.data$in_params,.data$l_hood) )%>%
-    dplyr::ungroup() %>%
-    dplyr::select(-id,-.data$m_data) %>%
+    ) |>
+    tidyr::unnest(cols=c(.data$in_params,.data$l_hood) )|>
+    dplyr::ungroup() |>
+    dplyr::select(-id,-.data$m_data) |>
     dplyr::mutate(log_lik=logLikely)
 
 
   if (logLikely) {   # If we want the log likelihood, we minimize
-    optValue <- out_likelihood %>%
-      dplyr::arrange(.data$l_hood) %>%
-      utils::head(n=1) %>%
+    optValue <- out_likelihood |>
+      dplyr::arrange(.data$l_hood) |>
+      utils::head(n=1) |>
       dplyr::mutate(log_lik=logLikely)
   }
   else {   # If not we maximize
-    optValue <- out_likelihood %>%
-      dplyr::arrange(desc(.data$l_hood)) %>%
-      utils::head(n=1) %>%
+    optValue <- out_likelihood |>
+      dplyr::arrange(desc(.data$l_hood)) |>
+      utils::head(n=1) |>
       dplyr::mutate(log_lik=logLikely)
   }
 

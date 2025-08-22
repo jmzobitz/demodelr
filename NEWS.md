@@ -1,3 +1,6 @@
+# demodelr 2.0.0
+Updates to include the native pipe (`|>`) and other life cycle improvements from associated updates to `tidyverse` packages and contributed github issues.
+
 # demodelr 1.1.0
 The `phaseplane` function now can pass through parameters of a differential equation.
 

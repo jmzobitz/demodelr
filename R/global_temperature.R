@@ -12,5 +12,5 @@
 #' @name global_temperature
 #' @usage data(global_temperature)
 #' @format A data frame with 142 rows and 2 variables
-#' @source The data were collected from NOAA. \url{https://climate.nasa.gov/vital-signs/global-temperature/}, download 2022-06-08
+#' @source The data were collected from NOAA. \url{https://climate.nasa.gov/vital-signs/global-temperature/?intent=121}, download 2022-06-08
 NULL
