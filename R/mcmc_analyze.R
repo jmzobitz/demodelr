@@ -117,8 +117,7 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
     print_probs <- mcmc_out |>
       dplyr::filter(.data$accept_flag) |>
       dplyr::select(-.data$accept_flag, -.data$l_hood) |>
-      dplyr::reframe(.cols=tidyselect::everything(),
-                       dplyr::across(.fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
+      dplyr::reframe(dplyr::across(.cols=tidyselect::everything(), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
       dplyr::mutate(probs = c("2.5%", "50%", "97.5%")) |>
       dplyr::relocate(.data$probs)
 
@@ -207,7 +206,7 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
       dplyr::ungroup() |>
       dplyr::select(-id, -.data$in_params) |>
       dplyr::group_by(dplyr::across(.cols=c(1,2))) |>
-      dplyr::reframe(dplyr::across(.cols = c("model"), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
+      dplyr::summarize(dplyr::across(.cols = c("model"), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
       dplyr::mutate(probs = c("q025", "q50", "q975")) |>
       dplyr::ungroup() |>
       tidyr::pivot_wider(names_from = "probs", values_from = "model")

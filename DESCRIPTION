@@ -1,7 +1,7 @@
 Package: demodelr
 Type: Package
 Title: Simulating Differential Equations with Data
-Version: 1.1.0
+Version: 2.0.0
 Depends: R (>= 4.1.0)
 Authors@R: 
     person("John", "Zobitz", , "zobitz@augsburg.edu", role = c("aut", "cre"),
@@ -29,7 +29,8 @@ Imports:
     GGally,
     rlang,
     utils,
-    tibble
-RoxygenNote: 7.1.1
+    tibble,
+    tidyselect
+RoxygenNote: 7.3.2
 Suggests: knitr,
     rmarkdown

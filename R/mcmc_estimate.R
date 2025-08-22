@@ -252,7 +252,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
       dplyr::group_by(.data$name, .data$type) |>
       tidyr::nest() |>
       tidyr::pivot_wider(names_from = "type", values_from = "data") |>
-      filter(name %in% data_names)
+      dplyr::filter(.data$name %in% data_names)
 
 
     out_solution_trim <- out_solution_long |>
@@ -288,8 +288,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
     }
     curr_likelihood <- tibble::tibble(l_hood = likelihood(
       out_solution_trim$value.x,
-      out_solution_trim$value.y, TRUE
-    ), log_lik = TRUE) |>
+      out_solution_trim$value.y, TRUE), log_lik = TRUE) |>
       cbind(curr_param)
     out_iter <- vector("list", length = iterations)
     nParams <- dim(param_info)[1]
@@ -343,7 +342,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
             names_from = "type",
             values_from = "data"
           ) |>
-          dplyr::filter(name %in% data_names)
+          dplyr::filter(.data$name %in% data_names)
 
         out_solution_trim <- out_solution_long |>
           dplyr::mutate(model_results = map2(
@@ -362,8 +361,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
           )
         sample_likelihood <- tibble::tibble(l_hood = likelihood(
           out_solution_trim$value.x,
-          out_solution_trim$value.y, TRUE
-        ), log_lik = TRUE) |>
+          out_solution_trim$value.y, TRUE), log_lik = TRUE) |>
           cbind(new_param)
         l_diff <- sample_likelihood$l_hood - curr_likelihood$l_hood
       } else {
@@ -415,8 +413,8 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
           accept_flag = "acceptFlag",
           lhood = "likelihood") |>
     tidyr::unnest(cols=c("lhood")) |>
-    dplyr::select(-log_lik) |>
-    dplyr::relocate(accept_flag,l_hood)
+    dplyr::select(-.data$log_lik) |>
+    dplyr::relocate(accept_flag,.data$l_hood)
 
 
   return(out_results)

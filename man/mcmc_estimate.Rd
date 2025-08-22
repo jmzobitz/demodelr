@@ -10,7 +10,7 @@ mcmc_estimate(
   parameters,
   iterations = 1,
   knob_flag = FALSE,
-  mode = "emp",
+  mode = c("emp", "de"),
   initial_condition = NULL,
   deltaT = NULL,
   n_steps = NULL

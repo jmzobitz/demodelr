@@ -8,7 +8,7 @@ mcmc_analyze(
   model,
   data,
   mcmc_out,
-  mode = "emp",
+  mode = c("emp", "de"),
   initial_condition = NULL,
   deltaT = NULL,
   n_steps = NULL,
