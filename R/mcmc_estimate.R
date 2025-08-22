@@ -127,7 +127,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
       # Sample one of the parameters
       sample_param <- param_info |>
         dplyr::mutate(old_value = .data$value,
-               value = if_else(.data$name==curr_sample,
+               value = dplyr::if_else(.data$name==curr_sample,
                                .data$knob * range * curr_tune+.data$value,.data$value),
                in_bounds = between(.data$value,.data$lower_bound,.data$upper_bound))
 
@@ -162,7 +162,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
         if (knob_flag) {
           param_info <- sample_param |>
-            dplyr::mutate(knob = if_else(.data$name==curr_sample,
+            dplyr::mutate(knob = dplyr::if_else(.data$name==curr_sample,
                                   max(.data$knob*INC,1e-8),.data$knob) ) |>
             dplyr::select(-.data$in_bounds)
 
@@ -183,7 +183,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
           # Adjust bounds if we are rejecting:
           param_info <- sample_param |>
             dplyr::mutate(value = .data$old_value,
-                   knob = if_else(.data$name==curr_sample,
+                   knob = dplyr::if_else(.data$name==curr_sample,
                                   max(.data$knob*DEC,1e-8),.data$knob) ) |>
             dplyr::select(-.data$old_value,-.data$in_bounds)
         } else {
@@ -209,224 +209,208 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
 
 
 
-  } else if (mode == "de") {  # Differential equation mode
+  }     else if (mode == "de") {
+    # Determine the variables for the input data that we need to validate against
+    data_names <- names(data)[-1]
 
     param_info <- parameters |>
-      dplyr::mutate(knob=1,
-             range = .data$upper_bound-.data$lower_bound) |>
+      dplyr::mutate(
+        knob = 1,
+        range = .data$upper_bound - .data$lower_bound
+      ) |>
       dplyr::rowwise() |>
-      dplyr::mutate(value = runif(1,min=.data$lower_bound,max=.data$upper_bound)) |>
-      dplyr::relocate(.data$name,.data$value)
-
-    # Have a vector that just gives out the current parameter values
+      dplyr::mutate(value = runif(1,
+                                  min = .data$lower_bound, max = .data$upper_bound
+      )) |>
+      dplyr::relocate(.data$name, .data$value)
     curr_param <- param_info |>
-      dplyr::select(.data$name,.data$value) |>
+      dplyr::select(
+        .data$name,
+        .data$value
+      ) |>
       tidyr::pivot_wider()
-
-    # Define this as a vector solution
     curr_param_vec <- param_info |>
-      dplyr::select(.data$name,.data$value) |>
+      dplyr::select(
+        .data$name,
+        .data$value
+      ) |>
       tibble::deframe()
 
-    # Mutate the data in a long format for comparison
     data_long <- data |>
-      tidyr::pivot_longer(cols=c(-1)) |>
-      dplyr::rename(t=1) |>
-      dplyr::mutate(type="data")
-
-    # Compute the model values, pivot longer, nest
+      tidyr::pivot_longer(cols = c(-1)) |>
+      dplyr::rename(t = 1) |>
+      dplyr::mutate(type = "data")
     out_solution <- rk4(model,
                         parameters = curr_param_vec,
-                        initial_condition=initial_condition,
-                        deltaT=deltaT,
-                        n_steps = n_steps)
-
-    # Make the solution long, add in the long data, nest, and pivot. This helps the linear approximation
+                        initial_condition = initial_condition, deltaT = deltaT,
+                        n_steps = n_steps
+    )
     out_solution_long <- out_solution |>
-      tidyr::pivot_longer(cols=c(-"t")) |>
-      dplyr::mutate(type="model") |>
+      tidyr::pivot_longer(cols = c(-"t")) |>
+      dplyr::mutate(type = "model") |>
       rbind(data_long) |>
-      dplyr::group_by(.data$name,.data$type) |> nest() |>
-      tidyr::pivot_wider(names_from="type",values_from="data")
+      dplyr::group_by(.data$name, .data$type) |>
+      tidyr::nest() |>
+      tidyr::pivot_wider(names_from = "type", values_from = "data") |>
+      filter(name %in% data_names)
 
-    # Now apply the map to get out the model results AT the timesteps the data are measured at
+
     out_solution_trim <- out_solution_long |>
-      dplyr::mutate(model_results = map2(.x=model, .y=data,.f=~(approx(.x$t, .x$value, xout = .y$t, method = "linear") |> as_tibble()))) |>
-      dplyr::select(-model,-data) |>
-      tidyr::unnest(cols=c(.data$model_results)) |>
-      dplyr::rename(t=.data$x,value=.data$y) |>
-      dplyr::mutate(type="model") |>
-      dplyr::inner_join(data_long,by=c("t","name"))
+      dplyr::mutate(model_results = map2(
+        .x = model,
+        .y = data, .f = ~ (approx(.x$t, .x$value,
+                                  xout = .y$t,
+                                  method = "linear"
+        ) |> tibble::as_tibble())
+      )) |>
+      dplyr::select(
+        -model,
+        -data
+      ) |>
+      tidyr::unnest(cols = c(.data$model_results)) |>
+      dplyr::rename(t = .data$x, value = .data$y) |>
+      dplyr::mutate(type = "model") |>
+      dplyr::inner_join(data_long, by = c("t", "name"))
 
-    # Internal function to compute the likelihood
-    likelihood <- function(y,mydata,logLikely){
-      error = stats::sd(mydata-y)
-      singlelikelihoods = dnorm(mydata, mean = y, sd = error, log = logLikely)
 
+
+    likelihood <- function(y, mydata, logLikely) {
+      error <- stats::sd(mydata - y)
+      singlelikelihoods <- dnorm(mydata,
+                                 mean = y, sd = error,
+                                 log = logLikely
+      )
       if (logLikely) {
-        return(-sum(singlelikelihoods))  # Here we make the log likelihood positive.
+        return(-sum(singlelikelihoods))
       } else {
         return(prod(singlelikelihoods))
       }
-
-
     }
-
-
-
-    # The current likelihood for comparison
-    curr_likelihood <- tibble(l_hood = likelihood(out_solution_trim$value.x,out_solution_trim$value.y,TRUE),
-                              log_lik = TRUE) |>
+    curr_likelihood <- tibble::tibble(l_hood = likelihood(
+      out_solution_trim$value.x,
+      out_solution_trim$value.y, TRUE
+    ), log_lik = TRUE) |>
       cbind(curr_param)
-
-    # Start building up the list for iterations
-    out_iter <- vector("list",length=iterations)
-
+    out_iter <- vector("list", length = iterations)
     nParams <- dim(param_info)[1]
-
-    # Identify which params we want to use and the tuning
-    param_samples <- sample(param_info$name,size=iterations,replace=TRUE)
-    tune_values <- stats::runif(iterations)-0.5
-    random_accept = stats::rexp(iterations)  # A test to see if we want to keep a parameter that is slightly worse
-
-    # Define some ctarget values
-    A_STAR<-0.4  # target acceptance rate
-    DEC<-0.99  # how much to decrease temp. by on rejection
-    INC <- DEC^((A_STAR - 1)/A_STAR);
-    # want INC^A_STAR * DEC^(1 - A_STAR) = 1
-
-    # Now start to do the loop
+    param_samples <- sample(param_info$name,
+                            size = iterations,
+                            replace = TRUE
+    )
+    tune_values <- stats::runif(iterations) - 0.5
+    random_accept <- stats::rexp(iterations)
+    A_STAR <- 0.4
+    DEC <- 0.99
+    INC <- DEC^((A_STAR - 1) / A_STAR)
     for (i in seq_along(out_iter)) {
-
       accept_flag <- TRUE
       curr_sample <- param_samples[[i]]
       curr_tune <- tune_values[[i]]
-
-
-      # Sample one of the parameters
-      sample_param <- param_info |>
-        dplyr::mutate(old_value = .data$value,
-               value = if_else(.data$name==curr_sample,
-                               .data$knob * range * curr_tune+.data$value,.data$value),
-               in_bounds = between(.data$value,.data$lower_bound,.data$upper_bound))
-
-
-      if (sum(sample_param$in_bounds) == nParams) {  # If we are in the ranges, then go, otherwise ignore
-
+      sample_param <- param_info |> dplyr::mutate(
+        old_value = .data$value,
+        value = dplyr::if_else(.data$name == curr_sample, .data$knob *
+                          range * curr_tune + .data$value, .data$value),
+        in_bounds = between(
+          .data$value, .data$lower_bound,
+          .data$upper_bound
+        )
+      )
+      if (sum(sample_param$in_bounds) == nParams) {
         new_param <- sample_param |>
-          dplyr::select(.data$name,.data$value) |>
+          dplyr::select(
+            .data$name,
+            .data$value
+          ) |>
           tidyr::pivot_wider()
-
-
-        # Define this as a vector solution
         new_param_vec <- sample_param |>
-          dplyr::select(.data$name,.data$value) |>
+          dplyr::select(
+            .data$name,
+            .data$value
+          ) |>
           tibble::deframe()
-
-
-        # Compute the model values, pivot longer, nest
         out_solution <- rk4(model,
                             parameters = new_param_vec,
-                            initial_condition=initial_condition,
-                            deltaT=deltaT,
-                            n_steps = n_steps)
-
-        # Make the solution long, add in the long data, nest, and pivot. This helps the linear approximation
+                            initial_condition = initial_condition, deltaT = deltaT,
+                            n_steps = n_steps
+        )
         out_solution_long <- out_solution |>
-          tidyr::pivot_longer(cols=c(-"t")) |>
-          dplyr::mutate(type="model") |>
+          tidyr::pivot_longer(cols = c(-"t")) |>
+          dplyr::mutate(type = "model") |>
           rbind(data_long) |>
-          dplyr::group_by(.data$name,.data$type) |> nest() |>
-          tidyr::pivot_wider(names_from="type",values_from="data")
+          dplyr::group_by(.data$name, .data$type) |>
+          tidyr::nest() |>
+          tidyr::pivot_wider(
+            names_from = "type",
+            values_from = "data"
+          ) |>
+          dplyr::filter(name %in% data_names)
 
-        # Now apply the map to get out the model results AT the timesteps the data are measured at
         out_solution_trim <- out_solution_long |>
-          dplyr::mutate(model_results = map2(.x=model, .y=data,.f=~(approx(.x$t, .x$value, xout = .y$t, method = "linear") |> as_tibble()))) |>
-          dplyr::select(-model,-data) |>
-          tidyr::unnest(cols=c(.data$model_results)) |>
-          dplyr::rename(t=.data$x,value=.data$y) |>
-          dplyr::mutate(type="model") |>
-          dplyr::inner_join(data_long,by=c("t","name"))
-
-        # The current likelihood for comparison
-        sample_likelihood <- tibble(l_hood = likelihood(out_solution_trim$value.x,out_solution_trim$value.y,TRUE),
-                                    log_lik = TRUE) |>
+          dplyr::mutate(model_results = map2(
+            .x = model,
+            .y = data, .f = ~ (approx(.x$t, .x$value,
+                                      xout = .y$t,
+                                      method = "linear"
+            ) |> tibble::as_tibble())
+          )) |>
+          dplyr::select(-model, -data) |>
+          tidyr::unnest(cols = c(.data$model_results)) |>
+          dplyr::rename(t = .data$x, value = .data$y) |>
+          dplyr::mutate(type = "model") |>
+          dplyr::inner_join(data_long,
+                            by = c("t", "name")
+          )
+        sample_likelihood <- tibble::tibble(l_hood = likelihood(
+          out_solution_trim$value.x,
+          out_solution_trim$value.y, TRUE
+        ), log_lik = TRUE) |>
           cbind(new_param)
-
-
-        ####
-        # OK: if the difference is positive, we might want to reject
         l_diff <- sample_likelihood$l_hood - curr_likelihood$l_hood
-
-
       } else {
-        accept_flag = FALSE
-        l_diff <- NA
-      }
-
-
-
-      # Since we have the log likelihood we want to minimize the log likelihood.  If this is positive, then we may want to keep it
-      if (accept_flag & (l_diff < random_accept[[i]]  ) & !is.na(l_diff)   ) {
-
-        # Update date the current parameters
-        curr_param <- new_param
-        curr_likelihood <- sample_likelihood
-
-        # Adjust bounds if we are accepting: (knob tuning)
-
-        if (knob_flag) {
-          param_info <- sample_param |>
-            dplyr::mutate(knob = if_else(.data$name==curr_sample,
-                                  max(.data$knob*INC,1e-8),.data$knob) ) |>
-            dplyr::select(-.data$in_bounds)
-
-        } else {
-          param_info <- sample_param |>
-            dplyr::select(-.data$in_bounds)
-        }
-
-
-        accept_flag <- TRUE  # I think this is not necessary
-
-      } else {
-
         accept_flag <- FALSE
         l_diff <- NA
-
+      }
+      if (accept_flag & (l_diff < random_accept[[i]]) &
+          !is.na(l_diff)) {
+        curr_param <- new_param
+        curr_likelihood <- sample_likelihood
         if (knob_flag) {
-          # Adjust bounds if we are rejecting:
           param_info <- sample_param |>
-            dplyr::mutate(value = .data$old_value,
-                   knob = if_else(.data$name==curr_sample,
-                                  max(.data$knob*DEC,1e-8),.data$knob) ) |>
-            dplyr::select(-.data$old_value,-.data$in_bounds)
+            dplyr::mutate(knob = dplyr::if_else(.data$name ==
+                                           curr_sample, max(.data$knob * INC, 1e-08),
+                                         .data$knob
+            )) |>
+            dplyr::select(-.data$in_bounds)
         } else {
-          # Adjust bounds if we are accepting:
+          param_info <- sample_param |> dplyr::select(-.data$in_bounds)
+        }
+        accept_flag <- TRUE
+      } else {
+        accept_flag <- FALSE
+        l_diff <- NA
+        if (knob_flag) {
+          param_info <- sample_param |>
+            dplyr::mutate(
+              value = .data$old_value,
+              knob = dplyr::if_else(.data$name == curr_sample,
+                             max(.data$knob * DEC, 1e-08), .data$knob
+              )
+            ) |>
+            dplyr::select(-.data$old_value, -.data$in_bounds)
+        } else {
           param_info <- sample_param |>
             dplyr::mutate(value = .data$old_value) |>
-            dplyr::select(-.data$old_value,-.data$in_bounds)
+            dplyr::select(-.data$old_value, -.data$in_bounds)
         }
-
-
-
-
-
-
       }
-
-      # Update the list
-      out_iter[[i]] <- list(likelihood = curr_likelihood,
-                            acceptFlag = accept_flag)
-
-
+      out_iter[[i]] <- list(
+        likelihood = curr_likelihood,
+        acceptFlag = accept_flag
+      )
     }
-
-
-
   }
 
-  out_results <- tibble(nested = out_iter) |>
+  out_results <- tibble::tibble(nested = out_iter) |>
     tidyr::hoist(.data$nested,
           accept_flag = "acceptFlag",
           lhood = "likelihood") |>
