@@ -117,7 +117,7 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
     print_probs <- mcmc_out |>
       dplyr::filter(.data$accept_flag) |>
       dplyr::select(-.data$accept_flag, -.data$l_hood) |>
-      dplyr::summarize(.cols=tidyselect::everything(),
+      dplyr::reframe(.cols=tidyselect::everything(),
                        dplyr::across(.fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
       dplyr::mutate(probs = c("2.5%", "50%", "97.5%")) |>
       dplyr::relocate(.data$probs)
@@ -221,7 +221,7 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
     ggplot2::ggplot(out_model) +
       geom_line(aes(x = t, y = .data$q50)) +
       geom_ribbon(aes(x = t, ymin = .data$q025, ymax = .data$q975), alpha = 0.3) +
-      geom_point(data = data_long, aes(x = t, y = .data$value), color = "red", size = 2) +
+      geom_point(data = data_long, aes(x = t, y = .data$value), color = "red", linewidth = 2) +
       labs(y = "") + facet_grid(name~.,scales="free_y")
 
   }

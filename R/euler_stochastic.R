@@ -92,11 +92,11 @@ euler_stochastic <- function(deterministic_rate,stochastic_rate,initial_conditio
   n_vars <- length(vec_names)  # Number of variables
 
   time_eq <- c(dt ~ 1)  # This is an equation to keep track of the dt
-  new_rate_eq <- c(deterministic_rate,time_eq) %>%
+  new_rate_eq <- c(deterministic_rate,time_eq) |>
     formula.tools::rhs()
 
   time_eq_stoc <- c(dt~0)
-  new_stochastic_rate <- c(stochastic_rate,time_eq_stoc) %>%
+  new_stochastic_rate <- c(stochastic_rate,time_eq_stoc) |>
     formula.tools::rhs()
 
 
@@ -107,12 +107,12 @@ euler_stochastic <- function(deterministic_rate,stochastic_rate,initial_conditio
   for(i in 2:n_steps) {
 
     # Define the list of inputs to the rate equation
-    in_list <- c(parameters,curr_vec) %>% as.list()
+    in_list <- c(parameters,curr_vec) |> as.list()
 
-    curr_rate <-sapply(new_rate_eq,FUN=eval,envir=in_list) %>%
+    curr_rate <-sapply(new_rate_eq,FUN=eval,envir=in_list) |>
       purrr::set_names(nm =vec_names)
 
-    curr_stoch_rate <-sapply(new_stochastic_rate,FUN=eval,envir=in_list) %>%
+    curr_stoch_rate <-sapply(new_stochastic_rate,FUN=eval,envir=in_list) |>
       purrr::set_names(nm =vec_names)
 
     # Now we add them together and update
@@ -126,8 +126,8 @@ euler_stochastic <- function(deterministic_rate,stochastic_rate,initial_conditio
 
 
   # Accumulate as we go and build up the data frame. This seems like magic.
-  out_results <- out_list %>%
-    dplyr::bind_rows() %>%
+  out_results <- out_list |>
+    dplyr::bind_rows() |>
     dplyr::relocate(t)  # Put t at the start
 
 
