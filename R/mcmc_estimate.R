@@ -280,6 +280,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
                                  mean = y, sd = error,
                                  log = logLikely
       )
+
       if (logLikely) {
         return(-sum(singlelikelihoods))
       } else {
@@ -289,6 +290,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
     curr_likelihood <- tibble::tibble(l_hood = likelihood(
       out_solution_trim$value.x,
       out_solution_trim$value.y, TRUE), log_lik = TRUE) |>
+
       cbind(curr_param)
     out_iter <- vector("list", length = iterations)
     nParams <- dim(param_info)[1]
@@ -362,6 +364,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
         sample_likelihood <- tibble::tibble(l_hood = likelihood(
           out_solution_trim$value.x,
           out_solution_trim$value.y, TRUE), log_lik = TRUE) |>
+
           cbind(new_param)
         l_diff <- sample_likelihood$l_hood - curr_likelihood$l_hood
       } else {
@@ -387,6 +390,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
         accept_flag <- FALSE
         l_diff <- NA
         if (knob_flag) {
+
           param_info <- sample_param |>
             dplyr::mutate(
               value = .data$old_value,
@@ -413,6 +417,7 @@ mcmc_estimate <- function(model,data,parameters,iterations=1,knob_flag=FALSE,mod
           accept_flag = "acceptFlag",
           lhood = "likelihood") |>
     tidyr::unnest(cols=c("lhood")) |>
+
     dplyr::select(-.data$log_lik) |>
     dplyr::relocate(accept_flag,.data$l_hood)
 

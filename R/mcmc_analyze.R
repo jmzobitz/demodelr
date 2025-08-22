@@ -207,6 +207,7 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
       dplyr::select(-id, -.data$in_params) |>
       dplyr::group_by(dplyr::across(.cols=c(1,2))) |>
       dplyr::summarize(dplyr::across(.cols = c("model"), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
+
       dplyr::mutate(probs = c("q025", "q50", "q975")) |>
       dplyr::ungroup() |>
       tidyr::pivot_wider(names_from = "probs", values_from = "model")
