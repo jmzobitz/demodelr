@@ -1,7 +1,15 @@
 ## Version update 22-08-25
 Updated to remove lifecycle warnings for tidyverse and requested user updates, necessitating a new version number.
 
+## R CMD check results
 There were no ERRORs or WARNINGs or NOTEs
+
+## revdepcheck results
+
+We checked 0 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
 
 ## Resubmission 15-09-22
 In README.md fixed the link to the package on CRAN to a canonical URL

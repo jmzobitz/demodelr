@@ -1,0 +1,33 @@
+Package: demodelr
+Type: Package
+Title: Simulating Differential Equations with Data
+Version: 2.0.0
+Depends: R (>= 4.1.0)
+Authors@R: 
+    person("John", "Zobitz", , "zobitz@augsburg.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-1830-143X"))
+Description: Designed to support the visualization, numerical computation,
+     qualitative analysis, model-data fusion, and stochastic simulation for
+     autonomous systems of differential equations. Euler and Runge-Kutta methods
+     are implemented, along with tools to visualize the two-dimensional
+     phaseplane. Likelihood surfaces and a simple Markov Chain Monte Carlo
+     parameter estimator can be used for model-data fusion of differential
+     equations and empirical models. The Euler-Maruyama method is provided for
+     simulation of stochastic differential equations. The package was originally
+     written for internal use to support teaching by Zobitz, and refined to
+     support the text "Exploring modeling with data and differential equations
+     using R" by John Zobitz (2021) <https://jmzobitz.github.io/ModelingWithR/index.html>.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: ggplot2, purrr, tidyr, dplyr, formula.tools, GGally, rlang,
+        utils, tibble, tidyselect
+RoxygenNote: 7.3.2
+Suggests: knitr, rmarkdown
+RemoteType: local
+RemoteUrl: /Users/zobitz/Desktop/Modeling-With-R/RPackage/demodelr
+NeedsCompilation: no
+Packaged: 2025-08-22 18:52:00 UTC; zobitz
+Author: John Zobitz [aut, cre] (ORCID: <https://orcid.org/0000-0002-1830-143X>)
+Maintainer: John Zobitz <zobitz@augsburg.edu>
+Built: R 4.5.0; ; 2025-08-22 18:52:01 UTC; unix

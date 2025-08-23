@@ -1,0 +1,21 @@
+compute_likelihood      Likelihood plot of a two parameter model
+eigenvalues             Matrix eigenvalues and eigenvectors
+euler                   Euler's method solution for a differential
+                        equation.
+euler_stochastic        Euler-Maruyama method solution for a stochastic
+                        differential equation.
+global_temperature      Measured average global temperature anomaly by
+                        year
+mcmc_analyze            Markov Chain parameter estimates
+mcmc_estimate           Markov Chain parameter estimates
+parks                   Visitor and resource usage to a national park
+phaseplane              Phase plane of differential equation.
+phosphorous             Measured phosphorous of Daphnia and algae
+precipitation           Measured precipitation from a rainfall event
+rk4                     Runge Kutta method solution for a differential
+                        equation.
+snowfall                Measured snowfall from a blizzard in April 2018
+wilson                  Measured Weight of a dog over time
+yeast                   Measured Sacchromyces data (yeast) from Gause
+                        1932 "Experimental studies on the struggle for
+                        coexistence"
