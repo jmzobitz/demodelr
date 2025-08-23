@@ -9,10 +9,10 @@
 name: R
 
 on:
-  push:
-    branches: [ "main", "feature/**" ]
-  pull_request:
-    branches: [ "main" ]
+#  push:
+#    branches: [ "main", "feature/**" ]
+#  pull_request:
+#    branches: [ "main" ]
 
 permissions:
   contents: read
