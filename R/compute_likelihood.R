@@ -74,7 +74,7 @@ compute_likelihood <-function(model,data,parameters,logLikely=FALSE) {
   # We will map along the data frame of parameters
   out_likelihood <- parameters |>
     dplyr::mutate(id=1:n()) |>
-    dplyr::group_by(id) |>
+    dplyr::group_by(.data$id) |>
     tidyr::nest() |>
     dplyr::rename(in_params=data) |>
     dplyr::mutate(m_data = lapply(X=.data$in_params,FUN=compute_model, new_eq,in_data),
@@ -83,7 +83,7 @@ compute_likelihood <-function(model,data,parameters,logLikely=FALSE) {
     ) |>
     tidyr::unnest(cols=c(.data$in_params,.data$l_hood) )|>
     dplyr::ungroup() |>
-    dplyr::select(-id,-.data$m_data) |>
+    dplyr::select(-.data$id,-.data$m_data) |>
     dplyr::mutate(log_lik=logLikely)
 
 

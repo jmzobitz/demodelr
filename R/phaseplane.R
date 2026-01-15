@@ -87,17 +87,17 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
 
   vec_field <-sapply(new_rate_eq,FUN=eval,envir=in_list) |>
     as_tibble(.name_repair = make.names) |>
-    purrr::set_names(nm =c("u","v") ) |>
+    purrr::set_names(nm =c("u_var","v_var") ) |>
     bind_cols()
 
   p <- in_grid |>
     cbind(vec_field) |>
-    mutate(lens=sqrt(.data$u^2+.data$v^2),  # Length of arrow
+    mutate(lens=sqrt(.data$u_var^2+.data$v_var^2),  # Length of arrow
            lens2 = .data$lens/max(.data$lens)) # Scaling it by the maximum length
 
 
-  maxx <- max(abs(p$u));  # The largest x and y vector.
-  maxy <- max(abs(p$v));
+  maxx <- max(abs(p$u_var));  # The largest x and y vector.
+  maxy <- max(abs(p$v_var));
   dt <- min( abs(diff(x_window))/maxx, abs(diff(y_window))/maxy)/plot_points;
 
   if(eq_soln){
@@ -105,7 +105,7 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
     # Test if there are any equilibrium points.  If there are none in the range, it won't plot.
     if (formula.tools::rhs(system_eq)[[1]]==1) {
       eq_pts <- p |>
-        dplyr::filter((between(.data$v,-1e-3,1e-3))) |>
+        dplyr::filter((between(.data$v_var,-1e-3,1e-3))) |>
         dplyr::select(1,2) |>  # Select the first two columns
         round(digits=precision) |>  # Round the digits for precision
         dplyr::distinct()  # Check if they are unique
@@ -119,7 +119,7 @@ phaseplane <- function(system_eq,x_var,y_var,parameters=NULL,x_window=c(-4,4),y_
     } else {
 
       eq_pts <- p |>
-        dplyr::filter(if_all(.cols=c("u","v"),.fns=~(between(.x,-1e-3,1e-3)))) |>
+        dplyr::filter(if_all(.cols=c("u_var","v_var"),.fns=~(between(.x,-1e-3,1e-3)))) |>
         dplyr::select(1,2) |>  # Select the first two columns
         round(digits=precision) |>  # Round the digits for precision
         dplyr::distinct()  # Check if they are unique
@@ -153,10 +153,10 @@ names(p) <- c("curr_vec_x","curr_vec_y",col_names[-(1:2)])
 
   p_plot <- p |>
     mutate(
-    xend = .data$curr_vec_x  + dt*.data$u/((.data$lens2)+.1)/2,
-    yend = .data$curr_vec_y  + dt*.data$v/((.data$lens2)+.1)/2,
-    x_adj = .data$curr_vec_x - dt*.data$u/((.data$lens2)+.1)/2,
-    y_adj= .data$curr_vec_y  -dt*.data$v/((.data$lens2)+.1)/2
+    xend = .data$curr_vec_x  + dt*.data$u_var/((.data$lens2)+.1)/2,
+    yend = .data$curr_vec_y  + dt*.data$v_var/((.data$lens2)+.1)/2,
+    x_adj = .data$curr_vec_x - dt*.data$u_var/((.data$lens2)+.1)/2,
+    y_adj= .data$curr_vec_y  -dt*.data$v_var/((.data$lens2)+.1)/2
   )
 
    # Now plot

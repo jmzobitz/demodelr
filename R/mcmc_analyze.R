@@ -157,13 +157,13 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
       dplyr::filter(.data$accept_flag) |>
       dplyr::select(-.data$accept_flag, -.data$l_hood) |>
       dplyr::mutate(id = 1:n()) |>
-      dplyr::group_by(id) |>
+      dplyr::group_by(.data$id) |>
       tidyr::nest() |>
       dplyr::rename(in_params = data) |>
       dplyr::mutate(m_data = lapply(X = .data$in_params, FUN = compute_model_emp, new_eq, in_data)) |>
       tidyr::unnest(cols = c(.data$m_data)) |>
       dplyr::ungroup() |>
-      dplyr::select(-id, -.data$in_params)
+      dplyr::select(-.data$id, -.data$in_params)
 
 
     ggplot2::ggplot(out_model) +
@@ -198,13 +198,13 @@ mcmc_analyze <- function(model, data, mcmc_out,mode = c("emp", "de"),initial_con
       dplyr::filter(.data$accept_flag) |>
       dplyr::select(-.data$accept_flag, -.data$l_hood) |>
       dplyr::mutate(id = 1:n()) |>
-      dplyr::group_by(id) |>
+      dplyr::group_by(.data$id) |>
       tidyr::nest() |>
       dplyr::rename(in_params = data) |>
       dplyr::mutate(m_data = lapply(X = .data$in_params, FUN = compute_model_de, model, initial_condition,deltaT,n_steps)) |>
       tidyr::unnest(cols = c(.data$m_data)) |>
       dplyr::ungroup() |>
-      dplyr::select(-id, -.data$in_params) |>
+      dplyr::select(-.data$id, -.data$in_params) |>
       dplyr::group_by(dplyr::across(.cols=c(1,2))) |>
       dplyr::summarize(dplyr::across(.cols = c("model"), .fns = stats::quantile, probs = c(0.025, 0.50, 0.975))) |>
 

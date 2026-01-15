@@ -1,3 +1,6 @@
+# demodelr 2.0.1
+Patch to fix upcoming release of dplyr which depreciates id(). Flagged in [revdep checks](https://github.com/DavisVaughan/demodelr/pull/1/files) and bug in `phaseplane` code to accomodate `u` and `v` as variables.
+
 # demodelr 2.0.0
 Updates to include the native pipe (`|>`) and other life cycle improvements from associated updates to `tidyverse` packages and contributed github issues.
 
