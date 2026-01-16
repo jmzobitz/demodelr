@@ -1,3 +1,9 @@
+## Patch update 15-01-26
+Patch from revdep check in dplyr planned updates; changes to phaseplane for variable names.
+
+## R CMD check results
+There were no ERRORs or WARNINGs or NOTEs
+
 ## Version update 22-08-25
 Updated to remove lifecycle warnings for tidyverse and requested user updates, necessitating a new version number.
 
